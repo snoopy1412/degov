@@ -1,0 +1,8 @@
+{
+  "name": "degov",
+  "private": true,
+  "scripts": {
+    "dev:web": "pnpm --filter @degov/web dev",
+    "build:web": "pnpm --filter @degov/web build"
+  }
+}
