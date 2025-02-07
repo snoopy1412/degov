@@ -18,8 +18,8 @@
         "https://rpc.darwinia.network"
       ],
       "explorer": {
-        "name": "Subscan",
-        "url": "https://darwinia.subscan.io"
+        "name": "Darwinia explorer",
+        "url": "https://explorer.darwinia.network"
       }
     },
     "tokenInfo": {
