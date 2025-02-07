@@ -36,7 +36,7 @@ export function DAppProvider({ children }: React.PropsWithChildren<unknown>) {
 
   const config = createConfig({
     appName: dappConfig?.daoName,
-    projectId: dappConfig?.projectId,
+    projectId: dappConfig?.walletConnectProjectId,
     chain: currentChain
   });
 
