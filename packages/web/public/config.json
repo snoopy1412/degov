@@ -1,6 +1,6 @@
 {
     "logo": "https://www.open-governor.com/assets/img/logo.png",
-    "projectId": "2719448e2ce94fdd269a3c8587123bcc",
+    "walletConnectProjectId": "2719448e2ce94fdd269a3c8587123bcc",
     "daoName": "RingDAO",
     "description": "Darwinia OpenGovernor is a decentralized autonomous organization (DAO) that governs the Darwinia Network.",
     "links": {
@@ -32,12 +32,14 @@
     },
     "timelockAssetsTokenInfo": {
       "kton": {
+        "logo":"https://www.open-governor.com/assets/token/kton.png",
         "chain": "Darwinia Chain",
         "contract": "0x123456789xxx",
         "symbol": "KTON",
         "decimals": 18
       },
       "usdt": {
+        "logo":"https://www.open-governor.com/assets/token/usdt.png",
         "chain": "Ethereum",
         "contract": "0x123456789xxx",
         "symbol": "USDT",

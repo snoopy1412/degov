@@ -27,6 +27,7 @@ interface TokenInfo {
 }
 
 interface TokenDetails {
+  logo: string;
   chain: string;
   contract: string;
   symbol: string;
@@ -39,7 +40,7 @@ interface TimelockAssetsTokenInfo {
 
 interface Config {
   logo: string;
-  projectId: string;
+  walletConnectProjectId: string;
   daoName: string;
   description: string;
   links: Links;
