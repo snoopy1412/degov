@@ -1,11 +1,15 @@
 import { Outlet } from '@tanstack/react-router';
-import { Sider } from './sider';
+import { Aside } from './aside';
+import { Header } from './header';
 
 const Root = () => {
   return (
-    <div className="flex min-h-dvh w-screen flex-col bg-secondary font-sans antialiased">
-      <Sider />
-      <main className="flex flex-1 flex-col items-center justify-center">
+    <div className="flex h-screen w-screen bg-background font-sans antialiased">
+      <aside className="w-[240px] border-r border-border bg-background">
+        <Aside />
+      </aside>
+      <main className="flex flex-1 flex-col">
+        <Header />
         <div className="mx-auto flex h-full w-full items-center justify-center px-[var(--container-padding-x)]">
           <Outlet />
         </div>

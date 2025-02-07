@@ -11,9 +11,37 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as TreasuryImport } from './routes/treasury'
+import { Route as ProposalsImport } from './routes/proposals'
+import { Route as MembersImport } from './routes/members'
+import { Route as DelegateImport } from './routes/delegate'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const TreasuryRoute = TreasuryImport.update({
+  id: '/treasury',
+  path: '/treasury',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProposalsRoute = ProposalsImport.update({
+  id: '/proposals',
+  path: '/proposals',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MembersRoute = MembersImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DelegateRoute = DelegateImport.update({
+  id: '/delegate',
+  path: '/delegate',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -32,6 +60,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/delegate': {
+      id: '/delegate'
+      path: '/delegate'
+      fullPath: '/delegate'
+      preLoaderRoute: typeof DelegateImport
+      parentRoute: typeof rootRoute
+    }
+    '/members': {
+      id: '/members'
+      path: '/members'
+      fullPath: '/members'
+      preLoaderRoute: typeof MembersImport
+      parentRoute: typeof rootRoute
+    }
+    '/proposals': {
+      id: '/proposals'
+      path: '/proposals'
+      fullPath: '/proposals'
+      preLoaderRoute: typeof ProposalsImport
+      parentRoute: typeof rootRoute
+    }
+    '/treasury': {
+      id: '/treasury'
+      path: '/treasury'
+      fullPath: '/treasury'
+      preLoaderRoute: typeof TreasuryImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +95,52 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/delegate': typeof DelegateRoute
+  '/members': typeof MembersRoute
+  '/proposals': typeof ProposalsRoute
+  '/treasury': typeof TreasuryRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/delegate': typeof DelegateRoute
+  '/members': typeof MembersRoute
+  '/proposals': typeof ProposalsRoute
+  '/treasury': typeof TreasuryRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/delegate': typeof DelegateRoute
+  '/members': typeof MembersRoute
+  '/proposals': typeof ProposalsRoute
+  '/treasury': typeof TreasuryRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/delegate' | '/members' | '/proposals' | '/treasury'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/delegate' | '/members' | '/proposals' | '/treasury'
+  id: '__root__' | '/' | '/delegate' | '/members' | '/proposals' | '/treasury'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DelegateRoute: typeof DelegateRoute
+  MembersRoute: typeof MembersRoute
+  ProposalsRoute: typeof ProposalsRoute
+  TreasuryRoute: typeof TreasuryRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DelegateRoute: DelegateRoute,
+  MembersRoute: MembersRoute,
+  ProposalsRoute: ProposalsRoute,
+  TreasuryRoute: TreasuryRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +153,27 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/"
+        "/",
+        "/delegate",
+        "/members",
+        "/proposals",
+        "/treasury"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/delegate": {
+      "filePath": "delegate.tsx"
+    },
+    "/members": {
+      "filePath": "members.tsx"
+    },
+    "/proposals": {
+      "filePath": "proposals.tsx"
+    },
+    "/treasury": {
+      "filePath": "treasury.tsx"
     }
   }
 }

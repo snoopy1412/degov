@@ -1,20 +1,29 @@
 type SocialConfig = {
-  url: string;
   name: string;
-  darkIconPath: string;
-  lightIconPath: string;
+  url: string;
+  assetPath: string;
 };
 
-function createSocialConfig(name: string, url: string): SocialConfig {
+function createSocialConfig(name: string, url: string, assetPath: string): SocialConfig {
   return {
     name,
     url,
-    darkIconPath: `/images/social/${name.toLowerCase()}-dark.svg`,
-    lightIconPath: `/images/social/${name.toLowerCase()}-light.svg`
+    assetPath
   };
 }
 
 export const socialConfig: SocialConfig[] = [
-  createSocialConfig('Github', 'https://github.com/ringecosystem'),
-  createSocialConfig('Twitter', 'https://x.com/ringecosystem')
+  createSocialConfig('X', 'https://x.com/ringecosystem', '/assets/image/social/x.svg'),
+  createSocialConfig('Telegram', 'https://t.me/ringecosystem', '/assets/image/social/telegram.svg'),
+  createSocialConfig(
+    'Discord',
+    'https://discord.gg/BhNbKWWfGV',
+    '/assets/image/social/discord.svg'
+  ),
+  createSocialConfig(
+    'Github',
+    'https://github.com/ringecosystem/XAccount',
+    '/assets/image/social/github.svg'
+  ),
+  createSocialConfig('Email', 'mailto:hello@ringecosystem.com', '/assets/image/social/email.svg')
 ];
