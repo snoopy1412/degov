@@ -1,4 +1,4 @@
-import { ConnectButton } from '@/components/connect-botton';
+import { ConnectButton } from '@/components/connect-button';
 import { Search } from 'lucide-react';
 
 export const Header = () => {
