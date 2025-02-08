@@ -9,27 +9,30 @@ interface AddressAvatarProps {
 }
 
 export const AddressAvatar = ({ address, size = 40, className }: AddressAvatarProps) => {
-  const [avatarUrl, setAvatarUrl] = useState<string>('');
+  const [indexedAvatarUrl, setIndexedAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
+
     const fetchAvatar = async () => {
       try {
         const indexedAvatar = await fetchAvatarFromIndex(address);
-        if (indexedAvatar) {
-          setAvatarUrl(indexedAvatar);
-        } else {
-          const bloAvatar = blo(address as `0x${string}`);
-          setAvatarUrl(bloAvatar);
+        if (indexedAvatar && mounted) {
+          setIndexedAvatarUrl(indexedAvatar);
         }
       } catch (error) {
         console.error('Error fetching avatar:', error);
-        const bloAvatar = blo(address as `0x${string}`);
-        setAvatarUrl(bloAvatar);
       }
     };
 
     fetchAvatar();
+
+    return () => {
+      mounted = false;
+    };
   }, [address]);
+
+  const avatarUrl = indexedAvatarUrl || blo(address as `0x${string}`);
 
   return (
     <img
