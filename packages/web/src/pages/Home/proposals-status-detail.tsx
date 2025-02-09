@@ -5,7 +5,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useState } from 'react';
 
-export const ProposalsDetail = () => {
+export const ProposalsStatusDetail = () => {
   const [items] = useState<
     {
       title: string;
@@ -18,7 +18,7 @@ export const ProposalsDetail = () => {
     { title: 'Succeeded', count: 4, color: 'bg-succeeded' },
     { title: 'Executed', count: 4, color: 'bg-executed' },
     { title: 'Defeated', count: 4, color: 'bg-defeated' },
-    { title: 'Cancelled', count: 4, color: 'bg-cancelled' }
+    { title: 'Canceled', count: 4, color: 'bg-canceled' }
   ]);
 
   return (

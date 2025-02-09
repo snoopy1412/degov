@@ -1,5 +1,6 @@
-import { Button } from '@/components/ui/button';
 import { useConfig } from '@/hooks/useConfig';
+import { Parameters } from './parameters';
+import { Contracts } from './contracts';
 
 export const DaoHeader = () => {
   const config = useConfig();
@@ -12,12 +13,8 @@ export const DaoHeader = () => {
         </h1>
         <p className="line-clamp-2 text-[14px] text-card-foreground">{config?.description}</p>
         <div className="flex items-center gap-[10px]">
-          <Button variant="outline" className="rounded-full border-border bg-card" size="sm">
-            Parameters
-          </Button>
-          <Button variant="outline" className="rounded-full border-border bg-card" size="sm">
-            Contracts
-          </Button>
+          <Parameters />
+          <Contracts />
         </div>
       </div>
       <div className="flex items-center justify-end gap-[20px]">

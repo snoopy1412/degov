@@ -32,17 +32,10 @@
     },
     "timelockAssetsTokenInfo": {
       "kton": {
-        "logo":"https://www.open-governor.com/assets/token/kton.png",
+        "logo":"https://staking.ktondao.xyz/images/token/kton.svg",
         "chain": "Darwinia Chain",
-        "contract": "0x123456789xxx",
+        "contract": "0x0000000000000000000000000000000000000402",
         "symbol": "KTON",
-        "decimals": 18
-      },
-      "usdt": {
-        "logo":"https://www.open-governor.com/assets/token/usdt.png",
-        "chain": "Ethereum",
-        "contract": "0x123456789xxx",
-        "symbol": "USDT",
         "decimals": 18
       }
     }

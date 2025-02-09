@@ -11,9 +11,16 @@ interface ClipboardIconButtonProps {
   size?: string | number;
   color?: string;
   className?: string;
+  strokeWidth?: number;
 }
 
-const ClipboardIconButton = ({ text = '', size, color, className }: ClipboardIconButtonProps) => {
+const ClipboardIconButton = ({
+  text = '',
+  size,
+  color,
+  className,
+  strokeWidth = 1
+}: ClipboardIconButtonProps) => {
   const [state, copyToClipboard] = useCopyToClipboard();
   const [copied, setCopied] = useState(false);
   const [open, setOpen] = useState(false);
@@ -67,7 +74,7 @@ const ClipboardIconButton = ({ text = '', size, color, className }: ClipboardIco
           onMouseLeave={handleMouseLeave}
         >
           <Check
-            strokeWidth={1}
+            strokeWidth={strokeWidth}
             size={size}
             color={color}
             className={cn(
@@ -77,7 +84,7 @@ const ClipboardIconButton = ({ text = '', size, color, className }: ClipboardIco
             )}
           />
           <Copy
-            strokeWidth={1}
+            strokeWidth={strokeWidth}
             size={size}
             color={color}
             className={cn(

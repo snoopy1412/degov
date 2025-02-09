@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils';
 import { blo } from 'blo';
 import { useState, useEffect } from 'react';
 import type { Address } from 'viem';
@@ -40,7 +41,7 @@ export const AddressAvatar = ({ address, size = 40, className }: AddressAvatarPr
       alt={`Avatar for ${address}`}
       width={size}
       height={size}
-      className={className}
+      className={cn('rounded-full', className)}
     />
   );
 };

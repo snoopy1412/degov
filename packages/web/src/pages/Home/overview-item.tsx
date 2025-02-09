@@ -14,7 +14,7 @@ export const OverviewItem = ({ title, icon, children }: OverviewItemProps) => {
     >
       <div className="flex flex-col gap-[10px]">
         <p className="!m-0 text-[14px] text-card-foreground">{title}</p>
-        <p className="!m-0 text-[28px] font-bold text-white">{children}</p>
+        <div className="!m-0 text-[28px] font-bold text-white">{children}</div>
       </div>
       <img src={icon} alt={title} className="size-[60px]" />
     </div>

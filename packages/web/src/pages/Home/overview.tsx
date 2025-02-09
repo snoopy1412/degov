@@ -1,5 +1,5 @@
 import { OverviewItem } from './overview-item';
-import { ProposalsDetail } from './proposals-detail';
+import { ProposalsStatusDetail } from './proposals-status-detail';
 
 export const Overview = () => {
   return (
@@ -9,7 +9,7 @@ export const Overview = () => {
         <OverviewItem title="Proposals" icon="/assets/image/proposals-colorful.svg">
           <div className="flex items-center gap-[10px]">
             <p>100</p>
-            <ProposalsDetail />
+            <ProposalsStatusDetail />
           </div>
         </OverviewItem>
         <OverviewItem title="Members" icon="/assets/image/members-colorful.svg">
