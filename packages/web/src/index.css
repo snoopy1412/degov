@@ -38,7 +38,7 @@
     --succeeded: var(--success);
     --executed: #8700E2;
     --defeated: var(--danger);
-    --cancelled: hsl(var(----muted-foreground));
+    --cancelled: #979797;
 
     --radius: 0.5rem;
   }

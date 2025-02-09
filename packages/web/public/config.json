@@ -1,8 +1,8 @@
 {
-    "logo": "https://www.open-governor.com/assets/img/logo.png",
+    "logo": "/example/logo.svg",
     "walletConnectProjectId": "2719448e2ce94fdd269a3c8587123bcc",
     "daoName": "RingDAO",
-    "description": "Darwinia OpenGovernor is a decentralized autonomous organization (DAO) that governs the Darwinia Network.",
+    "description": "Governed by all the RING token holders, this decentralized entity directs the Darwinia chain, Msgport protocol, and XAPI's oracle service",
     "links": {
       "website": "https://www.open-governor.com",
       "twitter": "https://twitter.com/DarwiniaNetwork",
@@ -23,9 +23,9 @@
       }
     },
     "tokenInfo": {
-      "governorContract": "0x123456789xxx",
-      "tokenContract": "0xxxxxxxx",
-      "timeLockContract": "0xxxxxxxx",
+      "governorContract": "0x0E55c72781aCD923C4e3e7Ad9bB8363de15ef204",
+      "tokenContract": "0x0E55c72781aCD923C4e3e7Ad9bB8363de15ef204",
+      "timeLockContract": "0x0E55c72781aCD923C4e3e7Ad9bB8363de15ef204",
       "name": "RING",
       "symbol": "RING",
       "decimals": 18

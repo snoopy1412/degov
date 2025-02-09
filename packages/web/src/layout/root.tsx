@@ -30,7 +30,7 @@ const Root = () => {
         </aside>
         <main className="flex flex-1 flex-col">
           <Header />
-          <div className="mx-auto flex h-full w-full items-center justify-center px-[var(--container-padding-x)]">
+          <div className="mx-auto h-full w-full">
             <Outlet />
           </div>
         </main>

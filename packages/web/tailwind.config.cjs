@@ -46,6 +46,7 @@ module.exports = {
         success: 'var(--success)',
         warning: 'var(--warning)',
         danger: 'var(--danger)',
+        pending: 'var(--pending)',
         active: 'var(--active)',
         succeeded: 'var(--succeeded)',
         executed: 'var(--executed)',

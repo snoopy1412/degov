@@ -11,7 +11,6 @@ import { useDisconnectWallet } from '@/hooks/useDisconnectWallet';
 import { useCallback } from 'react';
 import { Button } from '../ui/button';
 import { ChevronDown, Power } from 'lucide-react';
-import { DropdownMenuArrow } from '@radix-ui/react-dropdown-menu';
 
 interface ConnectedProps {
   address: `0x${string}`;
@@ -36,7 +35,7 @@ export const Connected = ({ address }: ConnectedProps) => {
           )}
         </AddressResolver>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="rounded-[26px] border-none bg-card p-[20px]" align="end">
+      <DropdownMenuContent className="rounded-[26px] border-none p-[20px] shadow-2xl" align="end">
         <AddressResolver address={address} showShortAddress>
           {(value) => (
             <div className="flex items-center gap-[10px]">
@@ -57,7 +56,6 @@ export const Connected = ({ address }: ConnectedProps) => {
             <span className="text-[14px]">Disconnect</span>
           </Button>
         </div>
-        <DropdownMenuArrow className="fill-card" />
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -20,6 +20,8 @@ export const Aside = () => {
               href={social.url}
               key={social.name}
               title={social.name}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex h-[24px] w-[24px] items-center justify-center rounded-full bg-card transition-opacity duration-300 hover:opacity-80"
             >
               <img src={social.assetPath} className="object-contain" />
