@@ -16,6 +16,7 @@ import { Route as ProposalsImport } from './routes/proposals'
 import { Route as MembersImport } from './routes/members'
 import { Route as IndexImport } from './routes/index'
 import { Route as DelegateAddressImport } from './routes/delegate/$address'
+import { Route as DelegateEditAddressImport } from './routes/delegate/edit.$address'
 
 // Create/Update Routes
 
@@ -46,6 +47,12 @@ const IndexRoute = IndexImport.update({
 const DelegateAddressRoute = DelegateAddressImport.update({
   id: '/delegate/$address',
   path: '/delegate/$address',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DelegateEditAddressRoute = DelegateEditAddressImport.update({
+  id: '/delegate/edit/$address',
+  path: '/delegate/edit/$address',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -88,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DelegateAddressImport
       parentRoute: typeof rootRoute
     }
+    '/delegate/edit/$address': {
+      id: '/delegate/edit/$address'
+      path: '/delegate/edit/$address'
+      fullPath: '/delegate/edit/$address'
+      preLoaderRoute: typeof DelegateEditAddressImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -99,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/proposals': typeof ProposalsRoute
   '/treasury': typeof TreasuryRoute
   '/delegate/$address': typeof DelegateAddressRoute
+  '/delegate/edit/$address': typeof DelegateEditAddressRoute
 }
 
 export interface FileRoutesByTo {
@@ -107,6 +122,7 @@ export interface FileRoutesByTo {
   '/proposals': typeof ProposalsRoute
   '/treasury': typeof TreasuryRoute
   '/delegate/$address': typeof DelegateAddressRoute
+  '/delegate/edit/$address': typeof DelegateEditAddressRoute
 }
 
 export interface FileRoutesById {
@@ -116,6 +132,7 @@ export interface FileRoutesById {
   '/proposals': typeof ProposalsRoute
   '/treasury': typeof TreasuryRoute
   '/delegate/$address': typeof DelegateAddressRoute
+  '/delegate/edit/$address': typeof DelegateEditAddressRoute
 }
 
 export interface FileRouteTypes {
@@ -126,8 +143,15 @@ export interface FileRouteTypes {
     | '/proposals'
     | '/treasury'
     | '/delegate/$address'
+    | '/delegate/edit/$address'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/members' | '/proposals' | '/treasury' | '/delegate/$address'
+  to:
+    | '/'
+    | '/members'
+    | '/proposals'
+    | '/treasury'
+    | '/delegate/$address'
+    | '/delegate/edit/$address'
   id:
     | '__root__'
     | '/'
@@ -135,6 +159,7 @@ export interface FileRouteTypes {
     | '/proposals'
     | '/treasury'
     | '/delegate/$address'
+    | '/delegate/edit/$address'
   fileRoutesById: FileRoutesById
 }
 
@@ -144,6 +169,7 @@ export interface RootRouteChildren {
   ProposalsRoute: typeof ProposalsRoute
   TreasuryRoute: typeof TreasuryRoute
   DelegateAddressRoute: typeof DelegateAddressRoute
+  DelegateEditAddressRoute: typeof DelegateEditAddressRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -152,6 +178,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProposalsRoute: ProposalsRoute,
   TreasuryRoute: TreasuryRoute,
   DelegateAddressRoute: DelegateAddressRoute,
+  DelegateEditAddressRoute: DelegateEditAddressRoute,
 }
 
 export const routeTree = rootRoute
@@ -168,7 +195,8 @@ export const routeTree = rootRoute
         "/members",
         "/proposals",
         "/treasury",
-        "/delegate/$address"
+        "/delegate/$address",
+        "/delegate/edit/$address"
       ]
     },
     "/": {
@@ -185,6 +213,9 @@ export const routeTree = rootRoute
     },
     "/delegate/$address": {
       "filePath": "delegate/$address.tsx"
+    },
+    "/delegate/edit/$address": {
+      "filePath": "delegate/edit.$address.tsx"
     }
   }
 }

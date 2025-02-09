@@ -21,6 +21,7 @@ export const Delegate = () => {
   if (!isAddress(address)) {
     return <NotFound />;
   }
+
   const socials = [
     {
       key: 'email',
@@ -116,7 +117,10 @@ export const Delegate = () => {
 
           <div className="flex items-center gap-[20px]">
             {socials?.map((social) => (
-              <span className="flex size-[24px] cursor-pointer items-center justify-center rounded-full bg-white transition-opacity hover:opacity-80">
+              <span
+                className="flex size-[24px] cursor-pointer items-center justify-center rounded-full bg-white transition-opacity hover:opacity-80"
+                key={social.key}
+              >
                 <img src={`/assets/image/user_social/${social.key}.svg`} alt={social.key} />
               </span>
             ))}
