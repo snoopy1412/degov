@@ -7,5 +7,5 @@ import type { Address } from 'viem';
  */
 export function formatShortAddress(address?: Address) {
   if (!address) return '';
-  return address?.length > 16 ? `${address?.slice(0, 6)}...${address?.slice(-4)}` : address;
+  return address?.length > 16 ? `${address?.slice(0, 7)}...${address?.slice(-6)}` : address;
 }

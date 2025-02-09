@@ -1,5 +1,6 @@
-import { Nav } from './nav';
 import { socialConfig } from '@/config/social';
+import { IndexerStatus } from '@/components/indexer-status';
+import { Nav } from './nav';
 
 export const Aside = () => {
   return (
@@ -11,17 +12,20 @@ export const Aside = () => {
         <Nav />
       </div>
 
-      <footer className="flex items-center justify-around gap-[10px]">
-        {socialConfig.map((social) => (
-          <a
-            href={social.url}
-            key={social.name}
-            title={social.name}
-            className="flex h-[24px] w-[24px] items-center justify-center rounded-full bg-card transition-opacity duration-300 hover:opacity-80"
-          >
-            <img src={social.assetPath} className="size-[24px]" />
-          </a>
-        ))}
+      <footer className="space-y-[16px]">
+        <IndexerStatus />
+        <div className="flex items-center justify-around gap-[10px]">
+          {socialConfig.map((social) => (
+            <a
+              href={social.url}
+              key={social.name}
+              title={social.name}
+              className="flex h-[24px] w-[24px] items-center justify-center rounded-full bg-card transition-opacity duration-300 hover:opacity-80"
+            >
+              <img src={social.assetPath} className="object-contain" />
+            </a>
+          ))}
+        </div>
       </footer>
     </div>
   );

@@ -10,7 +10,7 @@ import ClipboardIconButton from '../clipboard-icon-button';
 import { useDisconnectWallet } from '@/hooks/useDisconnectWallet';
 import { useCallback } from 'react';
 import { Button } from '../ui/button';
-import { Power } from 'lucide-react';
+import { ChevronDown, Power } from 'lucide-react';
 import { DropdownMenuArrow } from '@radix-ui/react-dropdown-menu';
 
 interface ConnectedProps {
@@ -28,14 +28,15 @@ export const Connected = ({ address }: ConnectedProps) => {
       <DropdownMenuTrigger>
         <AddressResolver address={address} showShortAddress>
           {(value) => (
-            <div className="flex items-center gap-[10px] rounded-[10px] border border-white px-4 py-2">
+            <div className="flex items-center gap-[10px] rounded-[10px] border border-border px-4 py-2">
               <AddressAvatar address={address} className="size-[24px] rounded-full" />
               <span className="text-[14px]">{value}</span>
+              <ChevronDown size={20} className="text-muted-foreground" />
             </div>
           )}
         </AddressResolver>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="rounded-[26px] p-[20px]" align="end">
+      <DropdownMenuContent className="rounded-[26px] border-none bg-card p-[20px]" align="end">
         <AddressResolver address={address} showShortAddress>
           {(value) => (
             <div className="flex items-center gap-[10px]">
@@ -45,11 +46,11 @@ export const Connected = ({ address }: ConnectedProps) => {
             </div>
           )}
         </AddressResolver>
-        <DropdownMenuSeparator className="my-[20px]" />
+        <DropdownMenuSeparator className="my-[20px] bg-border" />
         <div className="flex items-center justify-center">
           <Button
             onClick={handleDisconnect}
-            className="w-full gap-[10px] rounded-[100px] border-white"
+            className="w-full gap-[10px] rounded-[100px] border-border bg-card"
             variant="outline"
           >
             <Power size={20} className="text-white" strokeWidth={2} />

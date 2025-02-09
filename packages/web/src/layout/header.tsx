@@ -16,7 +16,7 @@ export const Header = () => {
 
       <div className="relative flex h-[36px] items-center justify-between">
         <div
-          className={`flex h-[36px] w-[338px] items-center gap-[13px] rounded-[20px] border px-[17px] transition-all ${
+          className={`flex h-[36px] w-[388px] items-center gap-[13px] rounded-[20px] border px-[17px] transition-all ${
             isFocused ? 'z-50 bg-card/80' : 'border-border bg-card'
           }`}
         >
