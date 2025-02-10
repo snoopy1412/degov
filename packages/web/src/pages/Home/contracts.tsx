@@ -13,7 +13,7 @@ export const Contracts = () => {
   const daoConfig = useConfig();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button variant="outline" className="rounded-full border-border bg-card" size="sm">
           Contracts
         </Button>

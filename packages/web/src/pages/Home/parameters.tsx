@@ -9,7 +9,7 @@ import {
 export const Parameters = () => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger asChild>
         <Button variant="outline" className="rounded-full border-border bg-card" size="sm">
           Parameters
         </Button>
