@@ -12,11 +12,12 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TreasuryImport } from './routes/treasury'
-import { Route as ProposalsImport } from './routes/proposals'
+import { Route as ProfileImport } from './routes/profile'
 import { Route as MembersImport } from './routes/members'
+import { Route as DelegateImport } from './routes/delegate'
 import { Route as IndexImport } from './routes/index'
-import { Route as DelegateAddressImport } from './routes/delegate/$address'
-import { Route as DelegateEditAddressImport } from './routes/delegate/edit.$address'
+import { Route as ProposalsIndexImport } from './routes/proposals/index'
+import { Route as ProposalsAddressImport } from './routes/proposals/$address'
 
 // Create/Update Routes
 
@@ -26,9 +27,9 @@ const TreasuryRoute = TreasuryImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ProposalsRoute = ProposalsImport.update({
-  id: '/proposals',
-  path: '/proposals',
+const ProfileRoute = ProfileImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -38,21 +39,27 @@ const MembersRoute = MembersImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const DelegateRoute = DelegateImport.update({
+  id: '/delegate',
+  path: '/delegate',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const DelegateAddressRoute = DelegateAddressImport.update({
-  id: '/delegate/$address',
-  path: '/delegate/$address',
+const ProposalsIndexRoute = ProposalsIndexImport.update({
+  id: '/proposals/',
+  path: '/proposals/',
   getParentRoute: () => rootRoute,
 } as any)
 
-const DelegateEditAddressRoute = DelegateEditAddressImport.update({
-  id: '/delegate/edit/$address',
-  path: '/delegate/edit/$address',
+const ProposalsAddressRoute = ProposalsAddressImport.update({
+  id: '/proposals/$address',
+  path: '/proposals/$address',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -67,6 +74,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/delegate': {
+      id: '/delegate'
+      path: '/delegate'
+      fullPath: '/delegate'
+      preLoaderRoute: typeof DelegateImport
+      parentRoute: typeof rootRoute
+    }
     '/members': {
       id: '/members'
       path: '/members'
@@ -74,11 +88,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MembersImport
       parentRoute: typeof rootRoute
     }
-    '/proposals': {
-      id: '/proposals'
-      path: '/proposals'
-      fullPath: '/proposals'
-      preLoaderRoute: typeof ProposalsImport
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileImport
       parentRoute: typeof rootRoute
     }
     '/treasury': {
@@ -88,18 +102,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TreasuryImport
       parentRoute: typeof rootRoute
     }
-    '/delegate/$address': {
-      id: '/delegate/$address'
-      path: '/delegate/$address'
-      fullPath: '/delegate/$address'
-      preLoaderRoute: typeof DelegateAddressImport
+    '/proposals/$address': {
+      id: '/proposals/$address'
+      path: '/proposals/$address'
+      fullPath: '/proposals/$address'
+      preLoaderRoute: typeof ProposalsAddressImport
       parentRoute: typeof rootRoute
     }
-    '/delegate/edit/$address': {
-      id: '/delegate/edit/$address'
-      path: '/delegate/edit/$address'
-      fullPath: '/delegate/edit/$address'
-      preLoaderRoute: typeof DelegateEditAddressImport
+    '/proposals/': {
+      id: '/proposals/'
+      path: '/proposals'
+      fullPath: '/proposals'
+      preLoaderRoute: typeof ProposalsIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -109,76 +123,84 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/delegate': typeof DelegateRoute
   '/members': typeof MembersRoute
-  '/proposals': typeof ProposalsRoute
+  '/profile': typeof ProfileRoute
   '/treasury': typeof TreasuryRoute
-  '/delegate/$address': typeof DelegateAddressRoute
-  '/delegate/edit/$address': typeof DelegateEditAddressRoute
+  '/proposals/$address': typeof ProposalsAddressRoute
+  '/proposals': typeof ProposalsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/delegate': typeof DelegateRoute
   '/members': typeof MembersRoute
-  '/proposals': typeof ProposalsRoute
+  '/profile': typeof ProfileRoute
   '/treasury': typeof TreasuryRoute
-  '/delegate/$address': typeof DelegateAddressRoute
-  '/delegate/edit/$address': typeof DelegateEditAddressRoute
+  '/proposals/$address': typeof ProposalsAddressRoute
+  '/proposals': typeof ProposalsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/delegate': typeof DelegateRoute
   '/members': typeof MembersRoute
-  '/proposals': typeof ProposalsRoute
+  '/profile': typeof ProfileRoute
   '/treasury': typeof TreasuryRoute
-  '/delegate/$address': typeof DelegateAddressRoute
-  '/delegate/edit/$address': typeof DelegateEditAddressRoute
+  '/proposals/$address': typeof ProposalsAddressRoute
+  '/proposals/': typeof ProposalsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/delegate'
     | '/members'
-    | '/proposals'
+    | '/profile'
     | '/treasury'
-    | '/delegate/$address'
-    | '/delegate/edit/$address'
+    | '/proposals/$address'
+    | '/proposals'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/delegate'
     | '/members'
-    | '/proposals'
+    | '/profile'
     | '/treasury'
-    | '/delegate/$address'
-    | '/delegate/edit/$address'
+    | '/proposals/$address'
+    | '/proposals'
   id:
     | '__root__'
     | '/'
+    | '/delegate'
     | '/members'
-    | '/proposals'
+    | '/profile'
     | '/treasury'
-    | '/delegate/$address'
-    | '/delegate/edit/$address'
+    | '/proposals/$address'
+    | '/proposals/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DelegateRoute: typeof DelegateRoute
   MembersRoute: typeof MembersRoute
-  ProposalsRoute: typeof ProposalsRoute
+  ProfileRoute: typeof ProfileRoute
   TreasuryRoute: typeof TreasuryRoute
-  DelegateAddressRoute: typeof DelegateAddressRoute
-  DelegateEditAddressRoute: typeof DelegateEditAddressRoute
+  ProposalsAddressRoute: typeof ProposalsAddressRoute
+  ProposalsIndexRoute: typeof ProposalsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DelegateRoute: DelegateRoute,
   MembersRoute: MembersRoute,
-  ProposalsRoute: ProposalsRoute,
+  ProfileRoute: ProfileRoute,
   TreasuryRoute: TreasuryRoute,
-  DelegateAddressRoute: DelegateAddressRoute,
-  DelegateEditAddressRoute: DelegateEditAddressRoute,
+  ProposalsAddressRoute: ProposalsAddressRoute,
+  ProposalsIndexRoute: ProposalsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -192,30 +214,34 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/delegate",
         "/members",
-        "/proposals",
+        "/profile",
         "/treasury",
-        "/delegate/$address",
-        "/delegate/edit/$address"
+        "/proposals/$address",
+        "/proposals/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/delegate": {
+      "filePath": "delegate.tsx"
+    },
     "/members": {
       "filePath": "members.tsx"
     },
-    "/proposals": {
-      "filePath": "proposals.tsx"
+    "/profile": {
+      "filePath": "profile.tsx"
     },
     "/treasury": {
       "filePath": "treasury.tsx"
     },
-    "/delegate/$address": {
-      "filePath": "delegate/$address.tsx"
+    "/proposals/$address": {
+      "filePath": "proposals/$address.tsx"
     },
-    "/delegate/edit/$address": {
-      "filePath": "delegate/edit.$address.tsx"
+    "/proposals/": {
+      "filePath": "proposals/index.tsx"
     }
   }
 }

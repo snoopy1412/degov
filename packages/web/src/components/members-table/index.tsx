@@ -59,10 +59,7 @@ export function MembersTable({ caption, onDelegate, data }: MembersTableProps) {
                 </span>
               </TableCell>
               <TableCell className="text-left">
-                <a
-                  href={`/delegate/${value.member}`}
-                  className="flex items-center gap-[10px] hover:underline"
-                >
+                <span className="flex items-center gap-[10px]">
                   <AddressAvatar address={value.member as `0x${string}`} size={30} />
                   <AddressResolver address={value.member as `0x${string}`} showShortAddress>
                     {(ensName) => (
@@ -71,7 +68,7 @@ export function MembersTable({ caption, onDelegate, data }: MembersTableProps) {
                       </span>
                     )}
                   </AddressResolver>
-                </a>
+                </span>
               </TableCell>
               <TableCell className="text-left">
                 <span className="line-clamp-1" title={value.delegateStatement}>

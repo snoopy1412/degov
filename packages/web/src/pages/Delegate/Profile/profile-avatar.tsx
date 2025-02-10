@@ -1,9 +1,11 @@
 import { AddressAvatar } from '@/components/address-avatar';
 import { Button } from '@/components/ui/button';
-import { useAccount } from 'wagmi';
+import type { Address } from 'viem';
 
-export function AvatarEdit() {
-  const { address } = useAccount();
+interface ProfileAvatarProps {
+  address?: Address;
+}
+export function ProfileAvatar({ address }: ProfileAvatarProps) {
   return (
     <div className="flex h-[207px] flex-col items-center justify-center gap-[20px] rounded-[14px] bg-card p-[20px]">
       {!!address && (

@@ -1,12 +1,11 @@
+import { useAccount } from 'wagmi';
 import { AddressAvatar } from '@/components/address-avatar';
 import { AddressResolver } from '@/components/address-resolver';
 import ClipboardIconButton from '@/components/clipboard-icon-button';
 import NotFound from '@/components/not-found';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Route } from '@/routes/delegate/$address';
 import { formatShortAddress } from '@/utils/address';
-import { isAddress } from 'viem';
 import { ReceivedDelegations } from './received-delegations';
 import {
   DropdownMenu,
@@ -20,7 +19,7 @@ import { DelegateSelector } from '@/components/delegate-selector';
 import { useNavigate } from '@tanstack/react-router';
 
 export const Delegate = () => {
-  const { address } = Route.useParams();
+  const { address } = useAccount();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [delegateOpen, setDelegateOpen] = useState(false);
@@ -41,8 +40,13 @@ export const Delegate = () => {
     },
     [navigate]
   );
+  const handleEditProfile = useCallback(() => {
+    navigate({
+      to: '/profile'
+    });
+  }, [navigate]);
 
-  if (!isAddress(address)) {
+  if (!address) {
     return <NotFound />;
   }
 
@@ -123,7 +127,11 @@ export const Delegate = () => {
               </div>
             </div>
             <div className="flex items-center gap-[20px]">
-              <Button className="rounded-full border-border bg-card" variant="outline">
+              <Button
+                className="rounded-full border-border bg-card"
+                variant="outline"
+                onClick={handleEditProfile}
+              >
                 Edit Profile
               </Button>
               <Button className="rounded-full" onClick={handleDelegate}>

@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import NotFound from '@/components/not-found'
 import Error from '@/components/error'
-import { Edit } from '@/pages/Delegate/Edit'
+import { Profile } from '@/pages/Delegate/Profile'
 
-export const Route = createFileRoute('/delegate/edit/$address')({
-  component: () => <Edit />,
+export const Route = createFileRoute('/profile')({
+  component: () => <Profile />,
   notFoundComponent: () => <NotFound />,
   errorComponent: () => <Error />,
 })

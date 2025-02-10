@@ -65,7 +65,7 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>;
 
-export function InputForm() {
+export function ProfileForm() {
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
