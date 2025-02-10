@@ -35,7 +35,10 @@ export const Connected = ({ address }: ConnectedProps) => {
           )}
         </AddressResolver>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="rounded-[26px] border-none p-[20px] shadow-2xl" align="end">
+      <DropdownMenuContent
+        className="rounded-[26px] border-border/20 bg-card p-[20px] shadow-2xl"
+        align="end"
+      >
         <AddressResolver address={address} showShortAddress>
           {(value) => (
             <div className="flex items-center gap-[10px]">
