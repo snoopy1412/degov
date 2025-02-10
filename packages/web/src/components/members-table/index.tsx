@@ -13,34 +13,20 @@ import { Button } from '../ui/button';
 import { AddressAvatar } from '../address-avatar';
 import { AddressResolver } from '../address-resolver';
 
-const data = [
-  {
-    rank: '1',
-    member: '0x3d6d656c1bf92f7028Ce4C352563E1C363C58ED5',
-    delegateStatement:
-      'Understanding color theory: the color wheel and finding complementary colors',
-    votingPower: '1.11B'
-  },
-  {
-    rank: '2',
-    member: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
-    delegateStatement:
-      'Yo Reddit! What’s a small thing that anyone can do at nearly anytime to improve their mood and make Yo Reddit! What’s a small thing that anyone can do at nearly anytime to improve their mood and make Yo Reddit! What’s a small thing that anyone can do at nearly anytime to improve their mood and make ',
-    votingPower: '1.11B'
-  },
-  {
-    rank: '3',
-    member: '0x3d6d656c1bf92f7028Ce4C352563E1C363C58ED5',
-    delegateStatement:
-      'Understanding color theory: the color wheel and finding complementary colors',
-    votingPower: '1.11B'
-  }
-];
+export type Member = {
+  rank: string;
+  member: `0x${string}`;
+  delegateStatement: string;
+  votingPower: string;
+};
 
 interface MembersTableProps {
   caption?: string;
+  data?: Member[];
+
+  onDelegate?: (value: Member) => void;
 }
-export function MembersTable({ caption }: MembersTableProps) {
+export function MembersTable({ caption, onDelegate, data }: MembersTableProps) {
   return (
     <div className="rounded-[14px] bg-card p-[20px]">
       <Table>
@@ -65,7 +51,7 @@ export function MembersTable({ caption }: MembersTableProps) {
         </TableHeader>
 
         <TableBody>
-          {data.map((value) => (
+          {data?.map((value) => (
             <TableRow key={value.rank}>
               <TableCell className="text-left">
                 <span className="line-clamp-1" title={value.rank}>
@@ -96,6 +82,9 @@ export function MembersTable({ caption }: MembersTableProps) {
               <TableCell>
                 <Button
                   variant="outline"
+                  onClick={() => {
+                    onDelegate?.(value);
+                  }}
                   className="h-[30px] rounded-[100px] border border-border bg-card p-[10px]"
                 >
                   Delegate

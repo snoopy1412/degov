@@ -14,9 +14,33 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useCallback, useState } from 'react';
+import { DelegateAction } from '@/components/delegate-action';
+import { DelegateSelector } from '@/components/delegate-selector';
+import { useNavigate } from '@tanstack/react-router';
 
 export const Delegate = () => {
   const { address } = Route.useParams();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [delegateOpen, setDelegateOpen] = useState(false);
+  const handleDelegate = useCallback(() => {
+    setOpen(true);
+  }, []);
+
+  const handleSelect = useCallback(
+    (value: 'myself' | 'else') => {
+      setOpen(false);
+      if (value === 'myself') {
+        setDelegateOpen(true);
+      } else {
+        navigate({
+          to: '/members'
+        });
+      }
+    },
+    [navigate]
+  );
 
   if (!isAddress(address)) {
     return <NotFound />;
@@ -102,7 +126,9 @@ export const Delegate = () => {
               <Button className="rounded-full border-border bg-card" variant="outline">
                 Edit Profile
               </Button>
-              <Button className="rounded-full">Delegate</Button>
+              <Button className="rounded-full" onClick={handleDelegate}>
+                Delegate
+              </Button>
             </div>
           </div>
           <Separator className="bg-border/40" />
@@ -140,6 +166,8 @@ export const Delegate = () => {
       </div>
 
       <ReceivedDelegations />
+      <DelegateAction address={address} open={delegateOpen} onOpenChange={setDelegateOpen} />
+      <DelegateSelector open={open} onOpenChange={setOpen} onSelect={handleSelect} />
     </div>
   );
 };
