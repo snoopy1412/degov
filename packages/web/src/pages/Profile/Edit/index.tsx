@@ -3,7 +3,7 @@ import { ProfileForm } from './profile-form';
 import { ProfileAvatar } from './profile-avatar';
 import NotFound from '@/components/not-found';
 
-export function Profile() {
+export function Edit() {
   const { address } = useAccount();
 
   if (!address) {

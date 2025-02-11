@@ -16,8 +16,8 @@ export const routes = [
     pathname: '/members'
   },
   {
-    key: 'delegate',
-    pathname: '/delegate'
+    key: 'profile',
+    pathname: '/profile'
   },
   {
     key: 'treasury',

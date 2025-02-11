@@ -10,7 +10,10 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Result } from './result';
-
+import { CurrentVotes } from './current-votes';
+import { ActionsTable } from './actions-table';
+import { Proposal } from './proposal';
+import Status from './status';
 export const Detail = () => {
   return (
     <div className="flex flex-col gap-[20px] p-[30px]">
@@ -77,7 +80,20 @@ export const Detail = () => {
         </div>
       </div>
 
-      <Result />
+      <div className="grid grid-cols-[1fr_360px] gap-[20px]">
+        {/* left */}
+        <div className="space-y-[20px]">
+          <Result />
+          <ActionsTable />
+          <Proposal />
+        </div>
+
+        {/* right */}
+        <div className="space-y-[20px]">
+          <CurrentVotes />
+          <Status />
+        </div>
+      </div>
     </div>
   );
 };

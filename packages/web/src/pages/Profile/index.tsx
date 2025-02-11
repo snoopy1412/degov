@@ -17,12 +17,14 @@ import { useCallback, useState } from 'react';
 import { DelegateAction } from '@/components/delegate-action';
 import { DelegateSelector } from '@/components/delegate-selector';
 import { useNavigate } from '@tanstack/react-router';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
-export const Delegate = () => {
+export const Profile = () => {
   const { address } = useAccount();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [delegateOpen, setDelegateOpen] = useState(false);
+  const { openConnectModal } = useConnectModal();
   const handleDelegate = useCallback(() => {
     setOpen(true);
   }, []);
@@ -42,12 +44,20 @@ export const Delegate = () => {
   );
   const handleEditProfile = useCallback(() => {
     navigate({
-      to: '/profile'
+      to: '/profile/edit'
     });
   }, [navigate]);
 
   if (!address) {
-    return <NotFound />;
+    return (
+      <div className="flex h-full w-full flex-col items-center justify-center gap-[20px]">
+        <img src="/assets/image/avatar.svg" alt="avatar" className="size-[70px]" />
+        <p className="text-[14px]">Explore more features by connecting your wallet.</p>
+        <Button className="rounded-full" onClick={openConnectModal}>
+          Connect Wallet
+        </Button>
+      </div>
+    );
   }
 
   const socials = [

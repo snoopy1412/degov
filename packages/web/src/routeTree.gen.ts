@@ -12,12 +12,12 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as TreasuryImport } from './routes/treasury'
-import { Route as ProfileImport } from './routes/profile'
 import { Route as MembersImport } from './routes/members'
-import { Route as DelegateImport } from './routes/delegate'
 import { Route as IndexImport } from './routes/index'
 import { Route as ProposalsIndexImport } from './routes/proposals/index'
+import { Route as ProfileIndexImport } from './routes/profile/index'
 import { Route as ProposalsAddressImport } from './routes/proposals/$address'
+import { Route as ProfileEditImport } from './routes/profile/edit'
 
 // Create/Update Routes
 
@@ -27,21 +27,9 @@ const TreasuryRoute = TreasuryImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ProfileRoute = ProfileImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const MembersRoute = MembersImport.update({
   id: '/members',
   path: '/members',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const DelegateRoute = DelegateImport.update({
-  id: '/delegate',
-  path: '/delegate',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -57,9 +45,21 @@ const ProposalsIndexRoute = ProposalsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const ProfileIndexRoute = ProfileIndexImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ProposalsAddressRoute = ProposalsAddressImport.update({
   id: '/proposals/$address',
   path: '/proposals/$address',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProfileEditRoute = ProfileEditImport.update({
+  id: '/profile/edit',
+  path: '/profile/edit',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -74,25 +74,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/delegate': {
-      id: '/delegate'
-      path: '/delegate'
-      fullPath: '/delegate'
-      preLoaderRoute: typeof DelegateImport
-      parentRoute: typeof rootRoute
-    }
     '/members': {
       id: '/members'
       path: '/members'
       fullPath: '/members'
       preLoaderRoute: typeof MembersImport
-      parentRoute: typeof rootRoute
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileImport
       parentRoute: typeof rootRoute
     }
     '/treasury': {
@@ -102,11 +88,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TreasuryImport
       parentRoute: typeof rootRoute
     }
+    '/profile/edit': {
+      id: '/profile/edit'
+      path: '/profile/edit'
+      fullPath: '/profile/edit'
+      preLoaderRoute: typeof ProfileEditImport
+      parentRoute: typeof rootRoute
+    }
     '/proposals/$address': {
       id: '/proposals/$address'
       path: '/proposals/$address'
       fullPath: '/proposals/$address'
       preLoaderRoute: typeof ProposalsAddressImport
+      parentRoute: typeof rootRoute
+    }
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileIndexImport
       parentRoute: typeof rootRoute
     }
     '/proposals/': {
@@ -123,32 +123,32 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/delegate': typeof DelegateRoute
   '/members': typeof MembersRoute
-  '/profile': typeof ProfileRoute
   '/treasury': typeof TreasuryRoute
+  '/profile/edit': typeof ProfileEditRoute
   '/proposals/$address': typeof ProposalsAddressRoute
+  '/profile': typeof ProfileIndexRoute
   '/proposals': typeof ProposalsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/delegate': typeof DelegateRoute
   '/members': typeof MembersRoute
-  '/profile': typeof ProfileRoute
   '/treasury': typeof TreasuryRoute
+  '/profile/edit': typeof ProfileEditRoute
   '/proposals/$address': typeof ProposalsAddressRoute
+  '/profile': typeof ProfileIndexRoute
   '/proposals': typeof ProposalsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/delegate': typeof DelegateRoute
   '/members': typeof MembersRoute
-  '/profile': typeof ProfileRoute
   '/treasury': typeof TreasuryRoute
+  '/profile/edit': typeof ProfileEditRoute
   '/proposals/$address': typeof ProposalsAddressRoute
+  '/profile/': typeof ProfileIndexRoute
   '/proposals/': typeof ProposalsIndexRoute
 }
 
@@ -156,50 +156,50 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/delegate'
     | '/members'
-    | '/profile'
     | '/treasury'
+    | '/profile/edit'
     | '/proposals/$address'
+    | '/profile'
     | '/proposals'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/delegate'
     | '/members'
-    | '/profile'
     | '/treasury'
+    | '/profile/edit'
     | '/proposals/$address'
+    | '/profile'
     | '/proposals'
   id:
     | '__root__'
     | '/'
-    | '/delegate'
     | '/members'
-    | '/profile'
     | '/treasury'
+    | '/profile/edit'
     | '/proposals/$address'
+    | '/profile/'
     | '/proposals/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DelegateRoute: typeof DelegateRoute
   MembersRoute: typeof MembersRoute
-  ProfileRoute: typeof ProfileRoute
   TreasuryRoute: typeof TreasuryRoute
+  ProfileEditRoute: typeof ProfileEditRoute
   ProposalsAddressRoute: typeof ProposalsAddressRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
   ProposalsIndexRoute: typeof ProposalsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DelegateRoute: DelegateRoute,
   MembersRoute: MembersRoute,
-  ProfileRoute: ProfileRoute,
   TreasuryRoute: TreasuryRoute,
+  ProfileEditRoute: ProfileEditRoute,
   ProposalsAddressRoute: ProposalsAddressRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
   ProposalsIndexRoute: ProposalsIndexRoute,
 }
 
@@ -214,31 +214,31 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/delegate",
         "/members",
-        "/profile",
         "/treasury",
+        "/profile/edit",
         "/proposals/$address",
+        "/profile/",
         "/proposals/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/delegate": {
-      "filePath": "delegate.tsx"
-    },
     "/members": {
       "filePath": "members.tsx"
-    },
-    "/profile": {
-      "filePath": "profile.tsx"
     },
     "/treasury": {
       "filePath": "treasury.tsx"
     },
+    "/profile/edit": {
+      "filePath": "profile/edit.tsx"
+    },
     "/proposals/$address": {
       "filePath": "proposals/$address.tsx"
+    },
+    "/profile/": {
+      "filePath": "profile/index.tsx"
     },
     "/proposals/": {
       "filePath": "proposals/index.tsx"

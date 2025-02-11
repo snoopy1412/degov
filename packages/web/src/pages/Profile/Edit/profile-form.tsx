@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { useEffect } from 'react';
-
+import { useNavigate } from '@tanstack/react-router';
 const FormSchema = z.object({
   displayName: z
     .string()
@@ -66,6 +66,7 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 export function ProfileForm() {
+  const navigate = useNavigate();
   const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -248,6 +249,9 @@ export function ProfileForm() {
               className="w-[155px] rounded-[100px] border-border bg-card"
               onClick={() => {
                 form.reset();
+                navigate({
+                  to: '/profile'
+                });
               }}
             >
               Cancel
