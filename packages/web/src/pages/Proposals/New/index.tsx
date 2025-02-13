@@ -11,6 +11,7 @@ import { TransferContentType, TransferPanel } from './transfer-panel';
 import { CustomContentType, CustomPanel } from './custom-panel';
 import type { ProposalActionType } from '@/config/proposals';
 import type { Address } from 'viem';
+import { WithConnect } from '@/components/with-connect';
 
 interface Action {
   id: string;
@@ -150,67 +151,69 @@ export const NewProposal = () => {
   }, [setProposalContent]);
 
   return (
-    <div className="flex flex-col gap-[20px] p-[30px]">
-      <header className="flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">New Proposal</h2>
-        <Button className="gap-[5px] rounded-[100px]">
-          <img src="/assets/image/proposal/plus.svg" alt="plus" />
-          <span>Publish</span>
-        </Button>
-      </header>
-
-      <div className="flex gap-[30px]">
-        <aside className="flex w-[300px] flex-col gap-[10px] rounded-[14px]">
-          {actions.map((action) => (
-            <NewProposalAction
-              key={action.id}
-              type={action.type}
-              onSwitch={() => handleSwitchAction(action.id)}
-              active={action.id === actionUuid}
-            />
-          ))}
-
-          <Button className="gap-[5px] rounded-[100px]" onClick={handleAddAction}>
+    <WithConnect>
+      <div className="flex flex-col gap-[20px] p-[30px]">
+        <header className="flex items-center justify-between">
+          <h2 className="text-2xl font-semibold">New Proposal</h2>
+          <Button className="gap-[5px] rounded-[100px]">
             <img src="/assets/image/proposal/plus.svg" alt="plus" />
-            <span>Add Action</span>
+            <span>Publish</span>
           </Button>
-        </aside>
-        <main className="flex-1 rounded-[14px] bg-card p-[20px]">
-          {currentAction?.type === 'proposal' && (
-            <ProposalPanel content={proposalContent} onChange={handleProposalContentChange} />
-          )}
+        </header>
 
-          {currentAction?.type === 'add' && (
-            <ReplacePanel
-              index={actions.findIndex((action) => action.id === actionUuid)}
-              onReplace={handleReplaceAction}
-              onRemove={handleRemoveAction}
-            />
-          )}
-          {currentAction?.type === 'transfer' && (
-            <TransferPanel
-              index={actions.findIndex((action) => action.id === actionUuid)}
-              content={currentAction?.content as TransferContentType}
-              onChange={handleTransferContentChange}
-              onReplace={handleReplaceAction}
-              onRemove={handleRemoveAction}
-            />
-          )}
-          {currentAction?.type === 'custom' && (
-            <CustomPanel
-              index={actions.findIndex((action) => action.id === actionUuid)}
-              content={currentAction?.content as CustomContentType}
-              onChange={handleCustomContentChange}
-              onReplace={handleReplaceAction}
-              onRemove={handleRemoveAction}
-            />
-          )}
+        <div className="flex gap-[30px]">
+          <aside className="flex w-[300px] flex-col gap-[10px] rounded-[14px]">
+            {actions.map((action) => (
+              <NewProposalAction
+                key={action.id}
+                type={action.type}
+                onSwitch={() => handleSwitchAction(action.id)}
+                active={action.id === actionUuid}
+              />
+            ))}
 
-          {currentAction?.type === 'preview' && (
-            <PreviewPanel title={proposalContent.title} html={html?.value || ''} />
-          )}
-        </main>
+            <Button className="gap-[5px] rounded-[100px]" onClick={handleAddAction}>
+              <img src="/assets/image/proposal/plus.svg" alt="plus" />
+              <span>Add Action</span>
+            </Button>
+          </aside>
+          <main className="flex-1 rounded-[14px] bg-card p-[20px]">
+            {currentAction?.type === 'proposal' && (
+              <ProposalPanel content={proposalContent} onChange={handleProposalContentChange} />
+            )}
+
+            {currentAction?.type === 'add' && (
+              <ReplacePanel
+                index={actions.findIndex((action) => action.id === actionUuid)}
+                onReplace={handleReplaceAction}
+                onRemove={handleRemoveAction}
+              />
+            )}
+            {currentAction?.type === 'transfer' && (
+              <TransferPanel
+                index={actions.findIndex((action) => action.id === actionUuid)}
+                content={currentAction?.content as TransferContentType}
+                onChange={handleTransferContentChange}
+                onReplace={handleReplaceAction}
+                onRemove={handleRemoveAction}
+              />
+            )}
+            {currentAction?.type === 'custom' && (
+              <CustomPanel
+                index={actions.findIndex((action) => action.id === actionUuid)}
+                content={currentAction?.content as CustomContentType}
+                onChange={handleCustomContentChange}
+                onReplace={handleReplaceAction}
+                onRemove={handleRemoveAction}
+              />
+            )}
+
+            {currentAction?.type === 'preview' && (
+              <PreviewPanel title={proposalContent.title} html={html?.value || ''} />
+            )}
+          </main>
+        </div>
       </div>
-    </div>
+    </WithConnect>
   );
 };
