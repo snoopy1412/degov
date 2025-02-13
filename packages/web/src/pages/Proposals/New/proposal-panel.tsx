@@ -40,9 +40,8 @@ export const ProposalPanel = ({ content, onChange }: ProposalPanelProps) => {
           Description
         </label>
         <Editor
-          markdown={content.markdown}
+          markdown={content.markdown || '\u200B'}
           onChange={(markdown) => handleChange({ key: 'markdown', value: markdown })}
-          placeholder="Enter the description of your proposal"
         />
       </div>
       <div className="flex flex-col gap-[10px]">

@@ -24,7 +24,7 @@ const DEFAULT_ACTIONS = [
     type: 'proposal' as ProposalActionType,
     content: {
       title: '',
-      markdown: '',
+      markdown: '\u200B',
       snapshot: ''
     } as ProposalContentType
   },
@@ -36,10 +36,12 @@ const DEFAULT_ACTIONS = [
 
 export const NewProposal = () => {
   const [actions, setActions] = useState<Action[]>(DEFAULT_ACTIONS);
+  console.log('actions', actions);
+
   const [actionUuid, setActionUuid] = useState<string>(DEFAULT_ACTIONS[0].id);
   const [proposalContent, setProposalContent] = useSetState<ProposalContentType>({
     title: '',
-    markdown: '',
+    markdown: '\u200B',
     snapshot: ''
   });
 
@@ -62,6 +64,14 @@ export const NewProposal = () => {
       setActionUuid(newActions[newActions.length - 2].id);
     }
   }, [actions, setActions]);
+
+  const handleSwitchAction = useCallback(
+    (id: string) => {
+      setActionUuid(id);
+      setActions(actions.filter((action) => action.type !== 'add'));
+    },
+    [setActionUuid, actions]
+  );
 
   const handleRemoveAction = useCallback(
     (index: number) => {
@@ -155,7 +165,7 @@ export const NewProposal = () => {
             <NewProposalAction
               key={action.id}
               type={action.type}
-              onSwitch={() => setActionUuid(action.id)}
+              onSwitch={() => handleSwitchAction(action.id)}
               active={action.id === actionUuid}
             />
           ))}

@@ -41,7 +41,7 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
           <span>Remove action</span>
         </Button>
       </header>
-      <div className="mx-auto flex w-full max-w-[850px] flex-col gap-[20px]">
+      <div className="mx-auto flex w-full flex-col gap-[20px]">
         <div className="flex flex-col gap-[10px]">
           <label className="text-[14px] text-foreground" htmlFor="recipient">
             Transfer to
