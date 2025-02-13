@@ -1,4 +1,4 @@
-export type ProposalActionType = 'proposal' | 'transfer' | 'custom' | 'preview';
+export type ProposalActionType = 'proposal' | 'transfer' | 'custom' | 'preview' | 'add';
 
 export interface ProposalAction {
   type: ProposalActionType;

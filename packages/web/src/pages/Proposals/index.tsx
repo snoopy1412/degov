@@ -9,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select';
-
+import { useNavigate } from '@tanstack/react-router';
 export const Proposals = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col gap-[30px] p-[30px]">
       <div className="flex items-center justify-between gap-[20px]">
@@ -41,7 +42,10 @@ export const Proposals = () => {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button className="flex items-center gap-[5px] rounded-[100px]">
+          <Button
+            className="flex items-center gap-[5px] rounded-[100px]"
+            onClick={() => navigate({ to: '/proposals/new' })}
+          >
             <img src="/assets/image/plus.svg" alt="plus" className="size-[20px]" />
             New Proposal
           </Button>

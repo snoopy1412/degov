@@ -10,3 +10,27 @@ export const VOTE_CONFIG = {
     abstain: '/assets/image/proposal/vote-abstain.svg'
   }
 };
+
+export enum VoteType {
+  For = 'for',
+  Against = 'against',
+  Abstain = 'abstain'
+}
+
+export const VoteConfig = {
+  [VoteType.For]: {
+    bgColor: 'bg-success',
+    textColor: 'text-success',
+    icon: '/assets/image/proposal/vote-for.svg'
+  },
+  [VoteType.Against]: {
+    bgColor: 'bg-danger',
+    textColor: 'text-danger',
+    icon: '/assets/image/proposal/vote-against.svg'
+  },
+  [VoteType.Abstain]: {
+    bgColor: 'bg-muted-foreground',
+    textColor: 'text-muted-foreground',
+    icon: '/assets/image/proposal/vote-abstain.svg'
+  }
+};

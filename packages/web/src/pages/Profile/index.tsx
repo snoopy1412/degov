@@ -2,7 +2,6 @@ import { useAccount } from 'wagmi';
 import { AddressAvatar } from '@/components/address-avatar';
 import { AddressResolver } from '@/components/address-resolver';
 import ClipboardIconButton from '@/components/clipboard-icon-button';
-import NotFound from '@/components/not-found';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { formatShortAddress } from '@/utils/address';

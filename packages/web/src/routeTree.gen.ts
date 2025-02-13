@@ -16,6 +16,7 @@ import { Route as MembersImport } from './routes/members'
 import { Route as IndexImport } from './routes/index'
 import { Route as ProposalsIndexImport } from './routes/proposals/index'
 import { Route as ProfileIndexImport } from './routes/profile/index'
+import { Route as ProposalsNewImport } from './routes/proposals/new'
 import { Route as ProposalsAddressImport } from './routes/proposals/$address'
 import { Route as ProfileEditImport } from './routes/profile/edit'
 
@@ -48,6 +49,12 @@ const ProposalsIndexRoute = ProposalsIndexImport.update({
 const ProfileIndexRoute = ProfileIndexImport.update({
   id: '/profile/',
   path: '/profile/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProposalsNewRoute = ProposalsNewImport.update({
+  id: '/proposals/new',
+  path: '/proposals/new',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -102,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProposalsAddressImport
       parentRoute: typeof rootRoute
     }
+    '/proposals/new': {
+      id: '/proposals/new'
+      path: '/proposals/new'
+      fullPath: '/proposals/new'
+      preLoaderRoute: typeof ProposalsNewImport
+      parentRoute: typeof rootRoute
+    }
     '/profile/': {
       id: '/profile/'
       path: '/profile'
@@ -127,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/treasury': typeof TreasuryRoute
   '/profile/edit': typeof ProfileEditRoute
   '/proposals/$address': typeof ProposalsAddressRoute
+  '/proposals/new': typeof ProposalsNewRoute
   '/profile': typeof ProfileIndexRoute
   '/proposals': typeof ProposalsIndexRoute
 }
@@ -137,6 +152,7 @@ export interface FileRoutesByTo {
   '/treasury': typeof TreasuryRoute
   '/profile/edit': typeof ProfileEditRoute
   '/proposals/$address': typeof ProposalsAddressRoute
+  '/proposals/new': typeof ProposalsNewRoute
   '/profile': typeof ProfileIndexRoute
   '/proposals': typeof ProposalsIndexRoute
 }
@@ -148,6 +164,7 @@ export interface FileRoutesById {
   '/treasury': typeof TreasuryRoute
   '/profile/edit': typeof ProfileEditRoute
   '/proposals/$address': typeof ProposalsAddressRoute
+  '/proposals/new': typeof ProposalsNewRoute
   '/profile/': typeof ProfileIndexRoute
   '/proposals/': typeof ProposalsIndexRoute
 }
@@ -160,6 +177,7 @@ export interface FileRouteTypes {
     | '/treasury'
     | '/profile/edit'
     | '/proposals/$address'
+    | '/proposals/new'
     | '/profile'
     | '/proposals'
   fileRoutesByTo: FileRoutesByTo
@@ -169,6 +187,7 @@ export interface FileRouteTypes {
     | '/treasury'
     | '/profile/edit'
     | '/proposals/$address'
+    | '/proposals/new'
     | '/profile'
     | '/proposals'
   id:
@@ -178,6 +197,7 @@ export interface FileRouteTypes {
     | '/treasury'
     | '/profile/edit'
     | '/proposals/$address'
+    | '/proposals/new'
     | '/profile/'
     | '/proposals/'
   fileRoutesById: FileRoutesById
@@ -189,6 +209,7 @@ export interface RootRouteChildren {
   TreasuryRoute: typeof TreasuryRoute
   ProfileEditRoute: typeof ProfileEditRoute
   ProposalsAddressRoute: typeof ProposalsAddressRoute
+  ProposalsNewRoute: typeof ProposalsNewRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
   ProposalsIndexRoute: typeof ProposalsIndexRoute
 }
@@ -199,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   TreasuryRoute: TreasuryRoute,
   ProfileEditRoute: ProfileEditRoute,
   ProposalsAddressRoute: ProposalsAddressRoute,
+  ProposalsNewRoute: ProposalsNewRoute,
   ProfileIndexRoute: ProfileIndexRoute,
   ProposalsIndexRoute: ProposalsIndexRoute,
 }
@@ -218,6 +240,7 @@ export const routeTree = rootRoute
         "/treasury",
         "/profile/edit",
         "/proposals/$address",
+        "/proposals/new",
         "/profile/",
         "/proposals/"
       ]
@@ -236,6 +259,9 @@ export const routeTree = rootRoute
     },
     "/proposals/$address": {
       "filePath": "proposals/$address.tsx"
+    },
+    "/proposals/new": {
+      "filePath": "proposals/new.tsx"
     },
     "/profile/": {
       "filePath": "profile/index.tsx"
