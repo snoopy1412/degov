@@ -70,7 +70,7 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
             value={content?.recipient}
             onChange={(e) => handleChange({ key: 'recipient', value: e.target.value })}
             placeholder="Enter address"
-            className="border-border/20 bg-card"
+            className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
           />
         </div>
         <div className="flex flex-col gap-[10px]">
@@ -106,7 +106,7 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
             value={content?.snapshot}
             onChange={(e) => handleChange({ key: 'snapshot', value: e.target.value })}
             placeholder="Input"
-            className="border-border/20 bg-card"
+            className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
           />
         </div>
       </div>

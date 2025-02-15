@@ -61,7 +61,7 @@ export const CustomPanel = ({ index, content, onChange, onRemove }: CustomPanelP
             value={content?.target}
             onChange={(e) => handleChange({ key: 'target', value: e.target.value })}
             placeholder="Enter the target address..."
-            className="border-border/20 bg-card"
+            className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
           />
           <div className="flex items-center gap-[10px] text-[14px] text-foreground">
             <svg className="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="currentColor">

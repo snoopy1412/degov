@@ -32,7 +32,7 @@ export const ProposalPanel = ({ content, onChange }: ProposalPanelProps) => {
           value={content.title}
           onChange={(e) => handleChange({ key: 'title', value: e.target.value })}
           placeholder="Enter the title of your proposal"
-          className="border-border/20 bg-card"
+          className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
         />
       </div>
       <div className="flex flex-col gap-[10px]">
@@ -54,7 +54,7 @@ export const ProposalPanel = ({ content, onChange }: ProposalPanelProps) => {
           value={content.snapshot}
           onChange={(e) => handleChange({ key: 'snapshot', value: e.target.value })}
           placeholder="https://snapshot.org/#/s:dao.eth"
-          className="border-border/20 bg-card"
+          className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
         />
       </div>
     </div>
