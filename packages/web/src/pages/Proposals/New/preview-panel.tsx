@@ -1,5 +1,4 @@
-import { AddressAvatar } from '@/components/address-avatar';
-import { AddressResolver } from '@/components/address-resolver';
+import { AddressWithAvatar } from '@/components/address-with-avatar';
 import { useAccount } from 'wagmi';
 
 interface PreviewPanelProps {
@@ -16,14 +15,7 @@ export const PreviewPanel = ({ title, html }: PreviewPanelProps) => {
 
         <div className="flex items-center gap-[5px]">
           <span>Proposed by </span>
-          {address && (
-            <AddressAvatar address={address} className="h-[24px] w-[24px] rounded-full" />
-          )}
-          {address && (
-            <AddressResolver address={address} showShortAddress>
-              {(address) => <span className="text-[14px] font-normal">{address}</span>}
-            </AddressResolver>
-          )}
+          {address && <AddressWithAvatar address={address} avatarSize={24} />}
         </div>
       </header>
 

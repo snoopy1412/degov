@@ -1,9 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from './ui/separator';
-import { AddressAvatar } from './address-avatar';
-import { AddressResolver } from './address-resolver';
 import type { Address } from 'viem';
+import { AddressWithAvatar } from './address-with-avatar';
 
 interface DelegateActionProps {
   open: boolean;
@@ -26,16 +25,11 @@ export function DelegateAction({ open, onOpenChange, address }: DelegateActionPr
         </DialogHeader>
         <Separator className="my-0 bg-muted-foreground/40" />
         <div className="flex h-[87px] w-[360px] items-center justify-center gap-[20px] rounded-[10px] bg-secondary p-[20px]">
-          <AddressAvatar
+          <AddressWithAvatar
             address={address ?? '0x0000000000000000000000000000000000000000'}
-            size={40}
+            avatarSize={40}
+            textClassName="text-[18px] font-semibold"
           />
-          <AddressResolver
-            address={address ?? '0x0000000000000000000000000000000000000000'}
-            showShortAddress
-          >
-            {(value) => <span className="text-[18px] font-semibold">{value}</span>}
-          </AddressResolver>
         </div>
         <Separator className="my-0 bg-muted-foreground/40" />
         <div className="flex flex-col gap-[20px]">

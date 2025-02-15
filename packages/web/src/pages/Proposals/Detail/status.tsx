@@ -1,5 +1,4 @@
-import { AddressAvatar } from '@/components/address-avatar';
-import { AddressResolver } from '@/components/address-resolver';
+import { AddressWithAvatar } from '@/components/address-with-avatar';
 import { Separator } from '@/components/ui/separator';
 import React from 'react';
 
@@ -65,20 +64,12 @@ const Status: React.FC = () => {
                 <div>
                   <div className="text-[10px] text-muted-foreground">{stage.timestamp}</div>
                   <span className="text-[16px] font-semibold text-white">{stage.title}</span>
-                  <div className="flex items-center gap-[5px]">
-                    <AddressAvatar
-                      address="0x1234567890123456789012345678901234567890"
-                      className="h-[14px] w-[14px] rounded-full"
-                    />
-                    <AddressResolver
-                      address="0x1234567890123456789012345678901234567890"
-                      showShortAddress
-                    >
-                      {(value) => {
-                        return <span className="text-[10px]">{value}</span>;
-                      }}
-                    </AddressResolver>
-                  </div>
+                  <AddressWithAvatar
+                    address="0x1234567890123456789012345678901234567890"
+                    className="gap-[5px]"
+                    textClassName="text-[10px]"
+                    avatarSize={14}
+                  />
                 </div>
               </div>
             </div>

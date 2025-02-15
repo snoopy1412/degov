@@ -1,5 +1,4 @@
-import { AddressAvatar } from '@/components/address-avatar';
-import { AddressResolver } from '@/components/address-resolver';
+import { AddressWithAvatarFull } from '@/components/address-with-avatar-full';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
@@ -29,10 +28,7 @@ export function Voting({ open, onOpenChange }: VotingProps) {
         <Separator className="my-0 bg-muted-foreground/40" />
         <div className="flex w-[360px] flex-col gap-[20px]">
           <div className="flex items-center gap-[10px]">
-            <AddressAvatar address="0x1234567890" className="h-[34px] w-[34px] rounded-full" />
-            <AddressResolver address="0x1234567890" showShortAddress>
-              {(address) => <span className="text-[14px]">{address}</span>}
-            </AddressResolver>
+            <AddressWithAvatarFull address="0x1234567890" avatarSize={34} />
           </div>
 
           <div className="flex items-center justify-between rounded-[4px] border border-muted-foreground p-[10px]">

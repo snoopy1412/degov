@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/table';
 import { Link } from '@tanstack/react-router';
 import { Empty } from '@/components/ui/empty';
-import { Address } from './address';
+import { AddressWithAvatar } from '../address-with-avatar';
 
 const data = [
   {
@@ -53,7 +53,7 @@ export function DelegationTable({ caption }: DelegationTableProps) {
           {data.map((value) => (
             <TableRow key={value.delegator}>
               <TableCell className="text-left">
-                <Address address={value.delegator as `0x${string}`} />
+                <AddressWithAvatar address={value.delegator as `0x${string}`} avatarSize={30} />
               </TableCell>
               <TableCell>{value.delegationDate}</TableCell>
               <TableCell className="text-right">{value.votes}</TableCell>

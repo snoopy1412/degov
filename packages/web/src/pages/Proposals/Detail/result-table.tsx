@@ -9,9 +9,8 @@ import {
 } from '@/components/ui/table';
 import { Link } from '@tanstack/react-router';
 import { Empty } from '@/components/ui/empty';
-import { AddressAvatar } from '@/components/address-avatar';
-import { AddressResolver } from '@/components/address-resolver';
 import type { Address } from 'viem';
+import { AddressWithAvatar } from '@/components/address-with-avatar';
 
 export type Result = {
   address: Address;
@@ -47,16 +46,7 @@ export function ResultTable({ caption, data }: ResultTableProps) {
           {data?.map((value) => (
             <TableRow key={value.address}>
               <TableCell className="text-left">
-                <span className="flex items-center gap-[10px]">
-                  <AddressAvatar address={value.address} size={30} />
-                  <AddressResolver address={value.address} showShortAddress>
-                    {(ensName) => (
-                      <span className="line-clamp-1" title={value.address}>
-                        {ensName}
-                      </span>
-                    )}
-                  </AddressResolver>
-                </span>
+                <AddressWithAvatar address={value.address} avatarSize={30} />
               </TableCell>
 
               <TableCell className="text-right">104.35M</TableCell>
