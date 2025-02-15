@@ -15,7 +15,7 @@ export const PreviewPanel = ({ title, html }: PreviewPanelProps) => {
 
         <div className="flex items-center gap-[5px]">
           <span>Proposed by </span>
-          {address && <AddressWithAvatar address={address} avatarSize={24} />}
+          {address && <AddressWithAvatar address={address} avatarSize={24} className="gap-[5px]" />}
         </div>
       </header>
 
