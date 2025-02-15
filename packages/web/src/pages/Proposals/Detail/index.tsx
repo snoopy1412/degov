@@ -19,7 +19,7 @@ export const Detail = () => {
   const [voting, setVoting] = useState(false);
   return (
     <>
-      <div className="flex flex-col gap-[20px] p-[30px]">
+      <div className="flex w-full flex-col gap-[20px] p-[30px]">
         <div className="flex items-center gap-1 text-[18px] font-extrabold">
           <span className="text-muted-foreground">Proposals</span>
           <span className="text-muted-foreground">/</span>
@@ -83,14 +83,12 @@ export const Detail = () => {
         </div>
 
         <div className="grid grid-cols-[1fr_360px] gap-[20px]">
-          {/* left */}
           <div className="space-y-[20px]">
             <Result />
             <ActionsTable />
             <Proposal />
           </div>
 
-          {/* right */}
           <div className="space-y-[20px]">
             <CurrentVotes />
             <Status />

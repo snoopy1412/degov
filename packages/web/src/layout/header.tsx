@@ -9,7 +9,7 @@ export const Header = () => {
     <header className="w-full border-b border-border bg-background px-[30px] py-[20px]">
       {isFocused && (
         <div
-          className="fixed inset-0 bg-black/60 transition-opacity"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
           onClick={() => setIsFocused(false)}
         />
       )}
