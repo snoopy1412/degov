@@ -1,8 +1,12 @@
 import { useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+import { useNumberInput } from '@/hooks/useNumberInput';
 import type { ProposalActionType } from '@/config/proposals';
 import type { Address } from 'viem';
+import { useConfig } from '@/hooks/useConfig';
+import { TokenSelect } from '@/components/token-select';
 
 export type TransferContentType = {
   recipient?: Address;
@@ -19,6 +23,8 @@ interface TransferPanelProps {
 }
 
 export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPanelProps) => {
+  const daoConfig = useConfig();
+
   const handleChange = useCallback(
     ({ key, value }: { key: keyof TransferContentType; value: string }) => {
       onChange({
@@ -28,12 +34,25 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
     },
     [onChange, content]
   );
+
+  const {
+    value,
+    handleChange: handleChangeAmount,
+    handleBlur
+    // handleReset,
+    // handleChangeValue
+  } = useNumberInput({
+    maxDecimals: daoConfig?.tokenInfo?.decimals ?? 18,
+    initialValue: '',
+    onChange: (value) => handleChange({ key: 'amount', value })
+  });
+
   return (
     <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]">
       <header className="flex items-center justify-between">
         <h4 className="text-[18px] font-semibold">Action #{index}</h4>
         <Button
-          className="h-[30px] gap-[5px] rounded-[100px] border border-border/20 bg-card"
+          className="h-[30px] gap-[5px] rounded-[100px] border border-border bg-card"
           variant="outline"
           onClick={() => onRemove(index)}
         >
@@ -54,18 +73,30 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
             className="border-border/20 bg-card"
           />
         </div>
-        {/* <div className="flex flex-col gap-[10px]">
+        <div className="flex flex-col gap-[10px]">
           <label className="text-[14px] text-foreground" htmlFor="title">
-            Title
+            Transfer amount
           </label>
-          <Input
-            id="title"
-            value={content.title}
-            onChange={(e) => handleChange({ key: 'title', value: e.target.value })}
-            placeholder="Enter the title of your proposal"
-            className="border-border/20 bg-card"
-          />
-        </div> */}
+          <div className="relative flex flex-col gap-[10px] rounded-[4px] border border-border/20 bg-card px-[10px] py-[20px]">
+            <div className="flex items-center justify-between gap-[10px]">
+              <input
+                className={cn(
+                  'w-full bg-transparent text-[36px] font-semibold tabular-nums text-foreground placeholder:text-foreground/50 focus-visible:outline-none'
+                )}
+                placeholder="0.000"
+                type="number"
+                value={value}
+                onChange={handleChangeAmount}
+                onBlur={handleBlur}
+              />
+              <TokenSelect />
+            </div>
+            <div className="flex items-center justify-between gap-[10px]">
+              <span className="text-[14px] text-foreground/50">¥$ 44,654</span>
+              <span className="text-[14px] text-foreground/50">Balance: 48M</span>
+            </div>
+          </div>
+        </div>
         <div className="flex flex-col gap-[10px]">
           <label className="text-[14px] text-foreground" htmlFor="snapshot">
             Snapshot URL
