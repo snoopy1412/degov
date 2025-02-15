@@ -16,6 +16,7 @@ import { Empty } from '@/components/ui/empty';
 const data = [
   {
     proposal: '[Non-Constitutional] DCDAO Delegate Incentive Program',
+    id: '39167772932143723025658918622015993797875961063645251007065064214127031243174',
     time: 'Jan 7th, 2025',
     status: <ProposalStatus status="canceled" />,
     votesFor: <VotePercentage status="for" value="1.11B" />,
@@ -25,6 +26,7 @@ const data = [
   {
     proposal:
       'Enhancing Multichain Governance: Upgrading RARI Governance Token on ArbitrumEnhancing Multichain Governance: Upgrading RARI Governance Token on Arbitrum',
+    id: '39167772932143723025658918622015993797875961063645251007065064214127031243175',
     time: 'Jan 7th, 2025',
     status: <ProposalStatus status="pending" />,
     votesFor: <VotePercentage status="for" value="1.11B" />,
@@ -65,9 +67,14 @@ export function ProposalsTable({ caption }: ProposalsTableProps) {
           {data.map((value) => (
             <TableRow key={value.proposal}>
               <TableCell className="text-left">
-                <span className="line-clamp-1" title={value.proposal}>
+                <Link
+                  className="line-clamp-1 hover:underline"
+                  title={value.proposal}
+                  to={`/proposals/$address`}
+                  params={{ address: value.id }}
+                >
                   {value.proposal}
-                </span>
+                </Link>
               </TableCell>
               <TableCell>{value.time}</TableCell>
               <TableCell>{value.status}</TableCell>
