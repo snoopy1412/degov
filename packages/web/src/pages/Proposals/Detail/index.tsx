@@ -15,6 +15,7 @@ import Status from './status';
 import { useState } from 'react';
 import { Voting } from './voting';
 import { AddressWithAvatar } from '@/components/address-with-avatar';
+
 export const Detail = () => {
   const [voting, setVoting] = useState(false);
   return (
