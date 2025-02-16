@@ -3,6 +3,7 @@ import { AddressResolver } from '@/components/address-resolver';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { formatShortAddress } from '@/utils/address';
+import { Link } from '@tanstack/react-router';
 
 interface AddressWithAvatarFullProps {
   address: `0x${string}`;
@@ -18,29 +19,34 @@ export function AddressWithAvatarFull({
   textClassName
 }: AddressWithAvatarFullProps) {
   return (
-    <span className={cn('flex items-center gap-[10px]', className)}>
-      <AddressAvatar address={address} size={avatarSize} />
-      <AddressResolver address={address} showShortAddress>
-        {(ensName) => (
-          <span
-            className={cn('line-clamp-1 text-[16px] font-semibold', textClassName)}
-            title={address}
-          >
-            {ensName}
-          </span>
-        )}
-      </AddressResolver>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Link
+          to={`/profile/$address`}
+          params={{ address }}
+          className={cn('inline-flex items-center gap-[10px] hover:underline', className)}
+        >
+          <AddressAvatar address={address} size={avatarSize} />
+          <AddressResolver address={address} showShortAddress>
+            {(ensName) => (
+              <span
+                className={cn('line-clamp-1 text-[16px] font-semibold', textClassName)}
+                title={address}
+              >
+                {ensName}
+              </span>
+            )}
+          </AddressResolver>
 
-      <Tooltip>
-        <TooltipTrigger asChild>
           <span className="text-[14px] font-normal hover:underline">
             ({formatShortAddress(address)})
           </span>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>{address}</p>
-        </TooltipContent>
-      </Tooltip>
-    </span>
+        </Link>
+      </TooltipTrigger>
+
+      <TooltipContent>
+        <p>{address}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }

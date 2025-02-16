@@ -66,7 +66,7 @@ const Status: React.FC = () => {
                   <span className="text-[16px] font-semibold text-white">{stage.title}</span>
                   <AddressWithAvatar
                     address="0x1234567890123456789012345678901234567890"
-                    className="gap-[5px]"
+                    className="flex gap-[5px]"
                     textClassName="text-[10px]"
                     avatarSize={14}
                   />

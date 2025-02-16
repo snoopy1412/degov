@@ -2,6 +2,7 @@ import { AddressAvatar } from '@/components/address-avatar';
 import { AddressResolver } from '@/components/address-resolver';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { Link } from '@tanstack/react-router';
 
 interface AddressWithAvatarProps {
   address: `0x${string}`;
@@ -19,7 +20,13 @@ export function AddressWithAvatar({
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className={cn('flex items-center gap-[10px]', className)}>
+        <Link
+          to={`/profile/$address`}
+          params={{
+            address
+          }}
+          className={cn('inline-flex items-center gap-[10px]', className)}
+        >
           <AddressAvatar address={address} size={avatarSize} />
           <AddressResolver address={address} showShortAddress>
             {(ensName) => (
@@ -28,7 +35,7 @@ export function AddressWithAvatar({
               </span>
             )}
           </AddressResolver>
-        </span>
+        </Link>
       </TooltipTrigger>
       <TooltipContent>
         <p>{address}</p>
