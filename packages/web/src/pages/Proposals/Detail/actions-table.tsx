@@ -50,7 +50,7 @@ export function ActionsTable() {
               <TableCell className="text-left">
                 <div className="flex items-center gap-[10px]">
                   <img
-                    src={PROPOSAL_ACTIONS[value.type]}
+                    src={PROPOSAL_ACTIONS[value.type as keyof typeof PROPOSAL_ACTIONS]}
                     alt={value.type}
                     className="h-[24px] w-[24px] rounded-full"
                   />

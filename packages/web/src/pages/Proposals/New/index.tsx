@@ -177,7 +177,7 @@ export const NewProposal = () => {
               <span>Add Action</span>
             </Button>
           </aside>
-          <main className="flex-1 rounded-[14px] bg-card p-[20px]">
+          <main className="flex-1">
             {currentAction?.type === 'proposal' && (
               <ProposalPanel content={proposalContent} onChange={handleProposalContentChange} />
             )}
