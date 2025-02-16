@@ -3,6 +3,7 @@ import type { ProposalActionType } from '@/config/proposals';
 import type { Address } from 'viem';
 import { Input } from '@/components/ui/input';
 import { useCallback } from 'react';
+import { FileUploader } from '@/components/file-uploader';
 export type CustomContentType = {
   target: Address;
   abi: string;
@@ -68,13 +69,7 @@ export const CustomPanel = ({ index, content, onChange, onRemove }: CustomPanelP
           <label className="text-[14px] text-foreground" htmlFor="abi">
             Use the imported ABl or upload yours
           </label>
-          <Input
-            id="abi"
-            value={content?.abi}
-            onChange={(e) => handleChange({ key: 'abi', value: e.target.value })}
-            placeholder="Select an option"
-            className="border-border/20 bg-card"
-          />
+          <FileUploader />
         </div>
 
         <div className="flex flex-col gap-[10px]">
