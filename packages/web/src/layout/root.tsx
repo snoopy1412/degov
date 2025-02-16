@@ -24,13 +24,13 @@ const Root = () => {
 
   return (
     <TooltipProvider delayDuration={0}>
-      <div className="flex h-screen w-screen bg-background font-sans antialiased">
-        <aside className="w-[240px] border-r border-border bg-background">
+      <div className="flex min-h-screen overflow-hidden bg-background font-sans antialiased">
+        <aside className="h-auto w-[240px] flex-shrink-0 border-r border-border bg-background">
           <Aside />
         </aside>
-        <main className="flex flex-1 flex-col">
+        <main className="flex min-w-0 flex-1 flex-col overflow-x-hidden">
           <Header />
-          <div className="mx-auto h-full w-full">
+          <div className="mx-auto w-full">
             <Outlet />
           </div>
         </main>

@@ -8,7 +8,9 @@ export const Nav = () => {
   return (
     <nav className="flex w-full flex-col gap-[10px]">
       {routes.map((route) => {
-        const isActive = location.pathname === route.pathname;
+        const isActive =
+          location.pathname === route.pathname ||
+          location.pathname.startsWith(route.pathname + '/');
 
         return (
           <Link
@@ -24,14 +26,14 @@ export const Nav = () => {
               <img
                 src={`/assets/image/nav/${route.key}.svg`}
                 className={cn(
-                  'size-[32px] absolute transition-opacity duration-200',
+                  'absolute size-[32px] transition-opacity duration-200',
                   'group-hover:opacity-0'
                 )}
               />
               <img
                 src={`/assets/image/nav/${route.key}-active.svg`}
                 className={cn(
-                  'size-[32px] absolute transition-opacity duration-200',
+                  'absolute size-[32px] transition-opacity duration-200',
                   isActive ? 'opacity-100' : 'opacity-0',
                   'group-hover:opacity-100'
                 )}

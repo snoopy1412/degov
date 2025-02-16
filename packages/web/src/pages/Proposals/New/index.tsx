@@ -162,7 +162,7 @@ export const NewProposal = () => {
         </header>
 
         <div className="flex gap-[30px]">
-          <aside className="flex w-[300px] flex-col gap-[10px] rounded-[14px]">
+          <aside className="flex w-[300px] flex-shrink-0 flex-col gap-[10px] rounded-[14px]">
             {actions.map((action) => (
               <NewProposalAction
                 key={action.id}

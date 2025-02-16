@@ -15,7 +15,7 @@
     --secondary: 0 0% 28%;
     --secondary-foreground: 0 0% 100% / 0.8;
     --muted: 0 0% 14.9%;
-    --muted-foreground:  0 0% 59%;
+    --muted-foreground: 0 0% 59%;
     --accent: 0 0% 14.9%;
     --accent-foreground: 0 0% 98%;
     --destructive: 359 100% 62%;
@@ -50,10 +50,19 @@
   body {
     @apply bg-background text-foreground;
   }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
   .prose {
     @apply text-white;
     max-width: 100% !important;
-    h1,h2,h3,h4,h5,h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       margin-top: 1rem;
       margin-bottom: 1rem;
     }

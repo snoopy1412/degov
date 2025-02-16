@@ -10,8 +10,7 @@ import {
 import { Link } from '@tanstack/react-router';
 import { Empty } from '@/components/ui/empty';
 import { Button } from '../ui/button';
-import { AddressAvatar } from '../address-avatar';
-import { AddressResolver } from '../address-resolver';
+import { AddressWithAvatar } from '../address-with-avatar';
 
 export type Member = {
   rank: string;
@@ -59,16 +58,7 @@ export function MembersTable({ caption, onDelegate, data }: MembersTableProps) {
                 </span>
               </TableCell>
               <TableCell className="text-left">
-                <span className="flex items-center gap-[10px]">
-                  <AddressAvatar address={value.member as `0x${string}`} size={30} />
-                  <AddressResolver address={value.member as `0x${string}`} showShortAddress>
-                    {(ensName) => (
-                      <span className="line-clamp-1" title={value.member}>
-                        {ensName}
-                      </span>
-                    )}
-                  </AddressResolver>
-                </span>
+                <AddressWithAvatar address={value.member as `0x${string}`} />
               </TableCell>
               <TableCell className="text-left">
                 <span className="line-clamp-1" title={value.delegateStatement}>
