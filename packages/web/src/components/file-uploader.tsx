@@ -1,7 +1,12 @@
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import type { AbiItem } from 'viem';
 
-export const FileUploader = () => {
+interface FileUploaderProps {
+  onUpload: (jsonContent: AbiItem[]) => void;
+}
+
+export const FileUploader = ({ onUpload }: FileUploaderProps) => {
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     const reader = new FileReader();
@@ -9,7 +14,7 @@ export const FileUploader = () => {
     reader.onload = (event) => {
       try {
         const jsonContent = JSON.parse(event.target?.result as string);
-        console.log('Parsed JSON:', jsonContent);
+        onUpload(jsonContent);
       } catch (error) {
         console.error('Error parsing JSON:', error);
       }

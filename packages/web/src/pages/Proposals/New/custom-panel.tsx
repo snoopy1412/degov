@@ -1,8 +1,6 @@
 import { Button } from '@/components/ui/button';
-import type { ProposalActionType } from '@/config/proposals';
-import type { Address } from 'viem';
 import { Input } from '@/components/ui/input';
-import { useCallback } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -12,11 +10,18 @@ import {
 } from '@/components/ui/select';
 import { CallDataInputForm } from './calldata-input-form';
 import { FileUploader } from '@/components/file-uploader';
+import { abiList } from '@/config/contract';
+import { isValidAbi } from '@/utils/abi';
+import type { Abi, AbiItem, Address } from 'viem';
+import type { ProposalActionType } from '@/config/proposals';
+import { useBytecode } from 'wagmi';
+
 export type CustomContentType = {
   target: Address;
   abi: string;
   method: string;
 };
+// 0x393cEb2013494A6129dd049Be1A88c93337Aebfe
 
 interface CustomPanelProps {
   index: number;
@@ -27,6 +32,34 @@ interface CustomPanelProps {
 }
 
 export const CustomPanel = ({ index, content, onChange, onRemove }: CustomPanelProps) => {
+  const [abiKey, setAbiKey] = useState<string>('');
+  const [abiJson, setAbiJson] = useState<AbiItem[] | null>(null);
+  const [methodName, setMethodName] = useState<string>('');
+
+  const handleChangeAbi = useCallback((value: string) => {
+    setAbiKey(value);
+    if (value && value !== 'upload') {
+      const abiJson = abiList.find((abi) => abi.name === value)?.abi as Abi;
+      if (isValidAbi(abiJson)) {
+        setAbiJson(
+          abiJson?.filter(
+            (item) => item.type === 'function' && item.stateMutability === 'nonpayable'
+          )
+        );
+      }
+    }
+  }, []);
+
+  const handleUploadAbi = useCallback((jsonContent: AbiItem[]) => {
+    if (isValidAbi(jsonContent)) {
+      setAbiJson(
+        jsonContent?.filter(
+          (item) => item.type === 'function' && item.stateMutability === 'nonpayable'
+        )
+      );
+    }
+  }, []);
+
   const handleChange = useCallback(
     ({ key, value }: { key: keyof CustomContentType; value: string }) => {
       onChange({
@@ -39,6 +72,16 @@ export const CustomPanel = ({ index, content, onChange, onRemove }: CustomPanelP
     },
     [onChange, content]
   );
+  // const result = useBytecode({
+  //   address: '0x57Aa601A0377f5AB313C5A955ee874f5D495fC92'
+  // });
+
+  // console.log(result);
+
+  const method = useMemo(() => {
+    return abiJson?.find((item) => item.type === 'function' && item.name === methodName);
+  }, [abiJson, methodName]);
+
   return (
     <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]">
       <header className="flex items-center justify-between">
@@ -64,79 +107,56 @@ export const CustomPanel = ({ index, content, onChange, onRemove }: CustomPanelP
             placeholder="Enter the target address..."
             className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
           />
-          <div className="flex items-center gap-[10px] text-[14px] text-foreground">
-            <svg className="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2L1 21h22L12 2zm0 3.45l8.27 14.3H3.73L12 5.45zm-1.5 9.5h3v3h-3zm0-6h3v4.5h-3z" />
-            </svg>
-            Contract not verified on Etherscan. Select an ABl or import a JSON file containing your
-            ABl
-          </div>
         </div>
-        {/* Use the imported ABl or upload yours */}
         <div className="flex flex-col gap-[10px]">
-          <label className="text-[14px] text-foreground" htmlFor="abi">
+          <label className="text-[14px] text-foreground">
             Use the imported ABl or upload yours
           </label>
-          <Select>
+          <Select value={abiKey} onValueChange={handleChangeAbi}>
             <SelectTrigger className="border-border/20 bg-card">
               <SelectValue placeholder="Select an option" />
             </SelectTrigger>
             <SelectContent className="border-border/20 bg-card">
-              <SelectItem value="erc20">ERC-20</SelectItem>
-              <SelectItem value="erc721">ERC-721</SelectItem>
-              <SelectItem value="erc721-auto">ERC-721 (Auto Increment Ids)</SelectItem>
-              <SelectItem value="erc1155">ERC-1155</SelectItem>
-              <SelectItem value="oz-governor">OZ Governor</SelectItem>
-              <SelectItem value="ownable">Ownable</SelectItem>
-              <SelectItem value="roles">Roles</SelectItem>
-              <SelectItem value="pausable">Pausable</SelectItem>
-              <SelectItem value="iavatar">IAvatar (Gnosis Safe)</SelectItem>
-              <SelectItem value="gnosis-safe-l2">GnosisSafeL2</SelectItem>
-              <SelectItem value="uups">Upgradeability (UUPS)</SelectItem>
-              <SelectItem value="sudoswap">sudoswap: Pair Factory</SelectItem>
+              {abiList.map((abi) => (
+                <SelectItem key={abi.name} value={abi.name}>
+                  {abi.label}
+                </SelectItem>
+              ))}
               <SelectItem value="upload">Upload an ABI</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        <FileUploader />
+        {abiKey === 'upload' && <FileUploader onUpload={handleUploadAbi} />}
 
-        <div className="flex flex-col gap-[10px]">
-          <label className="text-[14px] text-foreground" htmlFor="abi">
-            Contract method
-          </label>
-          <Select>
-            <SelectTrigger className="border-border/20 bg-card text-foreground/50">
-              <SelectValue placeholder="Select the contract method..." />
-            </SelectTrigger>
-            <SelectContent className="border-border/20 bg-card">
-              <SelectItem value="approve">approve</SelectItem>
-              <SelectItem value="burn">burn</SelectItem>
-              <SelectItem value="burnFrom">burnFrom</SelectItem>
-              <SelectItem value="decreaseAllowance">decreaseAllowance</SelectItem>
-              <SelectItem value="delegate">delegate</SelectItem>
-              <SelectItem value="delegateBySig">delegateBySig</SelectItem>
-              <SelectItem value="flashLoan">flashLoan</SelectItem>
-              <SelectItem value="increaseAllowance">increaseAllowance</SelectItem>
-              <SelectItem value="mint">mint</SelectItem>
-              <SelectItem value="pause">pause</SelectItem>
-              <SelectItem value="permit">permit</SelectItem>
-              <SelectItem value="renounceOwnership">renounceOwnership</SelectItem>
-              <SelectItem value="snapshot">snapshot</SelectItem>
-              <SelectItem value="transfer">transfer</SelectItem>
-              <SelectItem value="transferFrom">transferFrom</SelectItem>
-              <SelectItem value="transferOwnership">transferOwnership</SelectItem>
-              <SelectItem value="unpause">unpause</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex flex-col gap-[10px]">
-          <h4 className="text-[18px] font-semibold text-foreground">Calldatas</h4>
-          <label className="text-[14px] text-foreground" htmlFor="abi">
-            The data for the function arguments you wish to send when the action executes
-          </label>
-          <CallDataInputForm />
-        </div>
+        {abiJson && (
+          <div className="flex flex-col gap-[10px]">
+            <label className="text-[14px] text-foreground">Contract method</label>
+            <Select value={methodName} onValueChange={setMethodName}>
+              <SelectTrigger className="border-border/20 bg-card text-foreground/50">
+                <SelectValue placeholder="Select the contract method..." />
+              </SelectTrigger>
+              <SelectContent className="border-border/20 bg-card">
+                {abiJson?.map(
+                  (item) =>
+                    item?.type === 'function' && (
+                      <SelectItem key={item?.name} value={item?.name}>
+                        {item?.name}
+                      </SelectItem>
+                    )
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+        {methodName && (
+          <div className="flex flex-col gap-[10px]">
+            <h4 className="text-[18px] font-semibold text-foreground">Calldatas</h4>
+            <label className="text-[14px] text-foreground" htmlFor="abi">
+              The data for the function arguments you wish to send when the action executes
+            </label>
+            <CallDataInputForm functionAbi={method} />
+          </div>
+        )}
       </div>
     </div>
   );
