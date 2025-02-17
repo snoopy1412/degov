@@ -1,3 +1,6 @@
+import { DECIMAL } from '@/config/base';
+import { formatUnits } from 'viem';
+
 /**
  * Formats a number according to its magnitude, returning both abbreviated and full formats.
  * @param {number} num - The number to format.
@@ -28,4 +31,35 @@ export function formatNumberForDisplay(num: number): [string, string] {
   }
 
   return [shortFormat, longFormat];
+}
+
+/**
+ * Formats a BigInt number with decimals into two display formats
+ * @param {bigint} value - The BigInt value to format
+ * @param {number} decimals - Number of decimal places
+ * @returns {[string, string]} - [original formatted value, fixed decimal formatted value]
+ */
+export function formatBigIntWithDecimals(
+  value: bigint,
+  valueDecimals: number,
+  decimals: number = DECIMAL
+): [string, string] {
+  if (typeof value !== 'bigint') {
+    return ['0', '0'];
+  }
+
+  // Format original value using viem's formatUnits
+  const originalFormat = formatUnits(value, valueDecimals);
+
+  // Convert to number and format with fixed decimals
+  const numberValue = Number(originalFormat);
+  const fixedValue = numberValue.toFixed(decimals);
+
+  // Format with thousand separators
+  const formattedFixed = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  }).format(Number(fixedValue));
+
+  return [originalFormat, formattedFixed];
 }

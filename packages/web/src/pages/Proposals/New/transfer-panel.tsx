@@ -1,12 +1,16 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { useNumberInput } from '@/hooks/useNumberInput';
-import type { ProposalActionType } from '@/config/proposals';
-import type { Address } from 'viem';
 import { useConfig } from '@/hooks/useConfig';
-import { TokenSelect } from '@/components/token-select';
+import { TokenInfo, TokenSelect } from '@/components/token-select';
+import { AddressInputWithResolver } from '@/components/address-input-with-resolver';
+import { isEmpty, isObject } from 'lodash-es';
+import { useTokenBalance } from '@/hooks/useTokenBalance';
+import FormattedNumberTooltip from '@/components/formatted-number-tooltip';
+import { Skeleton } from '@/components/ui/skeleton';
+import { parseUnits, type Address } from 'viem';
+import type { ProposalActionType } from '@/config/proposals';
 
 export type TransferContentType = {
   recipient?: Address;
@@ -23,6 +27,7 @@ interface TransferPanelProps {
 
 export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPanelProps) => {
   const daoConfig = useConfig();
+  const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(null);
 
   const handleChange = useCallback(
     ({ key, value }: { key: keyof TransferContentType; value: string }) => {
@@ -33,18 +38,66 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
     },
     [onChange, content]
   );
+  const { isLoading, balance } = useTokenBalance(selectedToken);
 
   const {
     value,
     handleChange: handleChangeAmount,
-    handleBlur
-    // handleReset,
-    // handleChangeValue
+    handleBlur,
+    handleReset
   } = useNumberInput({
     maxDecimals: daoConfig?.tokenInfo?.decimals ?? 18,
     initialValue: '',
     onChange: (value) => handleChange({ key: 'amount', value })
   });
+
+  const handleTokenChange = useCallback(
+    (token: TokenInfo) => {
+      setSelectedToken(token);
+      handleReset();
+    },
+    [handleReset]
+  );
+
+  const tokenList = useMemo(() => {
+    const nativeToken: TokenInfo = {
+      address: daoConfig?.tokenInfo.tokenContract as Address,
+      symbol: daoConfig?.tokenInfo.symbol as string,
+      decimals: daoConfig?.tokenInfo.decimals as number,
+      icon: daoConfig?.logo as string,
+      isNative: true
+    };
+
+    const treasuryTokenList: TokenInfo[] = [];
+    if (
+      daoConfig?.timelockAssetsTokenInfo &&
+      isObject(daoConfig?.timelockAssetsTokenInfo) &&
+      !isEmpty(daoConfig?.timelockAssetsTokenInfo)
+    ) {
+      Object.values(daoConfig?.timelockAssetsTokenInfo).forEach((token) => {
+        treasuryTokenList.push({
+          address: token.contract as Address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          icon: token.logo,
+          isNative: false
+        });
+      });
+    }
+
+    return [nativeToken, ...treasuryTokenList];
+  }, [daoConfig]);
+
+  const isValueGreaterThanBalance = useMemo(() => {
+    if (!balance || !value || !selectedToken?.decimals) return false;
+    return balance && value && parseUnits(value, selectedToken?.decimals ?? 18) > balance;
+  }, [balance, value, selectedToken?.decimals]);
+
+  useEffect(() => {
+    if (tokenList.length > 0) {
+      setSelectedToken(tokenList[0]);
+    }
+  }, [tokenList]);
 
   return (
     <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]">
@@ -64,16 +117,18 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
           <label className="text-[14px] text-foreground" htmlFor="recipient">
             Transfer to
           </label>
-          <Input
+
+          <AddressInputWithResolver
             id="recipient"
             value={content?.recipient}
-            onChange={(e) => handleChange({ key: 'recipient', value: e.target.value })}
+            onChange={(value) => handleChange({ key: 'recipient', value })}
             placeholder="Enter address"
             className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
           />
         </div>
+
         <div className="flex flex-col gap-[10px]">
-          <label className="text-[14px] text-foreground" htmlFor="title">
+          <label className="text-[14px] text-foreground" htmlFor="titl  e">
             Transfer amount
           </label>
           <div className="relative flex flex-col gap-[10px] rounded-[4px] border border-border/20 bg-card px-[10px] py-[20px]">
@@ -88,13 +143,34 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
                 onChange={handleChangeAmount}
                 onBlur={handleBlur}
               />
-              <TokenSelect />
+              <TokenSelect
+                selectedToken={selectedToken}
+                tokenList={tokenList}
+                onTokenChange={handleTokenChange}
+              />
             </div>
             <div className="flex items-center justify-between gap-[10px]">
-              <span className="text-[14px] text-foreground/50">¥$ 44,654</span>
-              <span className="text-[14px] text-foreground/50">Balance: 48M</span>
+              <span className="text-[14px] text-foreground/50"></span>
+              <span className="inline-flex flex-shrink-0 items-center gap-[5px] text-[14px] text-foreground/50">
+                Balance:
+                {isLoading ? (
+                  <Skeleton className="h-[20px] w-[80px] rounded-[4px]" />
+                ) : (
+                  <FormattedNumberTooltip
+                    value={balance ?? 0n}
+                    valueDecimals={selectedToken?.decimals ?? 18}
+                  >
+                    {(formattedValue) => (
+                      <span className="text-[14px] text-foreground/50">{formattedValue}</span>
+                    )}
+                  </FormattedNumberTooltip>
+                )}
+              </span>
             </div>
           </div>
+          {isValueGreaterThanBalance && (
+            <span className="text-[14px] text-danger">Balance is not enough</span>
+          )}
         </div>
       </div>
     </div>
