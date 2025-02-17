@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAsync, useSetState } from 'react-use';
+import { useAsync } from 'react-use';
 import { v4 as uuidv4 } from 'uuid';
 import { Button } from '@/components/ui/button';
 import { markdownToHtml } from '@/utils/markdown';
@@ -9,14 +9,14 @@ import { PreviewPanel } from './preview-panel';
 import { ReplacePanel } from './replace-panel';
 import { TransferContentType, TransferPanel } from './transfer-panel';
 import { CustomContentType, CustomPanel } from './custom-panel';
+import { WithConnect } from '@/components/with-connect';
 import type { ProposalActionType } from '@/config/proposals';
 import type { Address } from 'viem';
-import { WithConnect } from '@/components/with-connect';
 
 interface Action {
   id: string;
   type: ProposalActionType;
-  content?: TransferContentType | CustomContentType;
+  content?: ProposalContentType | TransferContentType | CustomContentType;
 }
 
 const DEFAULT_ACTIONS = [
@@ -25,8 +25,7 @@ const DEFAULT_ACTIONS = [
     type: 'proposal' as ProposalActionType,
     content: {
       title: '',
-      markdown: '\u200B',
-      snapshot: ''
+      markdown: '\u200B'
     } as ProposalContentType
   },
   {
@@ -37,20 +36,15 @@ const DEFAULT_ACTIONS = [
 
 export const NewProposal = () => {
   const [actions, setActions] = useState<Action[]>(DEFAULT_ACTIONS);
-  console.log('actions', actions);
-
   const [actionUuid, setActionUuid] = useState<string>(DEFAULT_ACTIONS[0].id);
-  const [proposalContent, setProposalContent] = useSetState<ProposalContentType>({
-    title: '',
-    markdown: '\u200B',
-    snapshot: ''
-  });
 
   const handleProposalContentChange = useCallback(
     (content: ProposalContentType) => {
-      setProposalContent(content);
+      setActions(
+        actions.map((action) => (action.type === 'proposal' ? { ...action, content } : action))
+      );
     },
-    [setProposalContent]
+    [actions, setActions]
   );
 
   const handleAddAction = useCallback(() => {
@@ -88,8 +82,7 @@ export const NewProposal = () => {
       if (type === 'transfer') {
         content = {
           recipient: '' as Address,
-          amount: '',
-          snapshot: ''
+          amount: ''
         } as TransferContentType;
       } else if (type === 'custom') {
         content = {
@@ -128,27 +121,30 @@ export const NewProposal = () => {
     },
     [actions, setActions, actionUuid]
   );
+
   const html = useAsync(async () => {
-    if (proposalContent.markdown) {
-      return await markdownToHtml(proposalContent.markdown);
+    const proposalAction = actions.find((action) => action.type === 'proposal');
+    const markdown = (proposalAction?.content as ProposalContentType)?.markdown;
+    if (markdown) {
+      return await markdownToHtml(markdown);
     }
     return '';
-  }, [proposalContent.markdown]);
-
-  const currentAction = useMemo(() => {
-    return actions.find((action) => action.id === actionUuid);
-  }, [actions, actionUuid]);
+  }, [actions]);
 
   useEffect(() => {
     return () => {
       setActions(DEFAULT_ACTIONS);
-      setProposalContent({
-        title: '',
-        markdown: '',
-        snapshot: ''
-      });
     };
-  }, [setProposalContent]);
+  }, []);
+
+  const proposalContent = useMemo(() => {
+    const proposalAction = actions.find((action) => action.type === 'proposal');
+    return (proposalAction?.content as ProposalContentType) || { title: '', markdown: '\u200B' };
+  }, [actions]);
+
+  const currentAction = useMemo(() => {
+    return actions.find((action) => action.id === actionUuid);
+  }, [actions, actionUuid]);
 
   return (
     <WithConnect>

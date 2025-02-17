@@ -5,7 +5,6 @@ import { useCallback } from 'react';
 export type ProposalContentType = {
   title: string;
   markdown: string;
-  snapshot: string;
 };
 
 interface ProposalPanelProps {
@@ -43,18 +42,6 @@ export const ProposalPanel = ({ content, onChange }: ProposalPanelProps) => {
           markdown={content.markdown || '\u200B'}
           onChange={(markdown) => handleChange({ key: 'markdown', value: markdown })}
           placeholder="Enter the description of your proposal"
-        />
-      </div>
-      <div className="flex flex-col gap-[10px]">
-        <label className="text-[14px] text-foreground" htmlFor="action">
-          Snapshot URL
-        </label>
-        <Input
-          id="action"
-          value={content.snapshot}
-          onChange={(e) => handleChange({ key: 'snapshot', value: e.target.value })}
-          placeholder="https://snapshot.org/#/s:dao.eth"
-          className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
         />
       </div>
     </div>

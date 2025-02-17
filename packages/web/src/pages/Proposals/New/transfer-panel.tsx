@@ -11,7 +11,6 @@ import { TokenSelect } from '@/components/token-select';
 export type TransferContentType = {
   recipient?: Address;
   amount?: string;
-  snapshot?: string;
 };
 
 interface TransferPanelProps {
@@ -96,18 +95,6 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
               <span className="text-[14px] text-foreground/50">Balance: 48M</span>
             </div>
           </div>
-        </div>
-        <div className="flex flex-col gap-[10px]">
-          <label className="text-[14px] text-foreground" htmlFor="snapshot">
-            Snapshot URL
-          </label>
-          <Input
-            id="snapshot"
-            value={content?.snapshot}
-            onChange={(e) => handleChange({ key: 'snapshot', value: e.target.value })}
-            placeholder="Input"
-            className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
-          />
         </div>
       </div>
     </div>

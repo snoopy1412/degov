@@ -4,8 +4,6 @@ import {
   CodeToggle,
   CreateLink,
   diffSourcePlugin,
-  imagePlugin,
-  InsertImage,
   InsertTable,
   linkDialogPlugin,
   linkPlugin,
@@ -41,7 +39,6 @@ export function Editor({ markdown, placeholder, onChange }: EditorProps) {
         listsPlugin(),
         thematicBreakPlugin(),
         markdownShortcutPlugin(),
-        imagePlugin(),
         tablePlugin(),
         linkPlugin(),
         linkDialogPlugin(),
@@ -59,7 +56,6 @@ export function Editor({ markdown, placeholder, onChange }: EditorProps) {
                 <ListsToggle />
                 <CreateLink />
                 <CodeToggle />
-                <InsertImage />
                 <Separator />
                 <InsertTable />
               </DiffSourceToggleWrapper>
