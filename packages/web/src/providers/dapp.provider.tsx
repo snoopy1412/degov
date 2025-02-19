@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { WagmiProvider } from 'wagmi';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { WagmiProvider, deserialize, serialize } from 'wagmi';
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createConfig, queryClient } from '@/config/wagmi';
 import { useConfig } from '@/hooks/useConfig';
 import '@rainbow-me/rainbowkit/styles.css';
@@ -33,7 +34,11 @@ export function DAppProvider({ children }: React.PropsWithChildren<unknown>) {
       default: dappConfig.networkInfo?.explorer
     }
   };
-
+  const persister = createSyncStoragePersister({
+    serialize,
+    storage: window.localStorage,
+    deserialize
+  });
   const config = createConfig({
     appName: dappConfig?.daoName,
     projectId: dappConfig?.walletConnectProjectId,
@@ -42,7 +47,7 @@ export function DAppProvider({ children }: React.PropsWithChildren<unknown>) {
 
   return (
     <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
         <RainbowKitProvider
           theme={dark}
           locale="en-US"
@@ -51,7 +56,7 @@ export function DAppProvider({ children }: React.PropsWithChildren<unknown>) {
         >
           {children}
         </RainbowKitProvider>
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </WagmiProvider>
   );
 }

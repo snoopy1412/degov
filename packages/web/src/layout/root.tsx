@@ -6,13 +6,27 @@ import { useBlockNumber } from 'wagmi';
 import { useIndexerBlockNumber } from '@/hooks/useIndexerBlockNumber';
 import { useIndexerStatus } from '@/hooks/useIndexerStatus';
 import { useEffect } from 'react';
+import { useGovernanceToken } from '@/hooks/useGovernanceToken';
+import { useVotingPower } from '@/hooks/useVotingPower';
+import { useGovernanceParams } from '@/hooks/useGovernaceParams';
 
 const Root = () => {
   // get current block number
   const { data: blockNumber } = useBlockNumber();
-  // get indexer block number
+  // // get indexer block number
   const { data: indexerBlockNumber } = useIndexerBlockNumber();
 
+  // // get governance token info
+  // const { data: governanceTokenInfo } = useGovernanceToken();
+  // // get voting power
+  // const { data: votingPower } = useVotingPower();
+  // // get governance params
+  const { data: governanceParams, error: governanceParamsError } = useGovernanceParams();
+
+  // console.log('governanceTokenInfo', governanceTokenInfo);
+  // console.log('votingPower', votingPower);
+  // console.log('governanceParams', governanceParams);
+  // console.log('governanceParamsError', governanceParamsError);
   // get indexer status
   const { updateStatus } = useIndexerStatus();
 

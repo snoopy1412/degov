@@ -5,8 +5,10 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { useGovernanceParams } from '@/hooks/useGovernaceParams';
 
 export const Parameters = () => {
+  const { data: governanceParams } = useGovernanceParams();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,22 +24,32 @@ export const Parameters = () => {
         <div className="flex flex-col gap-[20px]">
           <div className="flex items-center justify-between gap-[10px]">
             <span className="text-[14px] font-normal text-foreground/40">Proposal threshold</span>
-            <span className="text-[14px] font-normal text-foreground">4</span>
+            <span className="text-[14px] font-normal text-foreground">
+              {governanceParams?.proposalThreshold
+                ? String(governanceParams?.proposalThreshold)
+                : '-'}
+            </span>
           </div>
 
           <div className="flex items-center justify-between gap-[10px]">
             <span className="text-[14px] font-normal text-foreground/40">Quorum needed</span>
-            <span className="text-[14px] font-normal text-foreground">7</span>
+            <span className="text-[14px] font-normal text-foreground">
+              {governanceParams?.quorum ? String(governanceParams?.quorum) : '-'}
+            </span>
           </div>
 
           <div className="flex items-center justify-between gap-[10px]">
             <span className="text-[14px] font-normal text-foreground/40">Proposal delay</span>
-            <span className="text-[14px] font-normal text-foreground">2 mins</span>
+            <span className="text-[14px] font-normal text-foreground">
+              {governanceParams?.votingDelay ? String(governanceParams?.votingDelay) : '-'}
+            </span>
           </div>
 
           <div className="flex items-center justify-between gap-[10px]">
             <span className="text-[14px] font-normal text-foreground/40">Voting period</span>
-            <span className="text-[14px] font-normal text-foreground">15 mins</span>
+            <span className="text-[14px] font-normal text-foreground">
+              {governanceParams?.votingPeriod ? String(governanceParams?.votingPeriod) : '-'}
+            </span>
           </div>
         </div>
       </DropdownMenuContent>

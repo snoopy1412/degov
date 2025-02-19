@@ -12,14 +12,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { PROPOSAL_ACTIONS } from '@/config/proposals';
 import { useConfig } from '@/hooks/useConfig';
+import { formatShortAddress } from '@/utils/address';
 
-interface Action {
-  type: string;
-  address: string;
-  details: string;
+export interface ActionPanelProps {
+  type?: string;
+  address?: `0x${string}`;
+  details?: string;
   params?: {
     name: string;
-    value: string;
+    value: string | string[];
   }[];
   signature?: string;
   calldata?: {
@@ -28,9 +29,8 @@ interface Action {
   target?: string;
   value?: string;
 }
-
 interface ActionsPanelProps {
-  actions: Action[];
+  actions: ActionPanelProps[];
 }
 
 export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
@@ -76,21 +76,21 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
                     rel="noreferrer"
                     className="flex items-center gap-[5px] hover:underline"
                   >
-                    {action.address}
+                    {action.address ? formatShortAddress(action.address) : 'No address'}
                     <img src="/assets/image/external-link.svg" alt="external-link" />
                   </a>
                 </TableCell>
                 <TableCell className="w-1/3 text-left">
                   <div className="flex items-center justify-between gap-2">
                     <span>{action.details}</span>
-                    {action.params && (
+                    {action?.params?.length && (
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => toggleParams(index)}
                         className="text-[14px] text-foreground/40"
                       >
-                        {action.params.length} params
+                        {action?.params?.length} params
                         <ChevronDown
                           className={cn(
                             'h-4 w-4 transition-transform duration-200',
@@ -128,10 +128,12 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
           <h3 className="mb-[10px] text-[18px] font-semibold">Function {index + 1}</h3>
 
           <div className="space-y-[20px] rounded-[4px] border p-[20px]">
-            <div>
-              <h4 className="text-[14px] font-normal text-muted-foreground">Signature:</h4>
-              <p className="font-mono font-semibold">{action.signature}</p>
-            </div>
+            {action.type === 'custom' && (
+              <div>
+                <h4 className="text-[14px] font-normal text-muted-foreground">Signature:</h4>
+                <p className="font-mono font-semibold">{action.signature}</p>
+              </div>
+            )}
 
             {action.calldata && (
               <div>
@@ -144,19 +146,17 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
               </div>
             )}
 
-            {action.target && (
+            {action.address && (
               <div>
                 <h4 className="text-[14px] font-normal text-muted-foreground">Target:</h4>
-                <p className="font-mono font-semibold">{action.target}</p>
+                <p className="font-mono font-semibold">{action.address}</p>
               </div>
             )}
 
-            {action.value && (
-              <div>
-                <h4 className="text-[14px] font-normal text-muted-foreground">Value:</h4>
-                <p className="font-mono font-semibold">{action.value}</p>
-              </div>
-            )}
+            <div>
+              <h4 className="text-[14px] font-normal text-muted-foreground">Value:</h4>
+              <p className="font-mono font-semibold">{action.value || '0'}</p>
+            </div>
           </div>
         </div>
       ))}

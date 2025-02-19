@@ -24,6 +24,8 @@ interface TokenInfo {
   name: string;
   symbol: string;
   decimals: number;
+  priceId: string;
+  standard: string;
 }
 
 interface TokenDetails {
@@ -32,6 +34,8 @@ interface TokenDetails {
   contract: string;
   symbol: string;
   decimals: number;
+  priceId: string;
+  standard: string;
 }
 
 interface TimelockAssetsTokenInfo {

@@ -1,10 +1,14 @@
 import { Input } from '@/components/ui/input';
 import { Editor } from '@/components/editor';
 import { useCallback } from 'react';
+import { cn } from '@/lib/utils';
+import { ProposalContent, proposalSchema } from './schema';
 
 export type ProposalContentType = {
-  title: string;
-  markdown: string;
+  [K in keyof ProposalContent]: {
+    value?: string;
+    error?: string;
+  };
 };
 
 interface ProposalPanelProps {
@@ -14,8 +18,15 @@ interface ProposalPanelProps {
 
 export const ProposalPanel = ({ content, onChange }: ProposalPanelProps) => {
   const handleChange = useCallback(
-    async ({ key, value }: { key: keyof ProposalContentType; value: string }) => {
-      onChange({ ...content, [key]: value });
+    ({ key, value }: { key: keyof ProposalContentType; value: string }) => {
+      const result = proposalSchema.shape[key].safeParse(value);
+      onChange({
+        ...content,
+        [key]: {
+          value,
+          error: result.success ? '' : result.error.errors[0].message
+        }
+      });
     },
     [onChange, content]
   );
@@ -28,21 +39,32 @@ export const ProposalPanel = ({ content, onChange }: ProposalPanelProps) => {
         </label>
         <Input
           id="title"
-          value={content.title}
+          value={content.title.value}
           onChange={(e) => handleChange({ key: 'title', value: e.target.value })}
           placeholder="Enter the title of your proposal"
-          className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
+          className={cn(
+            'border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0',
+            content.title.error && 'border-red-500'
+          )}
         />
+        {content.title.error && <p className="text-[12px] text-red-500">{content.title.error}</p>}
       </div>
       <div className="flex flex-col gap-[10px]">
         <label className="text-[14px] text-foreground" htmlFor="description">
           Description
         </label>
         <Editor
-          markdown={content.markdown || '\u200B'}
+          markdown={content.markdown.value || '\u200B'}
           onChange={(markdown) => handleChange({ key: 'markdown', value: markdown })}
           placeholder="Enter the description of your proposal"
+          className={cn(
+            'border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0',
+            content.markdown.error && 'border-red-500'
+          )}
         />
+        {content.markdown.error && (
+          <p className="text-[12px] text-red-500">{content.markdown.error}</p>
+        )}
       </div>
     </div>
   );

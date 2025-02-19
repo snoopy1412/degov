@@ -51,7 +51,6 @@ export function AddressInputWithResolver({
           placeholder={placeholder}
         />
       )}
-      {isInvalidAddress && <p className="text-[14px] text-red-500">Must be a valid eth address</p>}
     </div>
   );
 }

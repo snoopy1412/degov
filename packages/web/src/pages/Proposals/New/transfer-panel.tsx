@@ -11,10 +11,18 @@ import FormattedNumberTooltip from '@/components/formatted-number-tooltip';
 import { Skeleton } from '@/components/ui/skeleton';
 import { parseUnits, type Address } from 'viem';
 import type { ProposalActionType } from '@/config/proposals';
+import { transferSchema } from './schema';
+import { z } from 'zod';
 
 export type TransferContentType = {
-  recipient?: Address;
-  amount?: string;
+  recipient?: {
+    value?: Address;
+    error?: string;
+  };
+  amount?: {
+    value?: string;
+    error?: string;
+  };
 };
 
 interface TransferPanelProps {
@@ -29,15 +37,32 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
   const daoConfig = useConfig();
   const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(null);
 
+  const validateField = useCallback((key: keyof TransferContentType, value: string) => {
+    try {
+      transferSchema.shape[key].parse(value);
+      return '';
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return error.errors[0].message;
+      }
+      return 'Invalid value';
+    }
+  }, []);
+
   const handleChange = useCallback(
     ({ key, value }: { key: keyof TransferContentType; value: string }) => {
+      const error = validateField(key, value);
       onChange({
         ...content,
-        [key]: value as Address | string
+        [key]: {
+          value,
+          error
+        }
       });
     },
-    [onChange, content]
+    [onChange, content, validateField]
   );
+
   const { isLoading, balance } = useTokenBalance(selectedToken);
 
   const {
@@ -47,7 +72,7 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
     handleReset
   } = useNumberInput({
     maxDecimals: daoConfig?.tokenInfo?.decimals ?? 18,
-    initialValue: '',
+    initialValue: content?.amount?.value ?? '0',
     onChange: (value) => handleChange({ key: 'amount', value })
   });
 
@@ -120,18 +145,29 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
 
           <AddressInputWithResolver
             id="recipient"
-            value={content?.recipient}
+            value={content?.recipient?.value ?? ''}
             onChange={(value) => handleChange({ key: 'recipient', value })}
             placeholder="Enter address"
-            className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
+            className={cn(
+              'border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0',
+              content?.recipient?.error && 'border-red-500'
+            )}
           />
+          {content?.recipient?.error && (
+            <span className="text-[14px] text-danger">{content.recipient.error}</span>
+          )}
         </div>
 
         <div className="flex flex-col gap-[10px]">
           <label className="text-[14px] text-foreground" htmlFor="titl  e">
             Transfer amount
           </label>
-          <div className="relative flex flex-col gap-[10px] rounded-[4px] border border-border/20 bg-card px-[10px] py-[20px]">
+          <div
+            className={cn(
+              'relative flex flex-col gap-[10px] rounded-[4px] border border-border/20 bg-card px-[10px] py-[20px]',
+              content?.amount?.error && 'border-red-500'
+            )}
+          >
             <div className="flex items-center justify-between gap-[10px]">
               <input
                 className={cn(
@@ -168,6 +204,9 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
               </span>
             </div>
           </div>
+          {content?.amount?.error && (
+            <span className="text-[14px] text-danger">{content.amount.error}</span>
+          )}
           {isValueGreaterThanBalance && (
             <span className="text-[14px] text-danger">Balance is not enough</span>
           )}

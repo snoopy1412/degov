@@ -12,20 +12,21 @@ import { CustomContentType, CustomPanel } from './custom-panel';
 import { WithConnect } from '@/components/with-connect';
 import type { ProposalActionType } from '@/config/proposals';
 import type { Address } from 'viem';
-
-interface Action {
-  id: string;
-  type: ProposalActionType;
-  content?: ProposalContentType | TransferContentType | CustomContentType;
-}
+import { Action } from './type';
 
 const DEFAULT_ACTIONS = [
   {
     id: uuidv4(),
     type: 'proposal' as ProposalActionType,
     content: {
-      title: '',
-      markdown: '\u200B'
+      title: {
+        value: '',
+        error: ''
+      },
+      markdown: {
+        value: '\u200B',
+        error: ''
+      }
     } as ProposalContentType
   },
   {
@@ -37,6 +38,7 @@ const DEFAULT_ACTIONS = [
 export const NewProposal = () => {
   const [actions, setActions] = useState<Action[]>(DEFAULT_ACTIONS);
   const [actionUuid, setActionUuid] = useState<string>(DEFAULT_ACTIONS[0].id);
+  console.log('actions', actions);
 
   const handleProposalContentChange = useCallback(
     (content: ProposalContentType) => {
@@ -81,14 +83,37 @@ export const NewProposal = () => {
       let content: TransferContentType | CustomContentType | undefined;
       if (type === 'transfer') {
         content = {
-          recipient: '' as Address,
-          amount: ''
+          recipient: {
+            value: '' as Address,
+            error: ''
+          },
+          amount: {
+            value: '',
+            error: ''
+          }
         } as TransferContentType;
       } else if (type === 'custom') {
         content = {
-          target: '' as Address,
-          abi: '',
-          method: ''
+          target: {
+            value: '' as Address,
+            error: ''
+          },
+          abiType: {
+            value: '',
+            error: ''
+          },
+          abiMethod: {
+            value: '',
+            error: ''
+          },
+          calldata: {
+            value: [],
+            error: []
+          },
+          value: {
+            value: '',
+            error: ''
+          }
         } as CustomContentType;
       }
 
@@ -126,7 +151,7 @@ export const NewProposal = () => {
     const proposalAction = actions.find((action) => action.type === 'proposal');
     const markdown = (proposalAction?.content as ProposalContentType)?.markdown;
     if (markdown) {
-      return await markdownToHtml(markdown);
+      return await markdownToHtml(markdown.value || '');
     }
     return '';
   }, [actions]);
@@ -205,7 +230,11 @@ export const NewProposal = () => {
             )}
 
             {currentAction?.type === 'preview' && (
-              <PreviewPanel title={proposalContent.title} html={html?.value || ''} />
+              <PreviewPanel
+                title={proposalContent.title.value || ''}
+                html={html?.value || ''}
+                actions={actions}
+              />
             )}
           </main>
         </div>

@@ -1,42 +1,46 @@
 {
-    "logo": "/example/logo.svg",
-    "walletConnectProjectId": "2719448e2ce94fdd269a3c8587123bcc",
-    "daoName": "RingDAO",
-    "description": "Governed by all the RING token holders, this decentralized entity directs the Darwinia chain, Msgport protocol, and XAPI's oracle service",
-    "links": {
-      "website": "https://www.open-governor.com",
-      "twitter": "https://twitter.com/DarwiniaNetwork",
-      "discord": "https://discord.gg/HrY8ZjK",
-      "telegram": "https://t.me/DarwiniaNetwork",
-      "github": "https://github.com/darwinia-network",
-      "email": "example@gmail.com"
-    },
-    "networkInfo": {
-      "chain": "Darwinia",
-      "chainId": "46",
-      "rpc": [
-        "https://rpc.darwinia.network"
-      ],
-      "explorer": {
-        "name": "Darwinia explorer",
-        "url": "https://explorer.darwinia.network"
-      }
-    },
-    "tokenInfo": {
-      "governorContract": "0x0E55c72781aCD923C4e3e7Ad9bB8363de15ef204",
-      "tokenContract": "0x0E55c72781aCD923C4e3e7Ad9bB8363de15ef204",
-      "timeLockContract": "0x0E55c72781aCD923C4e3e7Ad9bB8363de15ef204",
-      "name": "RING",
-      "symbol": "RING",
-      "decimals": 18
-    },
-    "timelockAssetsTokenInfo": {
-      "kton": {
-        "logo":"https://staking.ktondao.xyz/images/token/kton.svg",
-        "chain": "Darwinia Chain",
-        "contract": "0x0000000000000000000000000000000000000402",
-        "symbol": "KTON",
-        "decimals": 18
-      }
+  "logo": "/example/logo.svg",
+  "walletConnectProjectId": "2719448e2ce94fdd269a3c8587123bcc",
+  "daoName": "RingDAO",
+  "description": "Governed by all the RING token holders, this decentralized entity directs the Darwinia chain, Msgport protocol, and XAPI's oracle service",
+  "links": {
+    "website": "https://www.open-governor.com",
+    "twitter": "https://twitter.com/DarwiniaNetwork",
+    "discord": "https://discord.gg/HrY8ZjK",
+    "telegram": "https://t.me/DarwiniaNetwork",
+    "github": "https://github.com/darwinia-network",
+    "email": "example@gmail.com"
+  },
+  "networkInfo": {
+    "chain": "Darwinia",
+    "chainId": "46",
+    "rpc": [
+      "https://darwinia-rpc.itering.io"
+    ],
+    "explorer": {
+      "name": "Darwinia explorer",
+      "url": "https://explorer.darwinia.network"
+    }
+  },
+  "tokenInfo": {
+    "governorContract": "0x9bCF89B951b9880AC1Ec9Ce6b82B2764ca7A532F",
+    "tokenContract": "0xcC43d7e20D4dC29Ca65f3327C9257e1E354f9E08",
+    "timeLockContract": "0x527560d6a509ddE7828D598BF31Fc67DA50c8093",
+    "name": "RING",
+    "symbol": "RING",
+    "decimals": 18,
+    "priceId": "RING",
+    "standard": "ERC-20"
+  },
+  "timelockAssetsTokenInfo": {
+    "kton": {
+      "logo": "https://staking.ktondao.xyz/images/token/kton.svg",
+      "chain": "Darwinia Chain",
+      "contract": "0x0000000000000000000000000000000000000402",
+      "symbol": "KTON",
+      "decimals": 18,
+      "priceId": "KTON",
+      "standard": "ERC-20"
     }
   }
+}
