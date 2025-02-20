@@ -1,12 +1,17 @@
-import { cn } from '@/lib/utils';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface ViewOnExplorerProps {
   explorerUrl: string;
   className?: string;
   imgClassName?: string;
 }
-export const ViewOnExplorer = ({ explorerUrl, className, imgClassName }: ViewOnExplorerProps) => {
+export const ViewOnExplorer = ({
+  explorerUrl,
+  className,
+  imgClassName,
+}: ViewOnExplorerProps) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -15,14 +20,16 @@ export const ViewOnExplorer = ({ explorerUrl, className, imgClassName }: ViewOnE
           target="_blank"
           rel="noopener noreferrer"
           className={cn(
-            'inline-block h-[16px] w-[16px] cursor-pointer transition-opacity hover:opacity-80',
+            "inline-block h-[16px] w-[16px] cursor-pointer transition-opacity hover:opacity-80",
             className
           )}
         >
-          <img
+          <Image
             src="/assets/image/external-link.svg"
             alt="external-link"
-            className={cn('h-full w-full', imgClassName)}
+            width={16}
+            height={16}
+            className={cn("h-full w-full", imgClassName)}
           />
         </a>
       </TooltipTrigger>

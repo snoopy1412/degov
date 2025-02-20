@@ -1,13 +1,15 @@
-import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi';
-import { Button } from '../ui/button';
-import { useConfig } from '@/hooks/useConfig';
-import { Connected } from './connected';
+"use client";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
+import { Button } from "../ui/button";
+import { useConfig } from "@/hooks/useConfig";
+import { Connected } from "./connected";
 
 export const ConnectButton = () => {
   const { openConnectModal } = useConnectModal();
   const dappConfig = useConfig();
-  const { chainId, address, isConnected, isConnecting, isReconnecting } = useAccount();
+  const { chainId, address, isConnected, isConnecting, isReconnecting } =
+    useAccount();
 
   if (isConnecting || isReconnecting) {
     return null;

@@ -1,23 +1,37 @@
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Separator } from './ui/separator';
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Separator } from "./ui/separator";
 
 interface DelegateSelectorProps {
   open: boolean;
   onOpenChange: (value: boolean) => void;
-  onSelect: (value: 'myself' | 'else') => void;
+  onSelect: (value: "myself" | "else") => void;
 }
 
-export function DelegateSelector({ open, onOpenChange, onSelect }: DelegateSelectorProps) {
+export function DelegateSelector({
+  open,
+  onOpenChange,
+  onSelect,
+}: DelegateSelectorProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[400px] rounded-[26px] border-border/20 bg-card p-[20px] sm:rounded-[26px]">
         <DialogHeader className="flex w-full flex-row items-center justify-between">
-          <DialogTitle className="text-[18px] font-extrabold">Delegate</DialogTitle>
-          <img
+          <DialogTitle className="text-[18px] font-extrabold">
+            Delegate
+          </DialogTitle>
+          <Image
             src="/assets/image/close.svg"
             alt="close"
-            className="h-[24px] w-[24px] cursor-pointer transition-opacity hover:opacity-80"
+            width={24}
+            height={24}
+            className="cursor-pointer transition-opacity hover:opacity-80"
             onClick={() => onOpenChange(false)}
           />
         </DialogHeader>
@@ -26,14 +40,14 @@ export function DelegateSelector({ open, onOpenChange, onSelect }: DelegateSelec
           <Button
             className="w-full rounded-[100px] border-border bg-card"
             variant="outline"
-            onClick={() => onSelect('myself')}
+            onClick={() => onSelect("myself")}
           >
             Myself
           </Button>
           <Button
             className="w-full rounded-[100px] border-border bg-card"
             variant="outline"
-            onClick={() => onSelect('else')}
+            onClick={() => onSelect("else")}
           >
             Someone else
           </Button>

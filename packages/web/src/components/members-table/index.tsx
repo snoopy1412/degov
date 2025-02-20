@@ -5,12 +5,12 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
-} from '@/components/ui/table';
-import { Link } from '@tanstack/react-router';
-import { Empty } from '@/components/ui/empty';
-import { Button } from '../ui/button';
-import { AddressWithAvatar } from '../address-with-avatar';
+  TableRow,
+} from "@/components/ui/table";
+import Link from "next/link";
+import { Empty } from "@/components/ui/empty";
+import { Button } from "../ui/button";
+import { AddressWithAvatar } from "../address-with-avatar";
 
 export type Member = {
   rank: string;
@@ -32,16 +32,18 @@ export function MembersTable({ caption, onDelegate, data }: MembersTableProps) {
         {!!data?.length && (
           <TableCaption>
             <Link
-              to="/proposals"
+              href="/proposals"
               className="text-foreground transition-colors hover:text-foreground/80"
             >
-              {caption || 'View more'}
+              {caption || "View more"}
             </Link>
           </TableCaption>
         )}
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[160px] rounded-l-[14px] text-left">Rank</TableHead>
+            <TableHead className="w-[160px] rounded-l-[14px] text-left">
+              Rank
+            </TableHead>
             <TableHead className="w-[260px] text-left">Member</TableHead>
             <TableHead>Delegate Statement</TableHead>
             <TableHead className="w-[200px]">Voting Power</TableHead>

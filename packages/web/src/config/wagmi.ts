@@ -1,20 +1,24 @@
-import { cookieStorage, createStorage } from 'wagmi';
-import { QueryClient } from '@tanstack/react-query';
-import { getDefaultWallets, getDefaultConfig, Chain } from '@rainbow-me/rainbowkit';
+import { cookieStorage, createStorage } from "wagmi";
+import { QueryClient } from "@tanstack/react-query";
+import {
+  getDefaultWallets,
+  getDefaultConfig,
+  Chain,
+} from "@rainbow-me/rainbowkit";
 import {
   talismanWallet,
   okxWallet,
   imTokenWallet,
   trustWallet,
   safeWallet,
-  subWallet
-} from '@rainbow-me/rainbowkit/wallets';
+  subWallet,
+} from "@rainbow-me/rainbowkit/wallets";
 
-import { mainnet } from 'wagmi/chains';
+import { mainnet } from "wagmi/chains";
 
-export const projectId = import.meta.env.VITE_PROJECT_ID;
+export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
-if (!projectId) throw new Error('Project ID is not defined');
+if (!projectId) throw new Error("Project ID is not defined");
 
 const { wallets } = getDefaultWallets();
 
@@ -23,15 +27,15 @@ export const queryClient = new QueryClient({
     queries: {
       gcTime: 1_000 * 60 * 60 * 24, // 24 hours
       refetchOnMount: true,
-      refetchOnWindowFocus: false
-    }
-  }
+      refetchOnWindowFocus: false,
+    },
+  },
 });
 
 export function createConfig({
   appName,
   projectId,
-  chain
+  chain,
 }: {
   chain: Chain;
   appName: string;
@@ -44,12 +48,20 @@ export function createConfig({
     wallets: [
       ...wallets,
       {
-        groupName: 'More',
-        wallets: [talismanWallet, subWallet, okxWallet, imTokenWallet, trustWallet, safeWallet]
-      }
+        groupName: "More",
+        wallets: [
+          talismanWallet,
+          subWallet,
+          okxWallet,
+          imTokenWallet,
+          trustWallet,
+          safeWallet,
+        ],
+      },
     ],
+    ssr: true,
     storage: createStorage({
-      storage: cookieStorage
-    })
+      storage: cookieStorage,
+    }),
   });
 }

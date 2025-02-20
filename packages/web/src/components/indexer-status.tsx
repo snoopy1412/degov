@@ -1,9 +1,11 @@
-import { useIndexerStatus } from '@/hooks/useIndexerStatus';
-import { INDEXER_CONFIG } from '../config/indexer';
-import { cn } from '@/lib/utils';
+"use client";
+import { useIndexerStatus } from "@/hooks/useIndexerStatus";
+import { INDEXER_CONFIG } from "../config/indexer";
+import { cn } from "@/lib/utils";
 
 export function IndexerStatus() {
-  const { status, syncPercentage, currentBlock, indexedBlock } = useIndexerStatus();
+  const { status, syncPercentage, currentBlock, indexedBlock } =
+    useIndexerStatus();
 
   return (
     <div className="flex flex-col gap-[10px] rounded-[10px] bg-card p-[10px] shadow-sm">
@@ -15,7 +17,7 @@ export function IndexerStatus() {
       <div className="h-[20px] w-full rounded-[100px] bg-secondary">
         <div
           className={cn(
-            'flex h-full items-center justify-start rounded-[100px] px-[5px]',
+            "flex h-full items-center justify-start rounded-[100px] px-[5px]",
             INDEXER_CONFIG.colors[status]
           )}
           style={{ width: `${syncPercentage}%` }}

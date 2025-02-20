@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableBody,
@@ -5,25 +6,30 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
-} from '@/components/ui/table';
-import { Link } from '@tanstack/react-router';
-import { Empty } from '@/components/ui/empty';
-import { useMemo } from 'react';
-import { useConfig } from '@/hooks/useConfig';
-import { isEmpty } from 'lodash-es';
-import { Asset } from './asset';
+  TableRow,
+} from "@/components/ui/table";
+import Link from "next/link";
+import { Empty } from "@/components/ui/empty";
+import { useMemo } from "react";
+import { useConfig } from "@/hooks/useConfig";
+import { isEmpty } from "lodash-es";
+import { Asset } from "./asset";
 interface TreasuryTableProps {
   caption?: string;
 }
 export function TreasuryTable({ caption }: TreasuryTableProps) {
   const daoConfig = useConfig();
   const data = useMemo(() => {
-    if (!daoConfig?.timelockAssetsTokenInfo || isEmpty(daoConfig?.timelockAssetsTokenInfo))
+    if (
+      !daoConfig?.timelockAssetsTokenInfo ||
+      isEmpty(daoConfig?.timelockAssetsTokenInfo)
+    )
       return [];
-    return Object.entries(daoConfig?.timelockAssetsTokenInfo || {}).map(([, value]) => ({
-      ...value
-    }));
+    return Object.entries(daoConfig?.timelockAssetsTokenInfo || {}).map(
+      ([, value]) => ({
+        ...value,
+      })
+    );
   }, [daoConfig]);
 
   return (
@@ -32,10 +38,10 @@ export function TreasuryTable({ caption }: TreasuryTableProps) {
         {!!data?.length && (
           <TableCaption>
             <Link
-              to="/proposals"
+              href="/proposals"
               className="text-foreground transition-colors hover:text-foreground/80"
             >
-              {caption || 'View more'}
+              {caption || "View more"}
             </Link>
           </TableCaption>
         )}
@@ -53,7 +59,10 @@ export function TreasuryTable({ caption }: TreasuryTableProps) {
           {data.map((value) => (
             <TableRow key={value.symbol}>
               <TableCell className="text-left">
-                <Asset asset={value} explorer={daoConfig?.networkInfo?.explorer?.url as string} />
+                <Asset
+                  asset={value}
+                  explorer={daoConfig?.networkInfo?.explorer?.url as string}
+                />
               </TableCell>
               <TableCell>{`514K ${value.symbol}`}</TableCell>
               <TableCell className="text-right">1.95B USD</TableCell>

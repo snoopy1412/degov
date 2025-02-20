@@ -1,21 +1,36 @@
-import * as React from 'react';
-import { WagmiProvider, deserialize, serialize } from 'wagmi';
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { createConfig, queryClient } from '@/config/wagmi';
-import { useConfig } from '@/hooks/useConfig';
-import '@rainbow-me/rainbowkit/styles.css';
-import { Chain, darkTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+"use client";
+import * as React from "react";
+import { WagmiProvider, deserialize, serialize } from "wagmi";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { createConfig } from "@/config/wagmi";
+import { useConfig } from "@/hooks/useConfig";
+import "@rainbow-me/rainbowkit/styles.css";
+import { Chain, darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { QueryClient } from "@tanstack/react-query";
 
 const dark = darkTheme({
-  borderRadius: 'medium',
-  accentColor: 'hsl(var(--nextui-primary-500))'
+  borderRadius: "medium",
+  accentColor: "hsl(var(--nextui-primary-500))",
 });
 
 export function DAppProvider({ children }: React.PropsWithChildren<unknown>) {
   const dappConfig = useConfig();
-
-  if (!dappConfig) return null;
+  const [queryClient] = React.useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            gcTime: 1_000 * 60 * 60 * 24,
+            refetchOnMount: true,
+            refetchOnWindowFocus: false,
+          },
+        },
+      })
+  );
+  if (!dappConfig) {
+    return null;
+  }
 
   const currentChain: Chain = {
     id: Number(dappConfig.networkInfo?.chainId),
@@ -23,31 +38,36 @@ export function DAppProvider({ children }: React.PropsWithChildren<unknown>) {
     nativeCurrency: {
       name: dappConfig.tokenInfo?.name,
       symbol: dappConfig.tokenInfo?.symbol,
-      decimals: dappConfig.tokenInfo?.decimals
+      decimals: dappConfig.tokenInfo?.decimals,
     },
     rpcUrls: {
       default: {
-        http: dappConfig.networkInfo?.rpc
-      }
+        http: dappConfig.networkInfo?.rpc,
+      },
     },
     blockExplorers: {
-      default: dappConfig.networkInfo?.explorer
-    }
+      default: dappConfig.networkInfo?.explorer,
+    },
   };
+
   const persister = createSyncStoragePersister({
     serialize,
     storage: window.localStorage,
-    deserialize
+    deserialize,
   });
+
   const config = createConfig({
     appName: dappConfig?.daoName,
     projectId: dappConfig?.walletConnectProjectId,
-    chain: currentChain
+    chain: currentChain,
   });
 
   return (
     <WagmiProvider config={config}>
-      <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{ persister }}
+      >
         <RainbowKitProvider
           theme={dark}
           locale="en-US"

@@ -1,0 +1,12 @@
+import { DaoHeader } from "./_components/dao-header";
+import { Overview } from "./_components/overview";
+import { Proposals } from "./_components/proposals";
+export default function HomePage() {
+  return (
+    <div className="flex flex-col gap-[30px] p-[30px]">
+      <DaoHeader />
+      <Overview />
+      <Proposals />
+    </div>
+  );
+}

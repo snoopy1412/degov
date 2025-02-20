@@ -5,23 +5,23 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow
-} from '@/components/ui/table';
-import { Link } from '@tanstack/react-router';
-import { Empty } from '@/components/ui/empty';
-import { AddressWithAvatar } from '../address-with-avatar';
+  TableRow,
+} from "@/components/ui/table";
+import Link from "next/link";
+import { Empty } from "@/components/ui/empty";
+import { AddressWithAvatar } from "../address-with-avatar";
 
 const data = [
   {
-    delegator: '0x3d6d656c1bf92f7028Ce4C352563E1C363C58ED5',
-    delegationDate: 'May 20, 2015',
-    votes: '104.35M'
+    delegator: "0x3d6d656c1bf92f7028Ce4C352563E1C363C58ED5",
+    delegationDate: "May 20, 2015",
+    votes: "104.35M",
   },
   {
-    delegator: '0xd8da6bf26964af9d7eed9e03e53415d37aa96045',
-    delegationDate: 'August 24, 2013',
-    votes: '104.35M'
-  }
+    delegator: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+    delegationDate: "August 24, 2013",
+    votes: "104.35M",
+  },
 ];
 
 interface DelegationTableProps {
@@ -34,18 +34,22 @@ export function DelegationTable({ caption }: DelegationTableProps) {
         {!!data?.length && (
           <TableCaption>
             <Link
-              to="/proposals"
+              href="/proposals"
               className="text-foreground transition-colors hover:text-foreground/80"
             >
-              {caption || 'View more'}
+              {caption || "View more"}
             </Link>
           </TableCaption>
         )}
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[33.3%] rounded-l-[14px] text-left">Delegator</TableHead>
+            <TableHead className="w-[33.3%] rounded-l-[14px] text-left">
+              Delegator
+            </TableHead>
             <TableHead className="w-[33.3%]">Delegation Date</TableHead>
-            <TableHead className="w-[33.3%] rounded-r-[14px] text-right">Votes</TableHead>
+            <TableHead className="w-[33.3%] rounded-r-[14px] text-right">
+              Votes
+            </TableHead>
           </TableRow>
         </TableHeader>
 
@@ -53,7 +57,10 @@ export function DelegationTable({ caption }: DelegationTableProps) {
           {data.map((value) => (
             <TableRow key={value.delegator}>
               <TableCell className="text-left">
-                <AddressWithAvatar address={value.delegator as `0x${string}`} avatarSize={30} />
+                <AddressWithAvatar
+                  address={value.delegator as `0x${string}`}
+                  avatarSize={30}
+                />
               </TableCell>
               <TableCell>{value.delegationDate}</TableCell>
               <TableCell className="text-right">{value.votes}</TableCell>
@@ -65,8 +72,8 @@ export function DelegationTable({ caption }: DelegationTableProps) {
         <Empty
           label={
             <span>
-              You haven't received delegations from others, and you can delegate to yourself or
-              others{' '}
+              You haven&apos;t received delegations from others, and you can
+              delegate to yourself or others{" "}
               <a href="/delegate" className="font-semibold underline">
                 here
               </a>
