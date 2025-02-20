@@ -1,45 +1,27 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAsync } from 'react-use';
-import { v4 as uuidv4 } from 'uuid';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { useAsync, usePrevious } from 'react-use';
 import { Button } from '@/components/ui/button';
 import { markdownToHtml } from '@/utils/markdown';
 import { NewProposalAction } from './action';
-import { ProposalContentType, ProposalPanel } from './proposal-panel';
+import { ProposalPanel } from './proposal-panel';
 import { PreviewPanel } from './preview-panel';
 import { ReplacePanel } from './replace-panel';
-import { TransferContentType, TransferPanel } from './transfer-panel';
-import { CustomContentType, CustomPanel } from './custom-panel';
+import { TransferPanel } from './transfer-panel';
+import { CustomPanel } from './custom-panel';
 import { WithConnect } from '@/components/with-connect';
-import type { ProposalActionType } from '@/config/proposals';
-import type { Address } from 'viem';
-import { Action } from './type';
+import { generateCustomAction, generateProposalAction, generateTransferAction } from './helper';
+import type { Action, CustomContentType, ProposalContentType, TransferContentType } from './type';
+import { proposalSchema } from './schema';
 
-const DEFAULT_ACTIONS = [
-  {
-    id: uuidv4(),
-    type: 'proposal' as ProposalActionType,
-    content: {
-      title: {
-        value: '',
-        error: ''
-      },
-      markdown: {
-        value: '\u200B',
-        error: ''
-      }
-    } as ProposalContentType
-  },
-  {
-    id: uuidv4(),
-    type: 'preview' as ProposalActionType
-  }
-];
+const DEFAULT_ACTIONS: Action[] = [generateProposalAction()];
 
 export const NewProposal = () => {
   const [actions, setActions] = useState<Action[]>(DEFAULT_ACTIONS);
-  const [actionUuid, setActionUuid] = useState<string>(DEFAULT_ACTIONS[0].id);
-  console.log('actions', actions);
 
+  const [actionUuid, setActionUuid] = useState<string>(DEFAULT_ACTIONS[0].id);
+  const previewActionUuid = usePrevious(actionUuid);
+
+  const [tab, setTab] = useState<'edit' | 'add' | 'preview'>('edit');
   const handleProposalContentChange = useCallback(
     (content: ProposalContentType) => {
       setActions(
@@ -50,24 +32,15 @@ export const NewProposal = () => {
   );
 
   const handleAddAction = useCallback(() => {
-    if (actions.findIndex((action) => action.type === 'add') === -1) {
-      const previewIndex = actions.findIndex((action) => action.type === 'preview');
-      const newActions = [
-        ...actions.slice(0, previewIndex),
-        { id: uuidv4(), type: 'add' as ProposalActionType },
-        ...actions.slice(previewIndex)
-      ];
-      setActions(newActions);
-      setActionUuid(newActions[newActions.length - 2].id);
-    }
-  }, [actions, setActions]);
+    setTab('add');
+  }, []);
 
   const handleSwitchAction = useCallback(
     (id: string) => {
+      setTab('edit');
       setActionUuid(id);
-      setActions(actions.filter((action) => action.type !== 'add'));
     },
-    [setActionUuid, actions]
+    [setActionUuid]
   );
 
   const handleRemoveAction = useCallback(
@@ -79,52 +52,17 @@ export const NewProposal = () => {
   );
 
   const handleReplaceAction = useCallback(
-    (type: Omit<ProposalActionType, 'add'>, index: number) => {
-      let content: TransferContentType | CustomContentType | undefined;
+    (type: 'transfer' | 'custom') => {
       if (type === 'transfer') {
-        content = {
-          recipient: {
-            value: '' as Address,
-            error: ''
-          },
-          amount: {
-            value: '',
-            error: ''
-          }
-        } as TransferContentType;
+        const transferAction = generateTransferAction();
+        setActions([...actions, transferAction]);
+        setActionUuid(transferAction.id);
       } else if (type === 'custom') {
-        content = {
-          target: {
-            value: '' as Address,
-            error: ''
-          },
-          abiType: {
-            value: '',
-            error: ''
-          },
-          abiMethod: {
-            value: '',
-            error: ''
-          },
-          calldata: {
-            value: [],
-            error: []
-          },
-          value: {
-            value: '',
-            error: ''
-          }
-        } as CustomContentType;
+        const customAction = generateCustomAction();
+        setActions([...actions, customAction]);
+        setActionUuid(customAction.id);
       }
-
-      setActions(
-        actions.map((action, i) => {
-          if (i === index) {
-            return { id: action.id, type: type as ProposalActionType, content };
-          }
-          return action;
-        })
-      );
+      setTab('edit');
     },
     [actions, setActions]
   );
@@ -132,7 +70,9 @@ export const NewProposal = () => {
   const handleTransferContentChange = useCallback(
     (content: TransferContentType) => {
       setActions(
-        actions.map((action) => (action.id === actionUuid ? { ...action, content } : action))
+        actions.map((action) =>
+          action.id === actionUuid && action.type === 'transfer' ? { ...action, content } : action
+        )
       );
     },
     [actions, setActions, actionUuid]
@@ -141,35 +81,68 @@ export const NewProposal = () => {
   const handleCustomContentChange = useCallback(
     (content: CustomContentType) => {
       setActions(
-        actions.map((action) => (action.id === actionUuid ? { ...action, content } : action))
+        actions.map((action) =>
+          action.id === actionUuid && action.type === 'custom' ? { ...action, content } : action
+        )
       );
     },
     [actions, setActions, actionUuid]
   );
-
-  const html = useAsync(async () => {
-    const proposalAction = actions.find((action) => action.type === 'proposal');
-    const markdown = (proposalAction?.content as ProposalContentType)?.markdown;
-    if (markdown) {
-      return await markdownToHtml(markdown.value || '');
-    }
-    return '';
-  }, [actions]);
-
-  useEffect(() => {
-    return () => {
-      setActions(DEFAULT_ACTIONS);
-    };
-  }, []);
 
   const proposalContent = useMemo(() => {
     const proposalAction = actions.find((action) => action.type === 'proposal');
     return (proposalAction?.content as ProposalContentType) || { title: '', markdown: '\u200B' };
   }, [actions]);
 
-  const currentAction = useMemo(() => {
-    return actions.find((action) => action.id === actionUuid);
-  }, [actions, actionUuid]);
+  const html = useAsync(async () => {
+    const markdown = proposalContent?.markdown;
+    if (markdown) {
+      return await markdownToHtml(markdown.value || '');
+    }
+    return '';
+  }, [proposalContent]);
+
+  useEffect(() => {
+    if (previewActionUuid && actionUuid && previewActionUuid !== actionUuid) {
+      const action = actions.find((action) => action.id === actionUuid);
+      switch (action?.type) {
+        case 'proposal': {
+          const result = proposalSchema.safeParse({
+            title: action?.content?.title.value,
+            markdown: action?.content?.markdown.value
+          });
+
+          setActions(
+            actions.map((action) =>
+              action.id === previewActionUuid && action.type === 'proposal'
+                ? {
+                    ...action,
+                    error: !result.success ? result.error.flatten().fieldErrors : null
+                  }
+                : action
+            )
+          );
+          break;
+        }
+        case 'transfer': {
+          // 校验transfer内容
+          break;
+        }
+        case 'custom': {
+          // 校验custom内容
+          break;
+        }
+      }
+    }
+  }, [previewActionUuid, actionUuid, actions]);
+
+  useEffect(() => {
+    return () => {
+      setActions(DEFAULT_ACTIONS);
+      setActionUuid(DEFAULT_ACTIONS[0].id);
+      setTab('edit');
+    };
+  }, []);
 
   return (
     <WithConnect>
@@ -189,9 +162,15 @@ export const NewProposal = () => {
                 key={action.id}
                 type={action.type}
                 onSwitch={() => handleSwitchAction(action.id)}
-                active={action.id === actionUuid}
+                active={action.id === actionUuid && tab === 'edit'}
+                error={Object.values(action?.content || {}).some((field) => field.error)}
               />
             ))}
+            <NewProposalAction
+              type="preview"
+              onSwitch={() => setTab('preview')}
+              active={tab === 'preview'}
+            />
 
             <Button className="gap-[5px] rounded-[100px]" onClick={handleAddAction}>
               <img src="/assets/image/proposal/plus.svg" alt="plus" />
@@ -199,43 +178,52 @@ export const NewProposal = () => {
             </Button>
           </aside>
           <main className="flex-1">
-            {currentAction?.type === 'proposal' && (
-              <ProposalPanel content={proposalContent} onChange={handleProposalContentChange} />
-            )}
+            {actions.map((action) => {
+              return (
+                <Fragment key={action.id}>
+                  {action?.type === 'proposal' && (
+                    <ProposalPanel
+                      visible={tab === 'edit' && action.id === actionUuid}
+                      content={action?.content as ProposalContentType}
+                      onChange={handleProposalContentChange}
+                    />
+                  )}
 
-            {currentAction?.type === 'add' && (
-              <ReplacePanel
-                index={actions.findIndex((action) => action.id === actionUuid)}
-                onReplace={handleReplaceAction}
-                onRemove={handleRemoveAction}
-              />
-            )}
-            {currentAction?.type === 'transfer' && (
-              <TransferPanel
-                index={actions.findIndex((action) => action.id === actionUuid)}
-                content={currentAction?.content as TransferContentType}
-                onChange={handleTransferContentChange}
-                onReplace={handleReplaceAction}
-                onRemove={handleRemoveAction}
-              />
-            )}
-            {currentAction?.type === 'custom' && (
-              <CustomPanel
-                index={actions.findIndex((action) => action.id === actionUuid)}
-                content={currentAction?.content as CustomContentType}
-                onChange={handleCustomContentChange}
-                onReplace={handleReplaceAction}
-                onRemove={handleRemoveAction}
-              />
-            )}
+                  {action?.type === 'transfer' && (
+                    <TransferPanel
+                      visible={tab === 'edit' && action.id === actionUuid}
+                      index={actions.findIndex((action) => action.id === actionUuid)}
+                      content={action?.content as TransferContentType}
+                      onChange={handleTransferContentChange}
+                      onRemove={handleRemoveAction}
+                    />
+                  )}
 
-            {currentAction?.type === 'preview' && (
-              <PreviewPanel
-                title={proposalContent.title.value || ''}
-                html={html?.value || ''}
-                actions={actions}
-              />
-            )}
+                  {action?.type === 'custom' && (
+                    <CustomPanel
+                      visible={tab === 'edit' && action.id === actionUuid}
+                      index={actions.findIndex((action) => action.id === actionUuid)}
+                      content={action?.content as CustomContentType}
+                      onChange={handleCustomContentChange}
+                      onRemove={handleRemoveAction}
+                    />
+                  )}
+                </Fragment>
+              );
+            })}
+
+            <ReplacePanel
+              visible={tab === 'add'}
+              index={actions.length}
+              onReplace={handleReplaceAction}
+              onRemove={handleRemoveAction}
+            />
+            <PreviewPanel
+              visible={tab === 'preview'}
+              title={proposalContent.title.value || ''}
+              html={html?.value || ''}
+              actions={actions}
+            />
           </main>
         </div>
       </div>

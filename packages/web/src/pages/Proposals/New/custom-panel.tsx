@@ -12,44 +12,22 @@ import { Calldata, CallDataInputForm } from './calldata-input-form';
 import { FileUploader } from '@/components/file-uploader';
 import { abiList } from '@/config/contract';
 import { isValidAbi } from '@/utils/abi';
-import { isAddress, type Abi, type AbiItem, type Address } from 'viem';
+import { isAddress, type Abi, type AbiItem } from 'viem';
 import { useBytecode } from 'wagmi';
 import { useConfig } from '@/hooks/useConfig';
-import type { ProposalActionType } from '@/config/proposals';
 import { Skeleton } from '@/components/ui/skeleton';
-
-export type CustomContentType = {
-  target: {
-    value: Address;
-    error: string;
-  };
-  abiType: {
-    value: string;
-    error: string;
-  };
-  abiMethod: {
-    value: string;
-    error: string;
-  };
-  calldata: {
-    value: Calldata[];
-    error: string[];
-  };
-  value: {
-    value: string;
-    error: string;
-  };
-};
+import type { CustomContentType } from './type';
+import { cn } from '@/lib/utils';
 
 interface CustomPanelProps {
+  visible: boolean;
   index: number;
   content?: CustomContentType;
   onChange: (content: CustomContentType) => void;
-  onReplace: (type: Omit<ProposalActionType, 'add'>, index: number) => void;
   onRemove: (index: number) => void;
 }
 
-export const CustomPanel = ({ index, content, onChange, onRemove }: CustomPanelProps) => {
+export const CustomPanel = ({ index, visible, content, onChange, onRemove }: CustomPanelProps) => {
   const daoConfig = useConfig();
   const [abiJson, setAbiJson] = useState<AbiItem[] | null>(null);
 
@@ -158,7 +136,12 @@ export const CustomPanel = ({ index, content, onChange, onRemove }: CustomPanelP
   );
 
   return (
-    <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px] pb-[50px]">
+    <div
+      className={cn(
+        'flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px] pb-[50px]',
+        !visible && 'hidden'
+      )}
+    >
       <header className="flex items-center justify-between">
         <h4 className="text-[18px] font-semibold">Action #{index}</h4>
         <Button

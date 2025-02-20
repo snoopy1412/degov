@@ -4,20 +4,24 @@ interface NewProposalActionProps {
   type: Omit<ProposalActionType, 'add'>;
   onSwitch?: (type: Omit<ProposalActionType, 'add'>) => void;
   active?: boolean;
+  error?: boolean;
 }
 
-export const NewProposalAction = ({ type, onSwitch, active }: NewProposalActionProps) => {
+export const NewProposalAction = ({ type, onSwitch, active, error }: NewProposalActionProps) => {
   if (type === 'proposal') {
     return (
       <div
         className={cn(
-          'flex cursor-pointer items-center gap-[10px] rounded-[14px] border border-border/20 bg-card px-[20px] py-[15px] transition-opacity hover:opacity-80',
+          'relative flex cursor-pointer items-center gap-[10px] rounded-[14px] border border-border/20 bg-card px-[20px] py-[15px] transition-opacity hover:opacity-80',
           active && 'border-border'
         )}
         onClick={() => onSwitch?.('proposal')}
       >
         <img src={PROPOSAL_ACTIONS['proposal']} alt="proposal" />
         <span className="text-[14px] font-normal text-foreground">Proposal</span>
+        {error && (
+          <span className="absolute right-[20px] top-1/2 h-[10px] w-[10px] -translate-y-1/2 rounded-full bg-danger"></span>
+        )}
       </div>
     );
   }
@@ -25,13 +29,16 @@ export const NewProposalAction = ({ type, onSwitch, active }: NewProposalActionP
     return (
       <div
         className={cn(
-          'flex cursor-pointer items-center gap-[10px] rounded-[14px] border border-border/20 bg-card px-[20px] py-[15px] transition-opacity hover:opacity-80',
+          'relative flex cursor-pointer items-center gap-[10px] rounded-[14px] border border-border/20 bg-card px-[20px] py-[15px] transition-opacity hover:opacity-80',
           active && 'border-border'
         )}
         onClick={() => onSwitch?.('transfer')}
       >
         <img src={PROPOSAL_ACTIONS['transfer']} alt="transfer" />
         <span className="text-[14px] font-normal text-foreground">Transfer</span>
+        {error && (
+          <span className="absolute right-[20px] top-1/2 h-[10px] w-[10px] -translate-y-1/2 rounded-full bg-danger"></span>
+        )}
       </div>
     );
   }
@@ -39,13 +46,16 @@ export const NewProposalAction = ({ type, onSwitch, active }: NewProposalActionP
     return (
       <div
         className={cn(
-          'flex cursor-pointer items-center gap-[10px] rounded-[14px] border border-border/20 bg-card px-[20px] py-[15px] transition-opacity hover:opacity-80',
+          'relative flex cursor-pointer items-center gap-[10px] rounded-[14px] border border-border/20 bg-card px-[20px] py-[15px] transition-opacity hover:opacity-80',
           active && 'border-border'
         )}
         onClick={() => onSwitch?.('custom')}
       >
         <img src={PROPOSAL_ACTIONS['custom']} alt="custom" />
         <span className="text-[14px] font-normal text-foreground">Custom</span>
+        {error && (
+          <span className="absolute right-[20px] top-1/2 h-[10px] w-[10px] -translate-y-1/2 rounded-full bg-danger"></span>
+        )}
       </div>
     );
   }

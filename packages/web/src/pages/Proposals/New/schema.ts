@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { isAddress } from 'viem';
+import { z } from 'zod';
 
 export const proposalSchema = z.object({
   title: z.string().min(1, 'Title is required').max(80, 'Title must be less than 80 characters'),
@@ -11,13 +11,6 @@ export const proposalSchema = z.object({
 
 export type ProposalContent = z.infer<typeof proposalSchema>;
 
-export type ProposalContentType = {
-  [K in keyof ProposalContent]: {
-    value?: string;
-    error?: string;
-  };
-};
-
 export const transferSchema = z.object({
   recipient: z.string().refine((val) => isAddress(val), 'Must be a valid eth address'),
   amount: z
@@ -27,10 +20,3 @@ export const transferSchema = z.object({
 });
 
 export type TransferContent = z.infer<typeof transferSchema>;
-
-export type TransferContentType = {
-  [K in keyof TransferContent]: {
-    value?: string;
-    error?: string;
-  };
-};

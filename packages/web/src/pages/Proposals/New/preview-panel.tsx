@@ -1,41 +1,19 @@
 import { AddressWithAvatar } from '@/components/address-with-avatar';
 import { useAccount } from 'wagmi';
 import { ActionPanelProps, ActionsPanel } from './action-panel';
-import type { Action } from './type';
 import { useMemo } from 'react';
-import { CustomContentType } from './custom-panel';
-import { TransferContentType } from './schema';
 import { useConfig } from '@/hooks/useConfig';
+import type { Action, CustomContentType, TransferContentType } from './type';
+import { cn } from '@/lib/utils';
 
 interface PreviewPanelProps {
   title: string;
+  visible: boolean;
   html: string;
   actions: Action[];
 }
-// const actions = [
-//   {
-//     type: 'custom',
-//     address: '0x3d6d...8ED5',
-//     details: 'burn',
-//     params: [
-//       { name: 'amount', value: '12' },
-//       { name: 'from', value: '0x3d6d656c1bf92f7028Ce4C352563E1C363C58ED5' }
-//     ],
-//     signature: 'burn(uint256)',
-//     calldata: {
-//       uint256: '12'
-//     },
-//     value: '0'
-//   },
-//   {
-//     type: 'transfer',
-//     address: '0x3d6d...8ED5',
-//     details: 'transfer',
-//     amount: '12',
-//   }
-// ];
 
-export const PreviewPanel = ({ title, html, actions }: PreviewPanelProps) => {
+export const PreviewPanel = ({ title, visible, html, actions }: PreviewPanelProps) => {
   const { address } = useAccount();
   const daoConfig = useConfig();
 
@@ -43,7 +21,6 @@ export const PreviewPanel = ({ title, html, actions }: PreviewPanelProps) => {
     return actions
       ?.filter((action) => action?.type === 'custom' || action?.type === 'transfer')
       ?.filter((action) => {
-        console.log('111', action);
         return Object.values(action.content).every((content) => {
           if (Array.isArray(content.error)) {
             return content.error.every((error: string) => error === '');
@@ -96,10 +73,9 @@ export const PreviewPanel = ({ title, html, actions }: PreviewPanelProps) => {
         return info;
       });
   }, [actions, daoConfig?.tokenInfo?.symbol]);
-  console.log('actionPanelInfo', actionPanelInfo);
 
   return (
-    <div className="flex flex-col gap-[10px]">
+    <div className={cn('flex flex-col gap-[10px]', !visible && 'hidden')}>
       <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]">
         <header className="flex flex-col">
           <h2 className="text-[26px] font-semibold">{title || 'Untitled'}</h2>

@@ -10,30 +10,25 @@ import { useTokenBalance } from '@/hooks/useTokenBalance';
 import FormattedNumberTooltip from '@/components/formatted-number-tooltip';
 import { Skeleton } from '@/components/ui/skeleton';
 import { parseUnits, type Address } from 'viem';
-import type { ProposalActionType } from '@/config/proposals';
 import { transferSchema } from './schema';
 import { z } from 'zod';
-
-export type TransferContentType = {
-  recipient?: {
-    value?: Address;
-    error?: string;
-  };
-  amount?: {
-    value?: string;
-    error?: string;
-  };
-};
+import type { TransferContentType } from './type';
 
 interface TransferPanelProps {
   index: number;
+  visible: boolean;
   content?: TransferContentType;
   onChange: (content: TransferContentType) => void;
-  onReplace: (type: Omit<ProposalActionType, 'add'>, index: number) => void;
   onRemove: (index: number) => void;
 }
 
-export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPanelProps) => {
+export const TransferPanel = ({
+  index,
+  visible,
+  content,
+  onChange,
+  onRemove
+}: TransferPanelProps) => {
   const daoConfig = useConfig();
   const [selectedToken, setSelectedToken] = useState<TokenInfo | null>(null);
 
@@ -53,7 +48,7 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
     ({ key, value }: { key: keyof TransferContentType; value: string }) => {
       const error = validateField(key, value);
       onChange({
-        ...content,
+        ...(content as TransferContentType),
         [key]: {
           value,
           error
@@ -125,7 +120,12 @@ export const TransferPanel = ({ index, content, onChange, onRemove }: TransferPa
   }, [tokenList]);
 
   return (
-    <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]">
+    <div
+      className={cn(
+        'flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]',
+        !visible && 'hidden'
+      )}
+    >
       <header className="flex items-center justify-between">
         <h4 className="text-[18px] font-semibold">Action #{index}</h4>
         <Button

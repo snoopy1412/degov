@@ -186,6 +186,8 @@ export function CallDataInputForm({ calldata, onChange }: CallDataInputFormProps
     [calldata, onChange]
   );
 
+  console.log('calldata', calldata);
+
   return (
     <div className="flex flex-col gap-[10px]">
       {calldata?.value?.map((input, index) => (

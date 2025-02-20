@@ -2,21 +2,16 @@ import { Input } from '@/components/ui/input';
 import { Editor } from '@/components/editor';
 import { useCallback } from 'react';
 import { cn } from '@/lib/utils';
-import { ProposalContent, proposalSchema } from './schema';
-
-export type ProposalContentType = {
-  [K in keyof ProposalContent]: {
-    value?: string;
-    error?: string;
-  };
-};
+import { proposalSchema } from './schema';
+import { ProposalContentType } from './type';
 
 interface ProposalPanelProps {
+  visible: boolean;
   content: ProposalContentType;
   onChange: (content: ProposalContentType) => void;
 }
 
-export const ProposalPanel = ({ content, onChange }: ProposalPanelProps) => {
+export const ProposalPanel = ({ visible, content, onChange }: ProposalPanelProps) => {
   const handleChange = useCallback(
     ({ key, value }: { key: keyof ProposalContentType; value: string }) => {
       const result = proposalSchema.shape[key].safeParse(value);
@@ -32,7 +27,12 @@ export const ProposalPanel = ({ content, onChange }: ProposalPanelProps) => {
   );
 
   return (
-    <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]">
+    <div
+      className={cn(
+        'flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]',
+        !visible && 'hidden'
+      )}
+    >
       <div className="flex flex-col gap-[10px]">
         <label className="text-[14px] text-foreground" htmlFor="title">
           Title
