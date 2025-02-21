@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -9,22 +9,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calldata, CallDataInputForm } from "./calldata-input-form";
+import { CallDataInputForm } from "./calldata-input-form";
 import { FileUploader } from "@/components/file-uploader";
 import { abiList } from "@/config/contract";
 import { isValidAbi } from "@/utils/abi";
-import { isAddress, type Abi, type AbiItem } from "viem";
+import { Address, isAddress, type Abi, type AbiItem } from "viem";
 import { useBytecode } from "wagmi";
 import { useConfig } from "@/hooks/useConfig";
-import { Skeleton } from "@/components/ui/skeleton";
-import type { CustomContentType } from "./type";
 import { cn } from "@/lib/utils";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { customActionSchema, CustomContent } from "./schema";
+import { ErrorMessage } from "@/components/error-message";
+import { Loader2 } from "lucide-react";
 
 interface CustomPanelProps {
   visible: boolean;
   index: number;
-  content?: CustomContentType;
-  onChange: (content: CustomContentType) => void;
+  content?: CustomContent;
+  onChange: (content: CustomContent) => void;
   onRemove: (index: number) => void;
 }
 
@@ -36,19 +39,48 @@ export const CustomPanel = ({
   onRemove,
 }: CustomPanelProps) => {
   const daoConfig = useConfig();
-  const [abiJson, setAbiJson] = useState<AbiItem[] | null>(null);
 
-  const { data: bytecode, isFetching: isLoadingBytecode } = useBytecode({
-    address: content?.target?.value,
-    query: {
-      enabled: !!content?.target?.value && isAddress(content?.target?.value),
+  const {
+    control,
+    watch,
+    setValue,
+    register,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(customActionSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: {
+      target: content?.target || ("" as Address),
+      contractType: content?.contractType || "",
+      contractMethod: content?.contractMethod || "",
+      calldata: content?.calldata || [],
+      value: content?.value || "",
+      customAbiContent: content?.customAbiContent || undefined,
     },
   });
 
-  const handleChangeAbi = useCallback(
+  const { data: bytecode, isFetching: isLoadingBytecode } = useBytecode({
+    address: watch("target"),
+    query: {
+      enabled: !!watch("target") && isAddress(watch("target")),
+    },
+  });
+
+  const isContractAddress = useMemo(() => {
+    return !!bytecode && bytecode !== "0x";
+  }, [bytecode]);
+
+  // Handle contract type selection
+  const handleContractTypeChange = useCallback(
     (value: string) => {
-      if (value && value !== "upload") {
-        const abi = abiList.find((abi) => abi.name === value)?.abi as Abi;
+      setValue("contractType", value);
+      setValue("contractMethod", "");
+      setValue("calldata", []);
+
+      // Reset ABI related fields
+      if (value !== "custom") {
+        const abi = abiList.find((item) => item.name === value)?.abi as Abi;
         if (isValidAbi(abi)) {
           const abiJson = abi?.filter(
             (item) =>
@@ -56,102 +88,82 @@ export const CustomPanel = ({
               (item.stateMutability === "nonpayable" ||
                 item.stateMutability === "payable")
           );
-          setAbiJson(abiJson);
+          setValue("customAbiContent", abiJson ?? undefined);
         }
       }
-      onChange({
-        ...(content as CustomContentType),
-        abiType: {
-          value,
-          error: "",
-        },
-      });
     },
-    [onChange, content]
+    [setValue]
   );
 
-  const handleUploadAbi = useCallback((jsonContent: AbiItem[]) => {
-    if (isValidAbi(jsonContent)) {
-      setAbiJson(
-        jsonContent?.filter(
+  // Handle custom ABI upload
+  const handleUploadAbi = useCallback(
+    (jsonContent: AbiItem[]) => {
+      console.log("jsonContent", jsonContent);
+      if (isValidAbi(jsonContent)) {
+        const filteredAbi = jsonContent?.filter(
           (item) =>
             item.type === "function" &&
             (item.stateMutability === "nonpayable" ||
               item.stateMutability === "payable")
-        )
-      );
-    }
-  }, []);
-
-  const handleChange = useCallback(
-    ({
-      key,
-      value,
-    }: {
-      key: keyof CustomContentType;
-      value: string | Calldata[];
-    }) => {
-      onChange({
-        ...(content as CustomContentType),
-        [key]: {
-          value,
-          error: key === "calldata" ? new Array(value?.length).fill("") : "",
-        },
-      });
-    },
-    [onChange, content]
-  );
-
-  const isPayable = useMemo(() => {
-    const method = abiJson?.find(
-      (item) =>
-        item.type === "function" && item.name === content?.abiMethod?.value
-    );
-    return method?.type === "function" && method?.stateMutability === "payable";
-  }, [abiJson, content?.abiMethod?.value]);
-
-  const handleChangeMethodName = useCallback(
-    (value: string) => {
-      const method = abiJson?.find(
-        (item) => item.type === "function" && item.name === value
-      );
-      if (method) {
-        const calldata =
-          method?.type === "function"
-            ? method?.inputs.map((input) => ({
-                name: input.name,
-                type: input.type,
-                value: "",
-              }))
-            : [];
-        onChange({
-          ...(content as CustomContentType),
-          calldata: {
-            value: calldata as Calldata[],
-            error: new Array(calldata?.length).fill(""),
-          },
-          abiMethod: {
-            value,
-            error: "",
-          },
+        );
+        setValue("customAbiContent", filteredAbi, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      } else {
+        setValue("customAbiContent", [], {
+          shouldValidate: true,
         });
       }
     },
-    [abiJson, onChange, content]
+    [setValue]
   );
 
-  const handleChangeCalldata = useCallback(
-    (calldata: { value: Calldata[]; error: (string | string[])[] }) => {
-      onChange({
-        ...(content as CustomContentType),
-        calldata: {
-          value: calldata.value,
-          error: calldata.error.flat(),
-        },
-      });
+  // Handle method selection
+  const handleMethodChange = useCallback(
+    (value: string) => {
+      setValue("contractMethod", value);
+      const abiJson = watch("customAbiContent") as Abi;
+      const method = abiJson?.find(
+        (item) => item.type === "function" && item.name === value
+      );
+
+      if (method && method.type === "function") {
+        const calldata = method?.inputs
+          ?.filter((input) => input.name)
+          .map((input) => ({
+            name: input.name || "",
+            type: input.type,
+            value: input.type.includes("[]") ? [] : "",
+            isArray: input.type.includes("[]"),
+          }));
+        setValue("calldata", calldata);
+
+        if (method.stateMutability !== "payable") {
+          setValue("value", "");
+        }
+      }
     },
-    [onChange, content]
+    [setValue, watch]
   );
+
+  // Check if method is payable
+  const isPayable = useMemo(() => {
+    const abiJson = watch("customAbiContent") as Abi;
+    const method = abiJson?.find(
+      (item) =>
+        item.type === "function" && item.name === watch("contractMethod")
+    );
+    return method?.type === "function" && method.stateMutability === "payable";
+  }, [watch]);
+
+  // Sync form state with parent
+  useEffect(() => {
+    const subscription = watch((value) => {
+      onChange(value as CustomContent);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, onChange]);
 
   return (
     <div
@@ -160,8 +172,9 @@ export const CustomPanel = ({
         !visible && "hidden"
       )}
     >
-      <header className="flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <h4 className="text-[18px] font-semibold">Action #{index}</h4>
+
         <Button
           className="h-[30px] gap-[5px] rounded-[100px] border border-border/20 bg-card"
           variant="outline"
@@ -175,83 +188,137 @@ export const CustomPanel = ({
           />
           <span>Remove action</span>
         </Button>
-      </header>
+      </div>
+
       <div className="mx-auto flex w-full flex-col gap-[20px]">
+        {/* Target Address Input */}
         <div className="flex flex-col gap-[10px]">
           <label className="text-[14px] text-foreground" htmlFor="target">
             Target contract address
           </label>
+
           <Input
             id="target"
-            value={content?.target?.value || ""}
-            onChange={(e) =>
-              handleChange({ key: "target", value: e.target.value })
-            }
+            {...register("target")}
             placeholder="Enter the target address..."
-            className="border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0"
+            className={cn(
+              "border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0",
+              errors.target && "border-danger"
+            )}
           />
+          {/* {errors.target && <ErrorMessage message={errors.target.message} />} */}
+          {isLoadingBytecode ? (
+            <span className="text-sm inline-flex items-center gap-2 text-foreground">
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Loading contract info...
+            </span>
+          ) : watch("target") && isAddress(watch("target")) && !bytecode ? (
+            <ErrorMessage message="The address must be a contract address, not an EOA address" />
+          ) : (
+            errors.target && <ErrorMessage message={errors.target.message} />
+          )}
         </div>
 
-        {isLoadingBytecode && (
-          <div className="flex flex-col gap-[20px]">
-            <Skeleton className="h-[37px]" />
-            <Skeleton className="h-[37px]" />
-            <Skeleton className="h-[37px]" />
-          </div>
-        )}
-
-        {bytecode && bytecode !== "0x" && (
+        {isContractAddress && (
           <>
+            {/* Contract Type Selection */}
             <div className="flex flex-col gap-[10px]">
               <label className="text-[14px] text-foreground">
                 Use the imported ABl or upload yours
               </label>
-              <Select
-                value={content?.abiType?.value}
-                onValueChange={handleChangeAbi}
-              >
-                <SelectTrigger className="border-border/20 bg-card">
-                  <SelectValue placeholder="Select an option" />
-                </SelectTrigger>
-                <SelectContent className="border-border/20 bg-card">
-                  {abiList.map((abi) => (
-                    <SelectItem key={abi.name} value={abi.name}>
-                      {abi.label}
-                    </SelectItem>
-                  ))}
-                  <SelectItem value="upload">Upload an ABI</SelectItem>
-                </SelectContent>
-              </Select>
+              <Controller
+                name="contractType"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value}
+                    onValueChange={handleContractTypeChange}
+                  >
+                    <SelectTrigger
+                      className={cn(
+                        "border-border/20 bg-card",
+                        errors.contractType && "border-red-500"
+                      )}
+                    >
+                      <SelectValue placeholder="Select an option" />
+                    </SelectTrigger>
+                    <SelectContent className="border-border/20 bg-card">
+                      {abiList.map((item) => (
+                        <SelectItem key={item.name} value={item.name}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="custom">Upload an ABI</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.contractType && (
+                <span className="text-sm text-red-500">
+                  {errors.contractType.message}
+                </span>
+              )}
             </div>
-            {content?.abiType?.value === "upload" && (
-              <FileUploader onUpload={handleUploadAbi} />
-            )}
-            {abiJson && (
+
+            {/* Custom ABI Upload */}
+            {watch("contractType") === "custom" && (
               <div className="flex flex-col gap-[10px]">
-                <label className="text-[14px] text-foreground">
-                  Contract method
-                </label>
-                <Select
-                  value={content?.abiMethod?.value}
-                  onValueChange={handleChangeMethodName}
-                >
-                  <SelectTrigger className="border-border/20 bg-card text-foreground/50">
-                    <SelectValue placeholder="Select the contract method..." />
-                  </SelectTrigger>
-                  <SelectContent className="border-border/20 bg-card">
-                    {abiJson?.map(
-                      (item) =>
-                        item?.type === "function" && (
-                          <SelectItem key={item?.name} value={item?.name}>
-                            {item?.name}
-                          </SelectItem>
-                        )
-                    )}
-                  </SelectContent>
-                </Select>
+                <FileUploader
+                  onUpload={handleUploadAbi}
+                  className={`${errors?.customAbiContent && "border-danger"}`}
+                />
+                {errors.customAbiContent && (
+                  <ErrorMessage message={errors.customAbiContent.message} />
+                )}
               </div>
             )}
-            {!!content?.calldata?.value?.length && (
+
+            {/* Method Selection */}
+            {watch("customAbiContent") &&
+              !!watch("customAbiContent")?.length && (
+                <div className="flex flex-col gap-[10px]">
+                  <label className="text-[14px] text-foreground">
+                    Contract method
+                  </label>
+                  <Controller
+                    name="contractMethod"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={handleMethodChange}
+                      >
+                        <SelectTrigger
+                          className={cn(
+                            "border-border/20 bg-card",
+                            errors.contractMethod && "border-red-500"
+                          )}
+                        >
+                          <SelectValue placeholder="Select the contract method..." />
+                        </SelectTrigger>
+                        <SelectContent className="border-border/20 bg-card">
+                          {watch("customAbiContent")?.map(
+                            (item) =>
+                              item?.type === "function" && (
+                                <SelectItem key={item.name} value={item.name}>
+                                  {item.name}
+                                </SelectItem>
+                              )
+                          )}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.contractMethod && (
+                    <span className="text-sm text-red-500">
+                      {errors.contractMethod.message}
+                    </span>
+                  )}
+                </div>
+              )}
+
+            {/* Calldata Input */}
+            {watch("calldata") && !!watch("calldata")?.length && (
               <div className="flex flex-col gap-[10px]">
                 <h4 className="text-[18px] font-semibold text-foreground">
                   Calldatas
@@ -260,9 +327,17 @@ export const CustomPanel = ({
                   The data for the function arguments you wish to send when the
                   action executes
                 </label>
-                <CallDataInputForm
-                  calldata={content?.calldata}
-                  onChange={handleChangeCalldata}
+                <Controller
+                  name="calldata"
+                  control={control}
+                  render={({ field }) => (
+                    <CallDataInputForm
+                      calldata={field.value || []}
+                      onChange={(newCalldata) => {
+                        field.onChange([...newCalldata]);
+                      }}
+                    />
+                  )}
                 />
               </div>
             )}
@@ -283,12 +358,14 @@ export const CustomPanel = ({
                   <Input
                     placeholder={`${daoConfig?.tokenInfo?.symbol} amount`}
                     className="h-[37px] border-border bg-card focus-visible:shadow-none focus-visible:ring-0"
-                    value={content?.value?.value}
-                    onChange={(e) =>
-                      handleChange({ key: "value", value: e.target.value })
-                    }
+                    {...register("value")}
                   />
                 </div>
+                {errors.value && (
+                  <span className="text-sm text-red-500">
+                    {errors.value.message}
+                  </span>
+                )}
               </div>
             )}
           </>

@@ -1,7 +1,13 @@
 "use client";
 import Image from "next/image";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { useAsync, usePrevious } from "react-use";
+import {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { markdownToHtml } from "@/utils/markdown";
 import { NewProposalAction } from "./action";
@@ -11,37 +17,74 @@ import { ReplacePanel } from "./replace-panel";
 import { TransferPanel } from "./transfer-panel";
 import { CustomPanel } from "./custom-panel";
 import { WithConnect } from "@/components/with-connect";
+import { useImmer } from "use-immer";
 import {
   generateCustomAction,
   generateProposalAction,
   generateTransferAction,
 } from "./helper";
-import type {
-  Action,
-  CustomContentType,
-  ProposalContentType,
-  TransferContentType,
-} from "./type";
-import { proposalSchema } from "./schema";
+import type { Action } from "./type";
+import {
+  proposalSchema,
+  ProposalContent,
+  TransferContent,
+  CustomContent,
+  customActionSchema,
+  transferSchema,
+} from "./schema";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const DEFAULT_ACTIONS: Action[] = [generateProposalAction()];
 
+const PublishButton = ({
+  disabled,
+  isLoading,
+  onClick,
+}: {
+  disabled: boolean;
+  isLoading: boolean;
+  onClick?: (e: React.MouseEvent) => void;
+}) => {
+  return (
+    <Button
+      className="gap-[5px] rounded-[100px]"
+      onClick={onClick}
+      disabled={disabled}
+      isLoading={isLoading}
+    >
+      <Image
+        src="/assets/image/proposal/plus.svg"
+        alt="plus"
+        width={16}
+        height={16}
+      />
+      <span>Publish</span>
+    </Button>
+  );
+};
+
 export default function NewProposal() {
-  const [actions, setActions] = useState<Action[]>(DEFAULT_ACTIONS);
+  const panelRefs = useRef<Map<string, HTMLFormElement>>(new Map());
 
+  const [actions, setActions] = useImmer<Action[]>(DEFAULT_ACTIONS);
+  const [publishLoading, setPublishLoading] = useState(false);
   const [actionUuid, setActionUuid] = useState<string>(DEFAULT_ACTIONS[0].id);
-  const previewActionUuid = usePrevious(actionUuid);
-
   const [tab, setTab] = useState<"edit" | "add" | "preview">("edit");
+
   const handleProposalContentChange = useCallback(
-    (content: ProposalContentType) => {
-      setActions(
-        actions.map((action) =>
-          action.type === "proposal" ? { ...action, content } : action
-        )
-      );
+    (content: ProposalContent) => {
+      setActions((draft) => {
+        const action = draft.find((action) => action.id === actionUuid);
+        if (action?.type === "proposal") {
+          action.content = content;
+        }
+      });
     },
-    [actions, setActions]
+    [setActions, actionUuid]
   );
 
   const handleAddAction = useCallback(() => {
@@ -81,84 +124,83 @@ export default function NewProposal() {
   );
 
   const handleTransferContentChange = useCallback(
-    (content: TransferContentType) => {
-      setActions(
-        actions.map((action) =>
-          action.id === actionUuid && action.type === "transfer"
-            ? { ...action, content }
-            : action
-        )
-      );
+    (content: TransferContent) => {
+      setActions((draft) => {
+        const action = draft.find((action) => action.id === actionUuid);
+        if (action?.type === "transfer") {
+          action.content = content;
+        }
+      });
     },
-    [actions, setActions, actionUuid]
+    [setActions, actionUuid]
   );
 
   const handleCustomContentChange = useCallback(
-    (content: CustomContentType) => {
-      setActions(
-        actions.map((action) =>
-          action.id === actionUuid && action.type === "custom"
-            ? { ...action, content }
-            : action
-        )
-      );
+    (content: CustomContent) => {
+      setActions((draft) => {
+        const action = draft.find((action) => action.id === actionUuid);
+        if (action?.type === "custom") {
+          action.content = content;
+        }
+      });
     },
-    [actions, setActions, actionUuid]
+    [setActions, actionUuid]
   );
 
-  const proposalContent = useMemo(() => {
-    const proposalAction = actions.find((action) => action.type === "proposal");
-    return (
-      (proposalAction?.content as ProposalContentType) || {
-        title: "",
-        markdown: "\u200B",
+  const validationState = useMemo(() => {
+    const state = new Map<string, boolean>();
+    actions.forEach((action) => {
+      if (action.type === "proposal") {
+        const result = proposalSchema.safeParse({
+          title: action.content?.title,
+          markdown: action.content?.markdown,
+        });
+        state.set(action.id, result.success);
+      } else if (action.type === "transfer") {
+        const result = transferSchema.safeParse({
+          recipient: action.content?.recipient,
+          amount: action.content?.amount,
+        });
+        state.set(action.id, result.success);
+      } else if (action.type === "custom") {
+        const result = customActionSchema.safeParse({
+          target: action.content?.target,
+          contractType: action.content?.contractType,
+          contractMethod: action.content?.contractMethod,
+          calldata: action.content?.calldata,
+          value: action.content?.value,
+        });
+        state.set(action.id, result.success);
       }
-    );
+    });
+
+    return state;
   }, [actions]);
 
-  const html = useAsync(async () => {
-    const markdown = proposalContent?.markdown;
-    if (markdown) {
-      return await markdownToHtml(markdown.value || "");
-    }
-    return "";
-  }, [proposalContent]);
+  const handlePublish = useCallback(async () => {
+    try {
+      panelRefs.current.forEach((form) => {
+        const result = form.requestSubmit();
+        console.log("result", result);
+      });
 
-  useEffect(() => {
-    if (previewActionUuid && actionUuid && previewActionUuid !== actionUuid) {
-      const action = actions.find((action) => action.id === actionUuid);
-      switch (action?.type) {
-        case "proposal": {
-          const result = proposalSchema.safeParse({
-            title: action?.content?.title.value,
-            markdown: action?.content?.markdown.value,
-          });
-
-          setActions(
-            actions.map((action) =>
-              action.id === previewActionUuid && action.type === "proposal"
-                ? {
-                    ...action,
-                    error: !result.success
-                      ? result.error.flatten().fieldErrors
-                      : null,
-                  }
-                : action
-            )
-          );
-          break;
-        }
-        case "transfer": {
-          // 校验transfer内容
-          break;
-        }
-        case "custom": {
-          // 校验custom内容
-          break;
-        }
-      }
+      setPublishLoading(true);
+      const title =
+        actions[0]?.type === "proposal"
+          ? (actions[0]?.content as ProposalContent).title
+          : "Untitled";
+      const markdown =
+        actions[0]?.type === "proposal"
+          ? (actions[0]?.content as ProposalContent).markdown
+          : "";
+      const html = await markdownToHtml(markdown);
+      console.log(title, html);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setPublishLoading(false);
     }
-  }, [previewActionUuid, actionUuid, actions]);
+  }, [actions]);
 
   useEffect(() => {
     return () => {
@@ -166,22 +208,38 @@ export default function NewProposal() {
       setActionUuid(DEFAULT_ACTIONS[0].id);
       setTab("edit");
     };
-  }, []);
+  }, [setActions]);
 
   return (
     <WithConnect>
       <div className="flex flex-col gap-[20px] p-[30px]">
         <header className="flex items-center justify-between">
           <h2 className="text-2xl font-semibold">New Proposal</h2>
-          <Button className="gap-[5px] rounded-[100px]">
-            <Image
-              src="/assets/image/proposal/plus.svg"
-              alt="plus"
-              width={16}
-              height={16}
-            />
-            <span>Publish</span>
-          </Button>
+          {actions.length === 0 ||
+          [...validationState.values()].some((v) => !v) ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <PublishButton disabled isLoading={publishLoading} />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>Please fix all errors</TooltipContent>
+            </Tooltip>
+          ) : (
+            <Button
+              className="gap-[5px] rounded-[100px]"
+              onClick={handlePublish}
+              isLoading={publishLoading}
+            >
+              <Image
+                src="/assets/image/proposal/plus.svg"
+                alt="plus"
+                width={16}
+                height={16}
+              />
+              <span>Publish</span>
+            </Button>
+          )}
         </header>
 
         <div className="flex gap-[30px]">
@@ -192,9 +250,7 @@ export default function NewProposal() {
                 type={action.type}
                 onSwitch={() => handleSwitchAction(action.id)}
                 active={action.id === actionUuid && tab === "edit"}
-                error={Object.values(action?.content || {}).some(
-                  (field) => field.error
-                )}
+                error={!validationState.get(action.id)}
               />
             ))}
             <NewProposalAction
@@ -223,8 +279,13 @@ export default function NewProposal() {
                   {action?.type === "proposal" && (
                     <ProposalPanel
                       visible={tab === "edit" && action.id === actionUuid}
-                      content={action?.content as ProposalContentType}
+                      content={action?.content as ProposalContent}
                       onChange={handleProposalContentChange}
+                      ref={(el: HTMLFormElement | null) => {
+                        if (el) {
+                          panelRefs.current.set(action.id, el);
+                        }
+                      }}
                     />
                   )}
 
@@ -234,7 +295,7 @@ export default function NewProposal() {
                       index={actions.findIndex(
                         (action) => action.id === actionUuid
                       )}
-                      content={action?.content as TransferContentType}
+                      content={action?.content as TransferContent}
                       onChange={handleTransferContentChange}
                       onRemove={handleRemoveAction}
                     />
@@ -246,7 +307,7 @@ export default function NewProposal() {
                       index={actions.findIndex(
                         (action) => action.id === actionUuid
                       )}
-                      content={action?.content as CustomContentType}
+                      content={action?.content as CustomContent}
                       onChange={handleCustomContentChange}
                       onRemove={handleRemoveAction}
                     />
@@ -261,12 +322,7 @@ export default function NewProposal() {
               onReplace={handleReplaceAction}
               onRemove={handleRemoveAction}
             />
-            <PreviewPanel
-              visible={tab === "preview"}
-              title={proposalContent.title.value || ""}
-              html={html?.value || ""}
-              actions={actions}
-            />
+            <PreviewPanel visible={tab === "preview"} actions={actions} />
           </main>
         </div>
       </div>

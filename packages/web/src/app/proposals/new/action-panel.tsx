@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -14,26 +14,25 @@ import { Button } from "@/components/ui/button";
 import { PROPOSAL_ACTIONS } from "@/config/proposals";
 import { useConfig } from "@/hooks/useConfig";
 import { formatShortAddress } from "@/utils/address";
-export interface ActionPanelProps {
-  type?: string;
-  address?: `0x${string}`;
-  details?: string;
-  params?: {
-    name: string;
-    value: string | string[];
-  }[];
-  signature?: string;
-  calldata?: {
-    [key: string]: string;
-  };
-  target?: string;
+import { Action } from "./type";
+import { Address, isAddress } from "viem";
+
+export interface ActionPanelInfo {
+  type: string;
+  address?: Address;
   value?: string;
+  details?: string;
+  params?: { name: string; value: string | string[] }[];
+  signature?: string;
+  calldata?: string[];
 }
 interface ActionsPanelProps {
-  actions: ActionPanelProps[];
+  actions: Action[];
 }
 
 export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
+  const daoConfig = useConfig();
+
   const [tab, setTab] = useState<"raw" | "summary">("summary");
   const [openParams, setOpenParams] = useState<number[]>([]);
 
@@ -42,6 +41,61 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
     );
   };
+
+  const actionPanelInfo = useMemo<ActionPanelInfo[]>(() => {
+    return actions
+      ?.filter((action) => action.type !== "proposal")
+      ?.filter((action) => {
+        switch (action.type) {
+          case "transfer":
+            return (
+              !!action.content.recipient && isAddress(action.content.recipient)
+            );
+          case "custom":
+            const condition = [
+              !!action.content.target,
+              isAddress(action.content.target),
+              !!action.content.contractMethod,
+              !!action.content.calldata,
+              action?.content.calldata?.length,
+            ];
+            return condition.every((item) => item);
+          default:
+            return true;
+        }
+      })
+      .map((action) => {
+        const info: ActionPanelInfo = {
+          type: action.type,
+        };
+        switch (action.type) {
+          case "transfer":
+            info.address = action.content.recipient;
+            info.value = action.content.amount ?? "0";
+            info.details = `${action.content.amount} ${daoConfig?.tokenInfo?.symbol}`;
+            break;
+          case "custom":
+            info.address = action.content.target;
+            info.value = action.content.value ?? "0";
+            info.details = action?.content?.contractMethod;
+            info.params = action?.content?.calldata?.map((item) => ({
+              name: item.name,
+              value: item.value,
+            }));
+            info.signature = `${action?.content?.contractMethod}(${action?.content?.calldata?.map((item) => `${item.name}`).join(",")})`;
+
+            info.calldata = action?.content?.calldata?.map((item) => {
+              const value = Array.isArray(item.value)
+                ? item.value.join(", ")
+                : item.value;
+              return `${item.name}: ${value}`;
+            });
+
+            break;
+        }
+        return info;
+      });
+  }, [actions, daoConfig]);
 
   const RawView = () => {
     const daoConfig = useConfig();
@@ -61,11 +115,10 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
           </TableRow>
         </TableHeader>
         <TableBody className="[&_tr:has(+tr[data-expanded])]:border-0">
-          {actions.map((action, index) => (
+          {actionPanelInfo?.map((action, index) => (
             <Fragment key={index}>
               <TableRow>
                 <TableCell className="w-1/3 text-left">
-                  {" "}
                   <div className="flex items-center gap-[10px]">
                     <Image
                       src={
@@ -84,22 +137,26 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
                   </div>
                 </TableCell>
                 <TableCell className="w-1/3 text-left">
-                  <a
-                    href={`${daoConfig?.networkInfo?.explorer?.url}/address/${action.address}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-[5px] hover:underline"
-                  >
-                    {action.address
-                      ? formatShortAddress(action.address)
-                      : "No address"}
-                    <Image
-                      src="/assets/image/external-link.svg"
-                      alt="external-link"
-                      width={16}
-                      height={16}
-                    />
-                  </a>
+                  {action.address ? (
+                    <a
+                      href={`${daoConfig?.networkInfo?.explorer?.url}/address/${action.address}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-[5px] hover:underline font-mono"
+                    >
+                      {action.address
+                        ? formatShortAddress(action.address)
+                        : "No address"}
+                      <Image
+                        src="/assets/image/external-link.svg"
+                        alt="external-link"
+                        width={16}
+                        height={16}
+                      />
+                    </a>
+                  ) : (
+                    <span className="text-muted-foreground"></span>
+                  )}
                 </TableCell>
                 <TableCell className="w-1/3 text-left">
                   <div className="flex items-center justify-between gap-2">
@@ -129,7 +186,14 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
                     {action.params.map((param, pIndex) => (
                       <div key={pIndex} className="flex gap-2">
                         <span className="font-medium">{param.name}:</span>
-                        <span>{param.value}</span>
+                        <span
+                          className="font-mono  break-words text-left"
+                          style={{
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          {param.value}
+                        </span>
                       </div>
                     ))}
                   </TableCell>
@@ -144,7 +208,7 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
 
   const SummaryView = () => (
     <div className="space-y-[20px]">
-      {actions.map((action, index) => (
+      {actionPanelInfo.map((action, index) => (
         <div key={index}>
           <h3 className="mb-[10px] text-[18px] font-semibold">
             Function {index + 1}
@@ -165,9 +229,9 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
                 <h4 className="text-[14px] font-normal text-muted-foreground">
                   Calldata:
                 </h4>
-                {Object.entries(action.calldata).map(([key, value], cIndex) => (
+                {Object.entries(action.calldata).map(([, value], cIndex) => (
                   <div key={cIndex} className="font-mono font-semibold">
-                    {key}: {value}
+                    {value}
                   </div>
                 ))}
               </div>
@@ -201,33 +265,39 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
   }, []);
 
   return (
-    <div className="space-y-[20px]">
-      <div className="flex items-center justify-between">
-        <h2 className="text-[26px] font-semibold">Actions</h2>
-        {tab === "summary" && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setTab("raw")}
-            className="rounded-full border-border bg-card"
-          >
-            Raw
-          </Button>
-        )}
-        {tab === "raw" && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setTab("summary")}
-            className="rounded-full border-border bg-card"
-          >
-            Summary
-          </Button>
-        )}
-      </div>
+    <>
+      {actionPanelInfo?.length > 0 && (
+        <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]">
+          <div className="space-y-[20px]">
+            <div className="flex items-center justify-between">
+              <h2 className="text-[26px] font-semibold">Actions</h2>
+              {tab === "summary" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setTab("raw")}
+                  className="rounded-full border-border bg-card"
+                >
+                  Raw
+                </Button>
+              )}
+              {tab === "raw" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setTab("summary")}
+                  className="rounded-full border-border bg-card"
+                >
+                  Summary
+                </Button>
+              )}
+            </div>
 
-      {tab === "summary" && <RawView />}
-      {tab === "raw" && <SummaryView />}
-    </div>
+            {tab === "summary" && <RawView />}
+            {tab === "raw" && <SummaryView />}
+          </div>
+        </div>
+      )}
+    </>
   );
 };

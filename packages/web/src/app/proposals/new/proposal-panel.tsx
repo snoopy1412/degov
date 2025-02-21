@@ -1,37 +1,63 @@
-import { Input } from '@/components/ui/input';
-import { Editor } from '@/components/editor';
-import { useCallback } from 'react';
-import { cn } from '@/lib/utils';
-import { proposalSchema } from './schema';
-import { ProposalContentType } from './type';
+import { Controller } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Editor } from "@/components/editor";
+import { useCallback, useEffect } from "react";
+import { cn } from "@/lib/utils";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ProposalContent, proposalSchema } from "./schema";
+import { ErrorMessage } from "@/components/error-message";
 
 interface ProposalPanelProps {
   visible: boolean;
-  content: ProposalContentType;
-  onChange: (content: ProposalContentType) => void;
+  ref: (instance: HTMLFormElement | null) => void;
+  content: ProposalContent;
+  onChange: (content: ProposalContent) => void;
 }
 
-export const ProposalPanel = ({ visible, content, onChange }: ProposalPanelProps) => {
-  const handleChange = useCallback(
-    ({ key, value }: { key: keyof ProposalContentType; value: string }) => {
-      const result = proposalSchema.shape[key].safeParse(value);
-      onChange({
-        ...content,
-        [key]: {
-          value,
-          error: result.success ? '' : result.error.errors[0].message
-        }
-      });
+export const ProposalPanel = ({
+  visible,
+  ref,
+  content,
+  onChange,
+}: ProposalPanelProps) => {
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<ProposalContent>({
+    resolver: zodResolver(proposalSchema),
+    defaultValues: {
+      title: content.title || "",
+      markdown: content.markdown || "\u200B",
     },
-    [onChange, content]
+    mode: "onChange",
+  });
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      onChange(value as ProposalContent);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, onChange]);
+
+  const onSubmit = useCallback(
+    (data: ProposalContent) => {
+      onChange(data);
+    },
+    [onChange]
   );
 
   return (
-    <div
+    <form
+      ref={ref}
       className={cn(
-        'flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]',
-        !visible && 'hidden'
+        "flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]",
+        !visible && "hidden"
       )}
+      onSubmit={handleSubmit(onSubmit)}
     >
       <div className="flex flex-col gap-[10px]">
         <label className="text-[14px] text-foreground" htmlFor="title">
@@ -39,33 +65,44 @@ export const ProposalPanel = ({ visible, content, onChange }: ProposalPanelProps
         </label>
         <Input
           id="title"
-          value={content.title.value}
-          onChange={(e) => handleChange({ key: 'title', value: e.target.value })}
+          {...register("title")}
+          aria-invalid={errors.title ? "true" : "false"}
           placeholder="Enter the title of your proposal"
           className={cn(
-            'border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0',
-            content.title.error && 'border-red-500'
+            "border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0",
+            errors.title && "border-red-500"
           )}
         />
-        {content.title.error && <p className="text-[12px] text-red-500">{content.title.error}</p>}
+        {errors.title && <ErrorMessage message={errors.title.message} />}
       </div>
       <div className="flex flex-col gap-[10px]">
         <label className="text-[14px] text-foreground" htmlFor="description">
           Description
         </label>
-        <Editor
-          markdown={content.markdown.value || '\u200B'}
-          onChange={(markdown) => handleChange({ key: 'markdown', value: markdown })}
-          placeholder="Enter the description of your proposal"
-          className={cn(
-            'border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0',
-            content.markdown.error && 'border-red-500'
+        <Controller
+          name="markdown"
+          control={control}
+          render={({ field }) => (
+            <>
+              <Editor
+                markdown={field.value}
+                onChange={(newValue) => {
+                  const sanitizedValue = newValue === "" ? "\u200B" : newValue;
+                  field.onChange(sanitizedValue);
+                }}
+                placeholder="Enter the description of your proposal"
+                className={cn(
+                  "border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0",
+                  errors.markdown && "border-red-500"
+                )}
+              />
+              {errors.markdown && (
+                <ErrorMessage message={errors.markdown.message} />
+              )}
+            </>
           )}
         />
-        {content.markdown.error && (
-          <p className="text-[12px] text-red-500">{content.markdown.error}</p>
-        )}
       </div>
-    </div>
+    </form>
   );
 };

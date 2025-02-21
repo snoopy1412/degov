@@ -1,12 +1,14 @@
+import { cn } from "@/lib/utils";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import type { AbiItem } from "viem";
 
 interface FileUploaderProps {
+  className?: string;
   onUpload: (jsonContent: AbiItem[]) => void;
 }
 
-export const FileUploader = ({ onUpload }: FileUploaderProps) => {
+export const FileUploader = ({ className, onUpload }: FileUploaderProps) => {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       const file = acceptedFiles[0];
@@ -36,7 +38,10 @@ export const FileUploader = ({ onUpload }: FileUploaderProps) => {
   return (
     <div
       {...getRootProps()}
-      className="flex h-[137px] w-full cursor-pointer flex-col items-center justify-center gap-[10px] rounded-[4px] border border-border/20 bg-card p-[10px] transition-opacity hover:opacity-80"
+      className={cn(
+        "flex h-[137px] w-full cursor-pointer flex-col items-center justify-center gap-[10px] rounded-[4px] border border-border/20 bg-card p-[10px] transition-opacity hover:opacity-80",
+        className
+      )}
     >
       <input {...getInputProps()} />
       {isDragActive ? (

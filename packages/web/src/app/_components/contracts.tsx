@@ -66,8 +66,11 @@ export const Contracts = () => {
           </div>
 
           <div className="flex flex-col gap-[10px]">
-            <span className="text-[14px] font-normal text-foreground/50">
+            <span className="inline-flex items-center gap-[5px] text-[14px] font-normal text-foreground/50">
               Token
+              <span className="inline-block rounded-[10px] bg-muted-foreground p-[5px] text-[#202224] text-[12px] font-semibold">
+                ERC20
+              </span>
             </span>
             <div className="flex w-full items-center justify-between gap-[5px]">
               <span className="text-[14px] font-normal text-foreground">
