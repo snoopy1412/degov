@@ -20,16 +20,11 @@ interface TreasuryTableProps {
 export function TreasuryTable({ caption }: TreasuryTableProps) {
   const daoConfig = useConfig();
   const data = useMemo(() => {
-    if (
-      !daoConfig?.timelockAssetsTokenInfo ||
-      isEmpty(daoConfig?.timelockAssetsTokenInfo)
-    )
+    if (!daoConfig?.timeLockAssets || isEmpty(daoConfig?.timeLockAssets))
       return [];
-    return Object.entries(daoConfig?.timelockAssetsTokenInfo || {}).map(
-      ([, value]) => ({
-        ...value,
-      })
-    );
+    return Object.entries(daoConfig?.timeLockAssets || {}).map(([, value]) => ({
+      ...value,
+    }));
   }, [daoConfig]);
 
   return (
@@ -61,7 +56,7 @@ export function TreasuryTable({ caption }: TreasuryTableProps) {
               <TableCell className="text-left">
                 <Asset
                   asset={value}
-                  explorer={daoConfig?.networkInfo?.explorer?.url as string}
+                  explorer={daoConfig?.network?.explorer?.url as string}
                 />
               </TableCell>
               <TableCell>{`514K ${value.symbol}`}</TableCell>

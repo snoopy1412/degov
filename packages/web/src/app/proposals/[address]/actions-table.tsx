@@ -71,7 +71,7 @@ export function ActionsTable() {
 
               <TableCell className="text-left">
                 <a
-                  href={`${daoConfig?.networkInfo?.explorer?.url}/address/${value.addressData}`}
+                  href={`${daoConfig?.network?.explorer?.url}/address/${value.addressData}`}
                   className="flex items-center gap-[10px] transition-opacity hover:opacity-80"
                   target="_blank"
                   rel="noreferrer"

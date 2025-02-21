@@ -10,7 +10,7 @@ export default function Treasury() {
       <div className="flex items-center gap-[10px]">
         <h3 className="text-[18px] font-extrabold">TimeLock Assets</h3>
         <ClipboardIconButton
-          text={daoConfig?.tokenInfo?.timeLockContract}
+          text={daoConfig?.contracts?.timeLockContract}
           size={16}
         />
       </div>

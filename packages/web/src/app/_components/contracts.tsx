@@ -38,7 +38,7 @@ export const Contracts = () => {
               height={24}
             />
             <span className="text-[16px] font-semibold text-foreground">
-              {daoConfig?.tokenInfo?.name}
+              {daoConfig?.network?.nativeToken?.symbol}
             </span>
           </div>
         </div>
@@ -49,17 +49,17 @@ export const Contracts = () => {
             </span>
             <div className="flex w-full items-center justify-between gap-[5px]">
               <span className="text-[14px] font-normal text-foreground">
-                {daoConfig?.tokenInfo?.governorContract}
+                {daoConfig?.contracts?.governorContract}
               </span>
               <div className="flex items-center gap-[5px]">
                 <ClipboardIconButton
-                  text={daoConfig?.tokenInfo?.governorContract}
+                  text={daoConfig?.contracts?.governorContract}
                   size={15}
                   strokeWidth={2}
                   color="rgba(255, 255, 255, 0.5)"
                 />
                 <ViewOnExplorer
-                  explorerUrl={`${daoConfig?.networkInfo?.explorer?.url}/address/${daoConfig?.tokenInfo?.governorContract}`}
+                  explorerUrl={`${daoConfig?.network?.explorer?.url}/address/${daoConfig?.contracts?.governorContract}`}
                 />
               </div>
             </div>
@@ -68,23 +68,23 @@ export const Contracts = () => {
           <div className="flex flex-col gap-[10px]">
             <span className="inline-flex items-center gap-[5px] text-[14px] font-normal text-foreground/50">
               Token
-              <span className="inline-block rounded-[10px] bg-muted-foreground p-[5px] text-[#202224] text-[12px] font-semibold">
+              <span className="inline-block leading-none rounded-[10px] bg-muted-foreground p-[5px] text-[#202224] text-[12px] font-semibold">
                 ERC20
               </span>
             </span>
             <div className="flex w-full items-center justify-between gap-[5px]">
               <span className="text-[14px] font-normal text-foreground">
-                {daoConfig?.tokenInfo?.tokenContract}
+                {daoConfig?.contracts?.governorToken?.contract}
               </span>
               <div className="flex items-center gap-[5px]">
                 <ClipboardIconButton
-                  text={daoConfig?.tokenInfo?.tokenContract}
+                  text={daoConfig?.contracts?.governorToken?.contract}
                   size={15}
                   strokeWidth={2}
                   color="rgba(255, 255, 255, 0.5)"
                 />
                 <ViewOnExplorer
-                  explorerUrl={`${daoConfig?.networkInfo?.explorer?.url}/address/${daoConfig?.tokenInfo?.tokenContract}`}
+                  explorerUrl={`${daoConfig?.network?.explorer?.url}/address/${daoConfig?.contracts?.governorToken?.contract}`}
                 />
               </div>
             </div>
@@ -96,17 +96,17 @@ export const Contracts = () => {
             </span>
             <div className="flex w-full items-center justify-between gap-[5px]">
               <span className="text-[14px] font-normal text-foreground">
-                {daoConfig?.tokenInfo?.timeLockContract}
+                {daoConfig?.contracts?.timeLockContract}
               </span>
               <div className="flex items-center gap-[5px]">
                 <ClipboardIconButton
-                  text={daoConfig?.tokenInfo?.timeLockContract}
+                  text={daoConfig?.contracts?.timeLockContract}
                   size={15}
                   strokeWidth={2}
                   color="rgba(255, 255, 255, 0.5)"
                 />
                 <ViewOnExplorer
-                  explorerUrl={`${daoConfig?.networkInfo?.explorer?.url}/address/${daoConfig?.tokenInfo?.timeLockContract}`}
+                  explorerUrl={`${daoConfig?.network?.explorer?.url}/address/${daoConfig?.contracts?.timeLockContract}`}
                 />
               </div>
             </div>

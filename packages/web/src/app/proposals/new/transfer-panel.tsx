@@ -87,20 +87,20 @@ export const TransferPanel = ({
 
   const tokenList = useMemo(() => {
     const nativeToken: TokenInfo = {
-      address: daoConfig?.tokenInfo.tokenContract as Address,
-      symbol: daoConfig?.tokenInfo.symbol as string,
-      decimals: daoConfig?.tokenInfo.decimals as number,
+      address: '0x0000000000000000000000000000000000000000' as Address,
+      symbol: daoConfig?.network?.nativeToken?.symbol as string,
+      decimals: daoConfig?.network?.nativeToken?.decimals as number,
       icon: daoConfig?.logo as string,
       isNative: true,
     };
 
     const treasuryTokenList: TokenInfo[] = [];
     if (
-      daoConfig?.timelockAssetsTokenInfo &&
-      isObject(daoConfig?.timelockAssetsTokenInfo) &&
-      !isEmpty(daoConfig?.timelockAssetsTokenInfo)
+      daoConfig?.timeLockAssets &&
+      isObject(daoConfig?.timeLockAssets) &&
+      !isEmpty(daoConfig?.timeLockAssets)
     ) {
-      Object.values(daoConfig?.timelockAssetsTokenInfo).forEach((token) => {
+      Object.values(daoConfig?.timeLockAssets).forEach((token) => {
         treasuryTokenList.push({
           address: token.contract as Address,
           symbol: token.symbol,

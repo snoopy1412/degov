@@ -1,7 +1,7 @@
-import { useReadContracts } from 'wagmi';
-import { abi as tokenAbi } from '@/config/abi/token';
-import { useConfig } from './useConfig';
-import type { Address } from 'viem';
+import { useReadContracts } from "wagmi";
+import { abi as tokenAbi } from "@/config/abi/token";
+import { useConfig } from "./useConfig";
+import type { Address } from "viem";
 
 interface TokenVotingPower {
   totalSupply: bigint;
@@ -20,7 +20,7 @@ interface UseVotingPowerReturn {
  */
 export function useVotingPower(account?: Address): UseVotingPowerReturn {
   const daoConfig = useConfig();
-  const tokenAddress = daoConfig?.tokenInfo.tokenContract as Address;
+  const tokenAddress = daoConfig?.contracts?.governorToken?.contract as Address;
 
   const { data, isLoading, error } = useReadContracts({
     contracts: account
@@ -28,38 +28,38 @@ export function useVotingPower(account?: Address): UseVotingPowerReturn {
           {
             address: tokenAddress,
             abi: tokenAbi,
-            functionName: 'totalSupply'
+            functionName: "totalSupply",
           },
           {
             address: tokenAddress,
             abi: tokenAbi,
-            functionName: 'getVotes',
-            args: [account]
-          }
+            functionName: "getVotes",
+            args: [account],
+          },
         ]
       : [
           {
             address: tokenAddress,
             abi: tokenAbi,
-            functionName: 'totalSupply'
-          }
+            functionName: "totalSupply",
+          },
         ],
     query: {
       enabled: Boolean(tokenAddress),
-      refetchInterval: 60_000 // Refetch every minute
-    }
+      refetchInterval: 60_000, // Refetch every minute
+    },
   });
 
   const formattedData: TokenVotingPower | null = data
     ? {
         totalSupply: data[0]?.result as bigint,
-        ...(account ? { votes: data[1]?.result as bigint } : {})
+        ...(account ? { votes: data[1]?.result as bigint } : {}),
       }
     : null;
 
   return {
     data: formattedData,
     isLoading,
-    error: error as Error | null
+    error: error as Error | null,
   };
 }

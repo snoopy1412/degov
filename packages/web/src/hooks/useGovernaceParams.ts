@@ -1,7 +1,7 @@
-import { useBlockNumber, useReadContract, useReadContracts } from 'wagmi';
-import { abi as governorAbi } from '@/config/abi/governor';
-import { useConfig } from './useConfig';
-import type { Address } from 'viem';
+import { useReadContract, useReadContracts } from "wagmi";
+import { abi as governorAbi } from "@/config/abi/governor";
+import { useConfig } from "./useConfig";
+import type { Address } from "viem";
 
 interface GovernanceParams {
   proposalThreshold: bigint;
@@ -12,60 +12,58 @@ interface GovernanceParams {
 
 export function useGovernanceParams() {
   const daoConfig = useConfig();
-  const governorAddress = daoConfig?.tokenInfo.governorContract as Address;
+  const governorAddress = daoConfig?.contracts?.governorContract as Address;
 
   const { data: clockData, isLoading: isClockLoading } = useReadContract({
     address: governorAddress as `0x${string}`,
     abi: governorAbi,
-    functionName: 'clock' as const
+    functionName: "clock" as const,
   });
-
-  console.log('clockData', clockData);
 
   const { data, isLoading, error } = useReadContracts({
     contracts: [
-      // {
-      //   address: governorAddress as `0x${string}`,
-      //   abi: governorAbi,
-      //   functionName: 'proposalThreshold' as const
-      // },
       {
         address: governorAddress as `0x${string}`,
         abi: governorAbi,
-        functionName: 'quorum' as const,
-        args: [clockData ? BigInt(clockData) : BigInt(0)]
-      }
-      // {
-      //   address: governorAddress as `0x${string}`,
-      //   abi: governorAbi,
-      //   functionName: 'votingDelay' as const
-      // },
-      // {
-      //   address: governorAddress as `0x${string}`,
-      //   abi: governorAbi,
-      //   functionName: 'votingPeriod' as const
-      // }
+        functionName: "proposalThreshold" as const,
+      },
+      {
+        address: governorAddress as `0x${string}`,
+        abi: governorAbi,
+        functionName: "quorum" as const,
+        args: [clockData ? BigInt(clockData) : BigInt(0)],
+      },
+      {
+        address: governorAddress as `0x${string}`,
+        abi: governorAbi,
+        functionName: "votingDelay" as const,
+      },
+      {
+        address: governorAddress as `0x${string}`,
+        abi: governorAbi,
+        functionName: "votingPeriod" as const,
+      },
     ],
     query: {
       retry: false,
-      enabled: Boolean(governorAddress) && Boolean(clockData)
-    }
+      enabled: Boolean(governorAddress) && Boolean(clockData),
+    },
   });
 
-  console.log('data', data);
+  console.log("data", data);
 
   const formattedData: GovernanceParams | null = data
     ? {
         proposalThreshold: data[0]?.result as bigint,
         quorum: data[1]?.result as bigint,
         votingDelay: data[2]?.result as bigint,
-        votingPeriod: data[3]?.result as bigint
+        votingPeriod: data[3]?.result as bigint,
       }
     : null;
 
   return {
     data: formattedData,
     isLoading: isLoading || isClockLoading,
-    error: error as Error | null
+    error: error as Error | null,
   };
 }

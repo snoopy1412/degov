@@ -72,7 +72,7 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
           case "transfer":
             info.address = action.content.recipient;
             info.value = action.content.amount ?? "0";
-            info.details = `${action.content.amount} ${daoConfig?.tokenInfo?.symbol}`;
+            info.details = `${action.content.amount} ${daoConfig?.network?.nativeToken?.symbol}`;
             break;
           case "custom":
             info.address = action.content.target;
@@ -139,7 +139,7 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
                 <TableCell className="w-1/3 text-left">
                   {action.address ? (
                     <a
-                      href={`${daoConfig?.networkInfo?.explorer?.url}/address/${action.address}`}
+                      href={`${daoConfig?.network?.explorer?.url}/address/${action.address}`}
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-[5px] hover:underline font-mono"

@@ -33,20 +33,20 @@ export function DAppProvider({ children }: React.PropsWithChildren<unknown>) {
   }
 
   const currentChain: Chain = {
-    id: Number(dappConfig.networkInfo?.chainId),
-    name: dappConfig.networkInfo?.chain,
+    id: Number(dappConfig.network?.chainId),
+    name: dappConfig.network?.chain,
     nativeCurrency: {
-      name: dappConfig.tokenInfo?.name,
-      symbol: dappConfig.tokenInfo?.symbol,
-      decimals: dappConfig.tokenInfo?.decimals,
+      name: dappConfig.network?.nativeToken?.symbol,
+      symbol: dappConfig.network?.nativeToken?.symbol,
+      decimals: dappConfig.network?.nativeToken?.decimals,
     },
     rpcUrls: {
       default: {
-        http: dappConfig.networkInfo?.rpc,
+        http: dappConfig.network?.rpc,
       },
     },
     blockExplorers: {
-      default: dappConfig.networkInfo?.explorer,
+      default: dappConfig.network?.explorer,
     },
   };
 

@@ -1,12 +1,13 @@
+import Image from "next/image";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
   SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
-import type { Address } from 'viem';
+  SelectValue,
+} from "@/components/ui/select";
+import type { Address } from "viem";
 
 export type TokenInfo = {
   address: Address;
@@ -19,7 +20,7 @@ export type TokenInfo = {
 export function TokenSelect({
   selectedToken,
   tokenList,
-  onTokenChange
+  onTokenChange,
 }: {
   selectedToken: TokenInfo | null;
   tokenList: TokenInfo[];
@@ -42,7 +43,12 @@ export function TokenSelect({
           {tokenList.map((token) => (
             <SelectItem key={token.address} value={token.address}>
               <div className="flex items-center gap-[10px]">
-                <img src={token.icon} alt={token.symbol} className="h-[24px] w-[24px]" />
+                <Image
+                  src={token.icon}
+                  alt={token.symbol}
+                  width={24}
+                  height={24}
+                />
                 <span className="truncate">{token.symbol}</span>
               </div>
             </SelectItem>

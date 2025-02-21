@@ -7,25 +7,32 @@ interface Links {
   email?: string;
 }
 
+interface NativeToken {
+  symbol: string;
+  decimals: number;
+  priceId: string;
+}
+
 interface NetworkInfo {
   chain: string;
-  chainId: string;
+  chainId: number;
   rpc: string[];
   explorer: {
     name: string;
     url: string;
   };
+  nativeToken: NativeToken;
 }
 
-interface TokenInfo {
-  governorContract: string;
-  tokenContract: string;
-  timeLockContract: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-  priceId: string;
+interface GovernorToken {
+  contract: string;
   standard: string;
+}
+
+interface Contracts {
+  governorContract: string;
+  governorToken: GovernorToken;
+  timeLockContract: string;
 }
 
 interface TokenDetails {
@@ -35,22 +42,30 @@ interface TokenDetails {
   symbol: string;
   decimals: number;
   priceId: string;
-  standard: string;
 }
 
-interface TimelockAssetsTokenInfo {
+interface TimelockAssets {
   [key: string]: TokenDetails;
 }
 
 interface Config {
   logo: string;
-  walletConnectProjectId: string;
   daoName: string;
+  walletConnectProjectId: string;
   description: string;
   links: Links;
-  networkInfo: NetworkInfo;
-  tokenInfo: TokenInfo;
-  timelockAssetsTokenInfo: TimelockAssetsTokenInfo;
+  network: NetworkInfo;
+  contracts: Contracts;
+  timeLockAssets: TimelockAssets;
 }
 
-export type { Config, Links, NetworkInfo, TokenInfo, TokenDetails, TimelockAssetsTokenInfo };
+export type {
+  Config,
+  Links,
+  NativeToken,
+  NetworkInfo,
+  GovernorToken,
+  Contracts,
+  TokenDetails,
+  TimelockAssets,
+};

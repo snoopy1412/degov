@@ -37,7 +37,6 @@ export function Editor({
   onChange,
   onBlur,
   className,
-  name,
 }: EditorProps) {
   return (
     <div
