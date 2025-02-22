@@ -3,9 +3,20 @@ import Image from "next/image";
 import { useConfig } from "@/hooks/useConfig";
 import { Parameters } from "./parameters";
 import { Contracts } from "./contracts";
+import { TransactionStatus } from "@/components/transaction-status";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 export const DaoHeader = () => {
   const config = useConfig();
+  useEffect(() => {
+    toast.loading(
+      <TransactionStatus
+        transactionHash={"0x1234567890abcdef"}
+        status="pending"
+      />
+    );
+  }, []);
   return (
     <div className="grid grid-cols-2 items-end justify-between rounded-[14px] bg-card p-[20px]">
       <div className="flex flex-col gap-[10px]">

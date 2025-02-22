@@ -6,6 +6,7 @@ import { DAppProvider } from "@/providers/dapp.provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Aside } from "./aside";
 import { Header } from "./header";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,10 @@ export default function RootLayout({
                   <div className="mx-auto w-full flex-1">{children}</div>
                 </main>
               </div>
+              <ToastContainer
+                theme="dark"
+                className="w-auto text-[14px] md:w-[380px]"
+              />
             </TooltipProvider>
           </DAppProvider>
         </ConfigProvider>

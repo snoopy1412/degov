@@ -15,7 +15,7 @@ import { PROPOSAL_ACTIONS } from "@/config/proposals";
 import { useConfig } from "@/hooks/useConfig";
 import { formatShortAddress } from "@/utils/address";
 import { Action } from "./type";
-import { Address, isAddress } from "viem";
+import { Address, isAddress, parseUnits } from "viem";
 
 export interface ActionPanelInfo {
   type: string;
@@ -24,7 +24,7 @@ export interface ActionPanelInfo {
   details?: string;
   params?: { name: string; value: string | string[] }[];
   signature?: string;
-  calldata?: string[];
+  calldata?: { name: string; value: string | string[] }[];
 }
 interface ActionsPanelProps {
   actions: Action[];
@@ -82,13 +82,17 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
               name: item.name,
               value: item.value,
             }));
-            info.signature = `${action?.content?.contractMethod}(${action?.content?.calldata?.map((item) => `${item.name}`).join(",")})`;
+            info.signature = `${
+              action?.content?.contractMethod
+            }(${action?.content?.calldata
+              ?.map((item) => `${item.name}`)
+              .join(",")})`;
 
             info.calldata = action?.content?.calldata?.map((item) => {
-              const value = Array.isArray(item.value)
-                ? item.value.join(", ")
-                : item.value;
-              return `${item.name}: ${value}`;
+              return {
+                name: item.type,
+                value: item.value,
+              };
             });
 
             break;
@@ -192,7 +196,9 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
                             wordBreak: "break-all",
                           }}
                         >
-                          {param.value}
+                          {Array.isArray(param.value)
+                            ? `[${param.value.join(", ")}]`
+                            : param.value}
                         </span>
                       </div>
                     ))}
@@ -205,6 +211,8 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
       </Table>
     );
   };
+
+  console.log("actionPanelInfo", actionPanelInfo);
 
   const SummaryView = () => (
     <div className="space-y-[20px]">
@@ -229,9 +237,10 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
                 <h4 className="text-[14px] font-normal text-muted-foreground">
                   Calldata:
                 </h4>
-                {Object.entries(action.calldata).map(([, value], cIndex) => (
+                {action.calldata.map(({ name, value }, cIndex) => (
                   <div key={cIndex} className="font-mono font-semibold">
-                    {value}
+                    {name}:{" "}
+                    {Array.isArray(value) ? `[${value.join(", ")}]` : value}
                   </div>
                 ))}
               </div>
@@ -250,7 +259,14 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
               <h4 className="text-[14px] font-normal text-muted-foreground">
                 Value:
               </h4>
-              <p className="font-mono font-semibold">{action.value || "0"}</p>
+              <p className="font-mono font-semibold">
+                {action.value
+                  ? parseUnits(
+                      action.value,
+                      daoConfig?.network?.nativeToken?.decimals ?? 18
+                    )
+                  : "0"}
+              </p>
             </div>
           </div>
         </div>

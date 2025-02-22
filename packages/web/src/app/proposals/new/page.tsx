@@ -22,6 +22,7 @@ import {
   generateCustomAction,
   generateProposalAction,
   generateTransferAction,
+  MOCK_ACTIONS,
 } from "./helper";
 import type { Action } from "./type";
 import {
@@ -322,7 +323,7 @@ export default function NewProposal() {
               onReplace={handleReplaceAction}
               onRemove={handleRemoveAction}
             />
-            <PreviewPanel visible={tab === "preview"} actions={actions} />
+            <PreviewPanel visible={tab === "preview"} actions={MOCK_ACTIONS} />
           </main>
         </div>
       </div>
