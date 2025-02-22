@@ -21,25 +21,40 @@ interface UseGovernanceTokenReturn {
  */
 export function useGovernanceToken(): UseGovernanceTokenReturn {
   const daoConfig = useConfig();
+  const standard = daoConfig?.contracts?.governorToken?.standard;
   const tokenAddress = daoConfig?.contracts?.governorToken?.contract as Address;
   const { data, isLoading, error } = useReadContracts({
-    contracts: [
-      {
-        address: tokenAddress,
-        abi: tokenAbi,
-        functionName: "symbol",
-      },
-      {
-        address: tokenAddress,
-        abi: tokenAbi,
-        functionName: "name",
-      },
-      {
-        address: tokenAddress,
-        abi: tokenAbi,
-        functionName: "decimals",
-      },
-    ],
+    contracts:
+      standard === "ERC20"
+        ? [
+            {
+              address: tokenAddress,
+              abi: tokenAbi,
+              functionName: "symbol",
+            },
+            {
+              address: tokenAddress,
+              abi: tokenAbi,
+              functionName: "name",
+            },
+            {
+              address: tokenAddress,
+              abi: tokenAbi,
+              functionName: "decimals",
+            },
+          ]
+        : [
+            {
+              address: tokenAddress,
+              abi: tokenAbi,
+              functionName: "symbol",
+            },
+            {
+              address: tokenAddress,
+              abi: tokenAbi,
+              functionName: "name",
+            },
+          ],
     query: {
       enabled: Boolean(tokenAddress),
     },
@@ -49,7 +64,12 @@ export function useGovernanceToken(): UseGovernanceTokenReturn {
     ? {
         symbol: data[0].result as string,
         name: data[1].result as string,
-        decimals: data[2].result ? Number(data[2].result) : 18,
+        decimals:
+          standard === "ERC20"
+            ? data?.[2]?.result
+              ? Number(data[2].result)
+              : 18
+            : 0,
       }
     : null;
 

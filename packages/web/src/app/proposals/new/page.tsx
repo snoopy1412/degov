@@ -38,6 +38,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useVotes } from "@/hooks/useVotes";
 
 const DEFAULT_ACTIONS: Action[] = [generateProposalAction()];
 
@@ -75,6 +76,9 @@ export default function NewProposal() {
   const [publishLoading, setPublishLoading] = useState(false);
   const [actionUuid, setActionUuid] = useState<string>(DEFAULT_ACTIONS[0].id);
   const [tab, setTab] = useState<"edit" | "add" | "preview">("edit");
+
+  const result = useVotes();
+  console.log("votes", result);
 
   const handleProposalContentChange = useCallback(
     (content: ProposalContent) => {

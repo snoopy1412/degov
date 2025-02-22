@@ -3,12 +3,12 @@ import { useWriteContract } from "wagmi";
 import { abi as governorAbi } from "@/config/abi/governor";
 import { useConfig } from "./useConfig";
 
-interface ProposalAction {
+export interface ProposalActionParam {
   target: `0x${string}`;
   value: bigint;
   abi: InterfaceAbi;
   functionName: string;
-  params: unknown[];
+  params: readonly unknown[];
 }
 
 const useProposal = () => {
@@ -17,7 +17,7 @@ const useProposal = () => {
 
   const createProposal = async (
     description: string,
-    actions: ProposalAction[]
+    actions: ProposalActionParam[]
   ) => {
     try {
       const targets: `0x${string}`[] = [];

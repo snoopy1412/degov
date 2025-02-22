@@ -6,7 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGovernanceParams } from "@/hooks/useGovernaceParams";
+import { useGovernanceParams } from "@/hooks/useGovernanceParams";
 
 export const Parameters = () => {
   const { data: governanceParams } = useGovernanceParams();

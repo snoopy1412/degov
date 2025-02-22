@@ -29,7 +29,7 @@
     "governorContract": "0x9bCF89B951b9880AC1Ec9Ce6b82B2764ca7A532F",
     "governorToken": {
       "contract": "0xcC43d7e20D4dC29Ca65f3327C9257e1E354f9E08",
-      "standard": "ERC20/ERC721"
+      "standard": "ERC721"
     },
     "timeLockContract": "0x527560d6a509ddE7828D598BF31Fc67DA50c8093"
   },

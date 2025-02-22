@@ -146,7 +146,6 @@ export const customActionSchema = z.object({
     ),
   customAbiContent: z
     .array(z.any())
-    .optional()
     .refine((val) => {
       if (!val) return true;
       if (Array.isArray(val) && val.length === 0) return false;

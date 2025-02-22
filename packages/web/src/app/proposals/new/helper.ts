@@ -1,11 +1,15 @@
 import { v4 as uuidv4 } from "uuid";
-import { Address } from "viem";
+import { Address, parseUnits } from "viem";
+import { abi as tokenAbi } from "@/config/abi/token";
 import type {
   Action,
   CustomAction,
   ProposalAction,
   TransferAction,
 } from "./type";
+import { markdownToHtml } from "@/utils/markdown";
+import type { InterfaceAbi } from "ethers";
+import type { ProposalActionParam } from "@/hooks/useProposal";
 
 export const generateProposalAction = (): ProposalAction => {
   return {
@@ -37,9 +41,58 @@ export const generateCustomAction = (): CustomAction => {
       target: "" as Address,
       contractType: "",
       contractMethod: "",
+      customAbiContent: [],
       calldata: [],
       value: "",
     },
+  };
+};
+
+export const transformActionsToProposalParams = async (
+  actions: Action[],
+  decimals: number = 18
+): Promise<{ description: string; actions: ProposalActionParam[] }> => {
+  const proposalAction = actions.find((action) => action.type === "proposal");
+  const html = await markdownToHtml(proposalAction?.content.markdown ?? "");
+  const description = proposalAction
+    ? `# ${proposalAction.content.title}\n\n${html}`
+    : "";
+
+  const proposalActions: ProposalActionParam[] = actions
+    .filter((action) => action.type === "transfer" || action.type === "custom")
+    .map((action) => {
+      if (action.type === "transfer") {
+        return {
+          target: action.content.recipient,
+          value: 0n,
+          abi: tokenAbi as InterfaceAbi,
+          functionName: "transfer",
+          params: [
+            action.content.recipient,
+            parseUnits(action.content.amount, decimals),
+          ],
+        };
+      } else if (action.type === "custom") {
+        const customAction = action.content;
+
+        return {
+          target: customAction.target,
+          value: customAction.value
+            ? parseUnits(customAction.value, decimals)
+            : 0n,
+          abi: customAction.customAbiContent as InterfaceAbi,
+          functionName: customAction.contractMethod,
+          params: customAction?.calldata?.map(
+            (item) => item.value
+          ) as readonly unknown[],
+        };
+      }
+      throw new Error("Invalid action type");
+    });
+
+  return {
+    description,
+    actions: proposalActions,
   };
 };
 
@@ -103,6 +156,14 @@ Implementation will begin immediately upon proposal approval.`,
       target: "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB" as Address,
       contractType: "erc-20",
       contractMethod: "approve",
+      customAbiContent: [
+        {
+          name: "spender",
+          type: "address",
+          value: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199",
+          isArray: false,
+        },
+      ],
       calldata: [
         {
           name: "spender",
@@ -142,6 +203,14 @@ Implementation will begin immediately upon proposal approval.`,
       target: "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB" as Address,
       contractType: "erc-20",
       contractMethod: "approve",
+      customAbiContent: [
+        {
+          name: "spender",
+          type: "address",
+          value: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199",
+          isArray: false,
+        },
+      ],
       calldata: [
         {
           name: "spender",
@@ -175,3 +244,7 @@ Implementation will begin immediately upon proposal approval.`,
     },
   },
 ];
+
+transformActionsToProposalParams(MOCK_ACTIONS)?.then((res) => {
+  console.log("transformActionsToProposalParams", res);
+});
