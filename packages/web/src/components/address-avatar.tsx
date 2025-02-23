@@ -55,6 +55,6 @@ export const AddressAvatar = ({
 const fetchAvatarFromIndex = async (
   address: Address
 ): Promise<string | null> => {
-  console.log("fetchAvatarFromIndex", address);
+  console.warn("fetchAvatarFromIndex", address);
   return null;
 };

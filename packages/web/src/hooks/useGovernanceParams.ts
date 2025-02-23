@@ -50,8 +50,6 @@ export function useGovernanceParams() {
     },
   });
 
-  console.log("data", data);
-
   const formattedData: GovernanceParams | null = data
     ? {
         proposalThreshold: data[0]?.result as bigint,

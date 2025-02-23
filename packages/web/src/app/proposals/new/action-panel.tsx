@@ -212,8 +212,6 @@ export const ActionsPanel = ({ actions }: ActionsPanelProps) => {
     );
   };
 
-  console.log("actionPanelInfo", actionPanelInfo);
-
   const SummaryView = () => (
     <div className="space-y-[20px]">
       {actionPanelInfo.map((action, index) => (

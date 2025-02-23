@@ -1,21 +1,47 @@
-import { useWaitForTransactionReceipt } from "wagmi";
+import { Config, useWaitForTransactionReceipt } from "wagmi";
 import { TransactionStatus } from "./transaction-status";
 import { toast } from "react-toastify";
 import { useEffect, useRef } from "react";
+import { useLatestCallback } from "@/hooks/useLatestCallback";
+import { WaitForTransactionReceiptData } from "wagmi/query";
+import { ChainId } from "@/types/chain";
+import { WaitForTransactionReceiptErrorType } from "viem";
+
+export type SuccessType = (
+  data: WaitForTransactionReceiptData<Config, ChainId>
+) => void;
+export type ErrorType = (
+  error: WaitForTransactionReceiptErrorType
+) => void | null;
 
 interface TransactionToastProps {
   hash: `0x${string}`;
+  onSuccess?: SuccessType;
+  onError?: ErrorType;
 }
 
-export function TransactionToast({ hash }: TransactionToastProps) {
+export function TransactionToast({
+  hash,
+  onSuccess,
+  onError,
+}: TransactionToastProps) {
   const toastIdRef = useRef<string | number>(0);
+  const onSuccessLatest = useLatestCallback<SuccessType>(onSuccess);
+  const onErrorLatest = useLatestCallback<ErrorType>(onError);
 
   const {
+    data: receipt,
+    error,
     isLoading: isPending,
     isSuccess,
     isError,
   } = useWaitForTransactionReceipt({
     hash,
+    query: {
+      enabled: !!hash,
+      refetchInterval: 0,
+      staleTime: Infinity,
+    },
   });
 
   useEffect(() => {
@@ -24,13 +50,13 @@ export function TransactionToast({ hash }: TransactionToastProps) {
         <TransactionStatus status="pending" transactionHash={hash} />,
         {
           position: "top-right",
-          autoClose: false,
-          closeButton: false,
+          autoClose: 5000,
         }
       );
     }
 
     if (isSuccess && toastIdRef.current) {
+      onSuccessLatest?.(receipt);
       if (toast.isActive(toastIdRef.current)) {
         toast.update(toastIdRef.current, {
           render: <TransactionStatus status="success" transactionHash={hash} />,
@@ -51,6 +77,7 @@ export function TransactionToast({ hash }: TransactionToastProps) {
     }
 
     if (isError && toastIdRef.current) {
+      onErrorLatest?.(error);
       if (toast.isActive(toastIdRef.current)) {
         toast.update(toastIdRef.current, {
           render: <TransactionStatus status="failed" transactionHash={hash} />,
@@ -69,13 +96,24 @@ export function TransactionToast({ hash }: TransactionToastProps) {
         );
       }
     }
+  }, [
+    hash,
+    isPending,
+    isSuccess,
+    isError,
+    receipt,
+    error,
+    onSuccessLatest,
+    onErrorLatest,
+  ]);
 
+  useEffect(() => {
     return () => {
       if (toastIdRef.current) {
         toast.dismiss(toastIdRef.current);
       }
     };
-  }, [hash, isPending, isSuccess, isError]);
+  }, []);
 
   return null;
 }

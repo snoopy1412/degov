@@ -41,7 +41,7 @@ import {
 import { useVotes } from "@/hooks/useVotes";
 import { NewPublishWarning } from "@/components/new-publish-warning";
 import { toast } from "react-toastify";
-import { TransactionToast } from "@/components/transaction-toast";
+import { SuccessType, TransactionToast } from "@/components/transaction-toast";
 
 const DEFAULT_ACTIONS: Action[] = [generateProposalAction()];
 
@@ -83,8 +83,12 @@ export default function NewProposal() {
   const [tab, setTab] = useState<"edit" | "add" | "preview">("edit");
 
   const { createProposal, isPending } = useProposal();
-  const { formattedVotes, formattedProposalThreshold, hasEnoughVotes } =
-    useVotes();
+  const {
+    formattedVotes,
+    formattedProposalThreshold,
+    hasEnoughVotes,
+    isLoading,
+  } = useVotes();
 
   const handleProposalContentChange = useCallback(
     (content: ProposalContent) => {
@@ -179,8 +183,10 @@ export default function NewProposal() {
           contractType: action.content?.contractType,
           contractMethod: action.content?.contractMethod,
           calldata: action.content?.calldata,
+          customAbiContent: action.content?.customAbiContent,
           value: action.content?.value,
         });
+
         state.set(action.id, result.success);
       }
     });
@@ -213,6 +219,10 @@ export default function NewProposal() {
     }
   }, [actions, createProposal, hasEnoughVotes]);
 
+  const handlePublishSuccess: SuccessType = useCallback((receipt) => {
+    console.log("receipt", receipt);
+  }, []);
+
   useEffect(() => {
     return () => {
       setActions(DEFAULT_ACTIONS);
@@ -243,7 +253,7 @@ export default function NewProposal() {
             <Button
               className="gap-[5px] rounded-[100px]"
               onClick={handlePublish}
-              isLoading={publishLoading || isPending}
+              isLoading={publishLoading || isPending || isLoading}
             >
               <Image
                 src="/assets/image/proposal/plus.svg"
@@ -346,7 +356,12 @@ export default function NewProposal() {
         proposalThreshold={formattedProposalThreshold}
         votes={formattedVotes}
       />
-      {hash && <TransactionToast hash={hash as `0x${string}`} />}
+      {hash && (
+        <TransactionToast
+          hash={hash as `0x${string}`}
+          onSuccess={handlePublishSuccess}
+        />
+      )}
     </WithConnect>
   );
 }

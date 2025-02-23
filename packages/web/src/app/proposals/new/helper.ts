@@ -196,7 +196,3 @@ Implementation will begin immediately upon proposal approval.`,
     },
   },
 ];
-
-transformActionsToProposalParams(MOCK_ACTIONS)?.then((res) => {
-  console.log("transformActionsToProposalParams", res);
-});
