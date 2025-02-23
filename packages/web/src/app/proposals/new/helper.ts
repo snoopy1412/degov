@@ -158,10 +158,24 @@ Implementation will begin immediately upon proposal approval.`,
       contractMethod: "approve",
       customAbiContent: [
         {
-          name: "spender",
-          type: "address",
-          value: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199",
-          isArray: false,
+          type: "function",
+          name: "approve",
+          stateMutability: "nonpayable",
+          inputs: [
+            {
+              name: "spender",
+              type: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256[]",
+            },
+          ],
+          outputs: [
+            {
+              type: "bool",
+            },
+          ],
         },
       ],
       calldata: [
@@ -173,74 +187,12 @@ Implementation will begin immediately upon proposal approval.`,
         },
         {
           name: "amount",
-          type: "uint256",
-          value: "1500000000000000000000",
-          isArray: false,
-        },
-        {
-          name: "amount",
           type: "uint256[]",
           value: ["2500", "2500"],
-          isArray: true,
-        },
-        {
-          name: "v",
-          type: "bytes32[]",
-          value: [
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-          ],
           isArray: true,
         },
       ],
       value: "0",
-    },
-  },
-  {
-    id: "custom-2",
-    type: "custom",
-    content: {
-      target: "0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB" as Address,
-      contractType: "erc-20",
-      contractMethod: "approve",
-      customAbiContent: [
-        {
-          name: "spender",
-          type: "address",
-          value: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199",
-          isArray: false,
-        },
-      ],
-      calldata: [
-        {
-          name: "spender",
-          type: "address",
-          value: "0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199",
-          isArray: false,
-        },
-        {
-          name: "amount",
-          type: "uint256",
-          value: "1500000000000000000000",
-          isArray: false,
-        },
-        {
-          name: "amount",
-          type: "uint256[]",
-          value: ["2500", "2500"],
-          isArray: true,
-        },
-        {
-          name: "v",
-          type: "bytes32[]",
-          value: [
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
-          ],
-          isArray: true,
-        },
-      ],
-      value: "100",
     },
   },
 ];

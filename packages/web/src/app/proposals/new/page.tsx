@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { Button } from "@/components/ui/button";
-import { markdownToHtml } from "@/utils/markdown";
+import { useProposal } from "@/hooks/useProposal";
 import { NewProposalAction } from "./action";
 import { ProposalPanel } from "./proposal-panel";
 import { PreviewPanel } from "./preview-panel";
@@ -22,7 +22,7 @@ import {
   generateCustomAction,
   generateProposalAction,
   generateTransferAction,
-  MOCK_ACTIONS,
+  transformActionsToProposalParams,
 } from "./helper";
 import type { Action } from "./type";
 import {
@@ -39,6 +39,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useVotes } from "@/hooks/useVotes";
+import { NewPublishWarning } from "@/components/new-publish-warning";
+import { toast } from "react-toastify";
+import { TransactionToast } from "@/components/transaction-toast";
 
 const DEFAULT_ACTIONS: Action[] = [generateProposalAction()];
 
@@ -75,10 +78,13 @@ export default function NewProposal() {
   const [actions, setActions] = useImmer<Action[]>(DEFAULT_ACTIONS);
   const [publishLoading, setPublishLoading] = useState(false);
   const [actionUuid, setActionUuid] = useState<string>(DEFAULT_ACTIONS[0].id);
+  const [publishWarningOpen, setPublishWarningOpen] = useState(false);
+  const [hash, setHash] = useState<string | null>(null);
   const [tab, setTab] = useState<"edit" | "add" | "preview">("edit");
 
-  const result = useVotes();
-  console.log("votes", result);
+  const { createProposal, isPending } = useProposal();
+  const { formattedVotes, formattedProposalThreshold, hasEnoughVotes } =
+    useVotes();
 
   const handleProposalContentChange = useCallback(
     (content: ProposalContent) => {
@@ -184,28 +190,28 @@ export default function NewProposal() {
 
   const handlePublish = useCallback(async () => {
     try {
-      panelRefs.current.forEach((form) => {
-        const result = form.requestSubmit();
-        console.log("result", result);
-      });
+      if (!hasEnoughVotes) {
+        setPublishWarningOpen(true);
+        return;
+      }
 
-      setPublishLoading(true);
-      const title =
-        actions[0]?.type === "proposal"
-          ? (actions[0]?.content as ProposalContent).title
-          : "Untitled";
-      const markdown =
-        actions[0]?.type === "proposal"
-          ? (actions[0]?.content as ProposalContent).markdown
-          : "";
-      const html = await markdownToHtml(markdown);
-      console.log(title, html);
+      const result = await transformActionsToProposalParams(actions);
+      const hash = await createProposal(result.description, result.actions);
+      if (hash) {
+        console.log("hash", hash);
+        setHash(hash);
+      }
+      return;
     } catch (error) {
       console.error(error);
+      toast.error(
+        (error as { shortMessage: string }).shortMessage ??
+          "Failed to create proposal"
+      );
     } finally {
       setPublishLoading(false);
     }
-  }, [actions]);
+  }, [actions, createProposal, hasEnoughVotes]);
 
   useEffect(() => {
     return () => {
@@ -225,7 +231,10 @@ export default function NewProposal() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <div>
-                  <PublishButton disabled isLoading={publishLoading} />
+                  <PublishButton
+                    disabled
+                    isLoading={publishLoading || isPending}
+                  />
                 </div>
               </TooltipTrigger>
               <TooltipContent>Please fix all errors</TooltipContent>
@@ -234,7 +243,7 @@ export default function NewProposal() {
             <Button
               className="gap-[5px] rounded-[100px]"
               onClick={handlePublish}
-              isLoading={publishLoading}
+              isLoading={publishLoading || isPending}
             >
               <Image
                 src="/assets/image/proposal/plus.svg"
@@ -331,6 +340,13 @@ export default function NewProposal() {
           </main>
         </div>
       </div>
+      <NewPublishWarning
+        open={publishWarningOpen}
+        onOpenChange={setPublishWarningOpen}
+        proposalThreshold={formattedProposalThreshold}
+        votes={formattedVotes}
+      />
+      {hash && <TransactionToast hash={hash as `0x${string}`} />}
     </WithConnect>
   );
 }

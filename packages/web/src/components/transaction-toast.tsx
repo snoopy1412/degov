@@ -39,6 +39,14 @@ export function TransactionToast({ hash }: TransactionToastProps) {
           autoClose: 5000,
           closeButton: true,
         });
+      } else {
+        toast.success(
+          <TransactionStatus status="success" transactionHash={hash} />,
+          {
+            autoClose: 5000,
+            closeButton: true,
+          }
+        );
       }
     }
 
@@ -51,6 +59,14 @@ export function TransactionToast({ hash }: TransactionToastProps) {
           autoClose: 5000,
           closeButton: true,
         });
+      } else {
+        toast.error(
+          <TransactionStatus status="failed" transactionHash={hash} />,
+          {
+            autoClose: 5000,
+            closeButton: true,
+          }
+        );
       }
     }
 

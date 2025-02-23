@@ -1,18 +1,22 @@
-import { Address } from "viem";
+import { Address, ReadContractErrorType } from "viem";
 import { useAccount, useReadContract } from "wagmi";
 import { useConfig } from "./useConfig";
 import { useGovernanceParams } from "./useGovernanceParams";
 import { useGovernanceToken } from "./useGovernanceToken";
-import { formatUnits } from "viem";
 import { abi as tokenAbi } from "@/config/abi/token";
 import { isNil } from "lodash-es";
+import { QueryObserverResult } from "@tanstack/react-query";
+import { formatBigIntForDisplay } from "@/utils/number";
 
 interface UseVotesReturn {
-  votes: bigint | null;
-  formattedVotes: string | null;
+  votes?: bigint;
+  formattedVotes?: string;
+  proposalThreshold?: bigint;
+  formattedProposalThreshold?: string;
   hasEnoughVotes: boolean;
   isLoading: boolean;
   error: Error | null;
+  refetch: () => Promise<QueryObserverResult<bigint, ReadContractErrorType>>;
 }
 
 export function useVotes(): UseVotesReturn {
@@ -28,6 +32,7 @@ export function useVotes(): UseVotesReturn {
     data: votes,
     isLoading: isVotesLoading,
     error,
+    refetch,
   } = useReadContract({
     address: tokenAddress,
     abi: tokenAbi,
@@ -40,8 +45,8 @@ export function useVotes(): UseVotesReturn {
 
   const formattedVotes =
     !isNil(votes) && !isNil(tokenData?.decimals)
-      ? formatUnits(votes, tokenData.decimals)
-      : null;
+      ? formatBigIntForDisplay(votes, tokenData.decimals ?? 18)
+      : undefined;
 
   const hasEnoughVotes =
     votes && governanceParams?.proposalThreshold
@@ -49,9 +54,17 @@ export function useVotes(): UseVotesReturn {
       : false;
 
   return {
-    votes: votes as bigint | null,
+    votes,
     formattedVotes,
+    proposalThreshold: governanceParams?.proposalThreshold,
+    formattedProposalThreshold: governanceParams?.proposalThreshold
+      ? formatBigIntForDisplay(
+          governanceParams.proposalThreshold,
+          tokenData?.decimals ?? 18
+        )
+      : undefined,
     hasEnoughVotes,
+    refetch,
     isLoading: isVotesLoading || isTokenLoading || isParamsLoading,
     error,
   };

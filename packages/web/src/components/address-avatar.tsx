@@ -1,7 +1,8 @@
-import { cn } from '@/lib/utils';
-import { blo } from 'blo';
-import { useState, useEffect } from 'react';
-import type { Address } from 'viem';
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { blo } from "blo";
+import { useState, useEffect } from "react";
+import type { Address } from "viem";
 
 interface AddressAvatarProps {
   address: Address;
@@ -9,7 +10,11 @@ interface AddressAvatarProps {
   className?: string;
 }
 
-export const AddressAvatar = ({ address, size = 40, className }: AddressAvatarProps) => {
+export const AddressAvatar = ({
+  address,
+  size = 40,
+  className,
+}: AddressAvatarProps) => {
   const [indexedAvatarUrl, setIndexedAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,7 +27,7 @@ export const AddressAvatar = ({ address, size = 40, className }: AddressAvatarPr
           setIndexedAvatarUrl(indexedAvatar);
         }
       } catch (error) {
-        console.error('Error fetching avatar:', error);
+        console.error("Error fetching avatar:", error);
       }
     };
 
@@ -36,18 +41,20 @@ export const AddressAvatar = ({ address, size = 40, className }: AddressAvatarPr
   const avatarUrl = indexedAvatarUrl || blo(address as `0x${string}`);
 
   return (
-    <img
+    <Image
       src={avatarUrl}
       alt={`Avatar for ${address}`}
       width={size}
       height={size}
-      className={cn('rounded-full', className)}
+      className={cn("rounded-full", className)}
     />
   );
 };
 
 // fake
-const fetchAvatarFromIndex = async (address: Address): Promise<string | null> => {
-  console.log('fetchAvatarFromIndex', address);
+const fetchAvatarFromIndex = async (
+  address: Address
+): Promise<string | null> => {
+  console.log("fetchAvatarFromIndex", address);
   return null;
 };

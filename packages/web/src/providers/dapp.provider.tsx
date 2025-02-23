@@ -3,11 +3,10 @@ import * as React from "react";
 import { WagmiProvider, deserialize, serialize } from "wagmi";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
-import { createConfig } from "@/config/wagmi";
+import { createConfig, queryClient } from "@/config/wagmi";
 import { useConfig } from "@/hooks/useConfig";
 import "@rainbow-me/rainbowkit/styles.css";
 import { Chain, darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import { QueryClient } from "@tanstack/react-query";
 
 const dark = darkTheme({
   borderRadius: "medium",
@@ -16,18 +15,7 @@ const dark = darkTheme({
 
 export function DAppProvider({ children }: React.PropsWithChildren<unknown>) {
   const dappConfig = useConfig();
-  const [queryClient] = React.useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            gcTime: 1_000 * 60 * 60 * 24,
-            refetchOnMount: true,
-            refetchOnWindowFocus: false,
-          },
-        },
-      })
-  );
+
   if (!dappConfig) {
     return null;
   }

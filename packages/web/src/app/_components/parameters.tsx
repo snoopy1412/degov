@@ -9,6 +9,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGovernanceParams } from "@/hooks/useGovernanceParams";
 import { dayjsHumanize } from "@/utils/date";
+import { formatBigIntForDisplay } from "@/utils/number";
 
 export const Parameters = () => {
   const { data: governanceParams, isLoading } = useGovernanceParams();
@@ -39,7 +40,7 @@ export const Parameters = () => {
               {isLoading ? (
                 <Skeleton className="h-[14px] w-[30px]" />
               ) : governanceParams?.proposalThreshold ? (
-                String(governanceParams?.proposalThreshold)
+                formatBigIntForDisplay(governanceParams?.proposalThreshold, 0)
               ) : (
                 "-"
               )}
@@ -54,7 +55,7 @@ export const Parameters = () => {
               {isLoading ? (
                 <Skeleton className="h-[14px] w-[30px]" />
               ) : governanceParams?.quorum ? (
-                String(governanceParams?.quorum)
+                formatBigIntForDisplay(governanceParams?.quorum, 0)
               ) : (
                 "0"
               )}

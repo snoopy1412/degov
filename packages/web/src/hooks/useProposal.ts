@@ -11,7 +11,7 @@ export interface ProposalActionParam {
   params: readonly unknown[];
 }
 
-const useProposal = () => {
+export const useProposal = () => {
   const daoConfig = useConfig();
   const { writeContractAsync, isPending } = useWriteContract();
 
@@ -37,6 +37,11 @@ const useProposal = () => {
         calldatas.push(calldata);
       }
 
+      console.log("targets", targets);
+      console.log("values", values);
+      console.log("calldatas", calldatas);
+      console.log("description", description);
+
       const data = await writeContractAsync({
         address: daoConfig?.contracts?.governorContract as `0x${string}`,
         abi: governorAbi,
@@ -44,10 +49,7 @@ const useProposal = () => {
         args: [targets, values, calldatas, description],
       });
 
-      return {
-        hash: data,
-        isPending: isPending,
-      };
+      return data;
     } catch (error) {
       console.error("Failed to create proposal:", error);
       throw error;
@@ -56,7 +58,6 @@ const useProposal = () => {
 
   return {
     createProposal,
+    isPending,
   };
 };
-
-export default useProposal;
