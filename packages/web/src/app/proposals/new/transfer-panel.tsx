@@ -15,6 +15,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { TransferContent } from "./schema";
 import { ErrorMessage } from "@/components/error-message";
+import { formatBigIntForDisplay } from "@/utils/number";
 
 interface TransferPanelProps {
   index: number;
@@ -87,7 +88,7 @@ export const TransferPanel = ({
 
   const tokenList = useMemo(() => {
     const nativeToken: TokenInfo = {
-      address: '0x0000000000000000000000000000000000000000' as Address,
+      address: "0x0000000000000000000000000000000000000000" as Address,
       symbol: daoConfig?.network?.nativeToken?.symbol as string,
       decimals: daoConfig?.network?.nativeToken?.decimals as number,
       icon: daoConfig?.logo as string,
@@ -248,16 +249,22 @@ export const TransferPanel = ({
                 {isLoading ? (
                   <Skeleton className="h-[20px] w-[80px] rounded-[4px]" />
                 ) : (
-                  <FormattedNumberTooltip
-                    value={balance ?? 0n}
-                    valueDecimals={selectedToken?.decimals ?? 18}
-                  >
-                    {(formattedValue) => (
-                      <span className="text-[14px] text-foreground/50">
-                        {formattedValue}
-                      </span>
+                  // <FormattedNumberTooltip
+                  //   value={balance ?? 0n}
+                  //   valueDecimals={selectedToken?.decimals ?? 18}
+                  // >
+                  //   {(formattedValue) => (
+                  //     <span className="text-[14px] text-foreground/50">
+                  //       {formattedValue}
+                  //     </span>
+                  //   )}
+                  // </FormattedNumberTooltip>
+                  <span className="text-[14px] text-foreground/50">
+                    {formatBigIntForDisplay(
+                      balance ?? 0n,
+                      selectedToken?.decimals ?? 18
                     )}
-                  </FormattedNumberTooltip>
+                  </span>
                 )}
               </span>
             </div>

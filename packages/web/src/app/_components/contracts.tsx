@@ -31,14 +31,14 @@ export const Contracts = () => {
           <span>Contracts</span>
           <div className="flex h-[34px] w-[118px] items-center justify-center gap-[5px] rounded-[100px] bg-[#2E2E2E] px-[10px] py-[5px]">
             <Image
-              src={daoConfig?.logo ?? ""}
+              src={daoConfig?.network?.logo ?? ""}
               alt="contracts"
               className="size-[24px] rounded-full"
               width={24}
               height={24}
             />
             <span className="text-[16px] font-semibold text-foreground">
-              {daoConfig?.network?.nativeToken?.symbol}
+              {daoConfig?.network?.chain}
             </span>
           </div>
         </div>
@@ -69,7 +69,7 @@ export const Contracts = () => {
             <span className="inline-flex items-center gap-[5px] text-[14px] font-normal text-foreground/50">
               Token
               <span className="inline-block leading-none rounded-[10px] bg-muted-foreground p-[5px] text-[#202224] text-[12px] font-semibold">
-                ERC20
+                {daoConfig?.contracts?.governorToken?.standard}
               </span>
             </span>
             <div className="flex w-full items-center justify-between gap-[5px]">

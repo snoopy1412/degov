@@ -6,10 +6,12 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useGovernanceParams } from "@/hooks/useGovernanceParams";
+import { dayjsHumanize } from "@/utils/date";
 
 export const Parameters = () => {
-  const { data: governanceParams } = useGovernanceParams();
+  const { data: governanceParams, isLoading } = useGovernanceParams();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -34,9 +36,13 @@ export const Parameters = () => {
               Proposal threshold
             </span>
             <span className="text-[14px] font-normal text-foreground">
-              {governanceParams?.proposalThreshold
-                ? String(governanceParams?.proposalThreshold)
-                : "-"}
+              {isLoading ? (
+                <Skeleton className="h-[14px] w-[30px]" />
+              ) : governanceParams?.proposalThreshold ? (
+                String(governanceParams?.proposalThreshold)
+              ) : (
+                "-"
+              )}
             </span>
           </div>
 
@@ -45,9 +51,13 @@ export const Parameters = () => {
               Quorum needed
             </span>
             <span className="text-[14px] font-normal text-foreground">
-              {governanceParams?.quorum
-                ? String(governanceParams?.quorum)
-                : "-"}
+              {isLoading ? (
+                <Skeleton className="h-[14px] w-[30px]" />
+              ) : governanceParams?.quorum ? (
+                String(governanceParams?.quorum)
+              ) : (
+                "0"
+              )}
             </span>
           </div>
 
@@ -56,9 +66,13 @@ export const Parameters = () => {
               Proposal delay
             </span>
             <span className="text-[14px] font-normal text-foreground">
-              {governanceParams?.votingDelay
-                ? String(governanceParams?.votingDelay)
-                : "-"}
+              {isLoading ? (
+                <Skeleton className="h-[14px] w-[30px]" />
+              ) : governanceParams?.votingDelay ? (
+                dayjsHumanize(Number(governanceParams?.votingDelay))
+              ) : (
+                "None"
+              )}
             </span>
           </div>
 
@@ -67,9 +81,13 @@ export const Parameters = () => {
               Voting period
             </span>
             <span className="text-[14px] font-normal text-foreground">
-              {governanceParams?.votingPeriod
-                ? String(governanceParams?.votingPeriod)
-                : "-"}
+              {isLoading ? (
+                <Skeleton className="h-[14px] w-[30px]" />
+              ) : governanceParams?.votingPeriod ? (
+                dayjsHumanize(Number(governanceParams?.votingPeriod))
+              ) : (
+                "-"
+              )}
             </span>
           </div>
         </div>

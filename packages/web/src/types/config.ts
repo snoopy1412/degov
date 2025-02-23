@@ -15,6 +15,7 @@ interface NativeToken {
 
 interface NetworkInfo {
   chain: string;
+  logo: string;
   chainId: number;
   rpc: string[];
   explorer: {
