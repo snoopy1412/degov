@@ -57,7 +57,7 @@ export function AddressInputWithResolver({
           value={value}
           onChange={handleChange}
           className={cn(
-            "border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0",
+            "border-border/20 bg-card",
             isInvalidAddress && "border-red-500",
             className
           )}

@@ -7,7 +7,7 @@ import { TokenInfo, TokenSelect } from "@/components/token-select";
 import { AddressInputWithResolver } from "@/components/address-input-with-resolver";
 import { isEmpty, isObject } from "lodash-es";
 import { useTokenBalance } from "@/hooks/useTokenBalance";
-import FormattedNumberTooltip from "@/components/formatted-number-tooltip";
+// import FormattedNumberTooltip from "@/components/formatted-number-tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { parseUnits, formatUnits, type Address } from "viem";
 import { transferSchema } from "./schema";
@@ -200,7 +200,7 @@ export const TransferPanel = ({
                 onChange={field.onChange}
                 placeholder="Enter address"
                 className={cn(
-                  "border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0",
+                  "border-border/20 bg-card",
                   errors.recipient && "border-red-500"
                 )}
               />

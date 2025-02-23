@@ -122,7 +122,7 @@ export function ProfileForm() {
                     <Input
                       placeholder="Display Name"
                       {...field}
-                      className="w-full border-border bg-transparent focus-visible:shadow-none focus-visible:ring-0"
+                      className="w-full border-border bg-transparent"
                     />
                   </FormControl>
                 </div>
@@ -144,7 +144,7 @@ export function ProfileForm() {
                     <Textarea
                       placeholder="Your statement that shows your commitment to the community and what you will do for the community."
                       {...field}
-                      className="w-full border-border bg-transparent focus-visible:shadow-none focus-visible:ring-0"
+                      className="w-full border-border bg-transparent"
                     />
                   </FormControl>
                 </div>
@@ -165,7 +165,7 @@ export function ProfileForm() {
                       type="email"
                       placeholder="email@example.com"
                       {...field}
-                      className="w-full border-border bg-transparent focus-visible:shadow-none focus-visible:ring-0"
+                      className="w-full border-border bg-transparent"
                     />
                   </FormControl>
                 </div>
@@ -185,7 +185,7 @@ export function ProfileForm() {
                     <Input
                       placeholder="@username"
                       {...field}
-                      className="w-full border-border bg-transparent focus-visible:shadow-none focus-visible:ring-0"
+                      className="w-full border-border bg-transparent"
                     />
                   </FormControl>
                 </div>
@@ -205,7 +205,7 @@ export function ProfileForm() {
                     <Input
                       placeholder="@username"
                       {...field}
-                      className="w-full border-border bg-transparent focus-visible:shadow-none focus-visible:ring-0"
+                      className="w-full border-border bg-transparent"
                     />
                   </FormControl>
                 </div>
@@ -225,7 +225,7 @@ export function ProfileForm() {
                     <Input
                       placeholder="username"
                       {...field}
-                      className="w-full border-border bg-transparent focus-visible:shadow-none focus-visible:ring-0"
+                      className="w-full border-border bg-transparent"
                     />
                   </FormControl>
                 </div>
@@ -245,7 +245,7 @@ export function ProfileForm() {
                     <Input
                       placeholder="username#1234"
                       {...field}
-                      className="w-full border-border bg-transparent focus-visible:shadow-none focus-visible:ring-0"
+                      className="w-full border-border bg-transparent"
                     />
                   </FormControl>
                 </div>

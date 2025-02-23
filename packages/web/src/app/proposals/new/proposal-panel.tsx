@@ -69,7 +69,7 @@ export const ProposalPanel = ({
           aria-invalid={errors.title ? "true" : "false"}
           placeholder="Enter the title of your proposal"
           className={cn(
-            "border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0",
+            "border-border/20 bg-card",
             errors.title && "border-red-500"
           )}
         />
@@ -92,7 +92,7 @@ export const ProposalPanel = ({
                 }}
                 placeholder="Enter the description of your proposal"
                 className={cn(
-                  "border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0",
+                  "border-border/20 bg-card",
                   errors.markdown && "border-red-500"
                 )}
               />

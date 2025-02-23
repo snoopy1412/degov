@@ -127,8 +127,10 @@ export function CallDataInputForm({
                         className="flex flex-row items-center justify-between gap-[20px]"
                       >
                         <Input
-                          placeholder={`${getBaseType(input.type)}[${arrayIndex}]`}
-                          className={`h-[37px] border-border bg-card focus-visible:shadow-none focus-visible:ring-0 ${
+                          placeholder={`${getBaseType(
+                            input.type
+                          )}[${arrayIndex}]`}
+                          className={`h-[37px] border-border bg-card ${
                             getFieldError(index) ? "border-danger" : ""
                           }`}
                           value={arrayValue}
@@ -169,7 +171,7 @@ export function CallDataInputForm({
                 <div className="flex flex-col gap-[10px]">
                   <Input
                     placeholder={`${input.type}`}
-                    className={`h-[37px] border-border bg-card focus-visible:shadow-none focus-visible:ring-0 ${
+                    className={`h-[37px] border-border bg-card  ${
                       getFieldError(index) ? "border-danger" : ""
                     }`}
                     onChange={(e) => {

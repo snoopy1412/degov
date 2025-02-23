@@ -202,7 +202,7 @@ export const CustomPanel = ({
             {...register("target")}
             placeholder="Enter the target address..."
             className={cn(
-              "border-border/20 bg-card focus-visible:shadow-none focus-visible:ring-0",
+              "border-border/20 bg-card",
               errors.target && "border-danger"
             )}
           />
@@ -358,7 +358,7 @@ export const CustomPanel = ({
                   </span>
                   <Input
                     placeholder={`${daoConfig?.network?.nativeToken?.symbol} amount`}
-                    className="h-[37px] border-border bg-card focus-visible:shadow-none focus-visible:ring-0"
+                    className="h-[37px] border-border bg-card"
                     {...register("value")}
                   />
                 </div>

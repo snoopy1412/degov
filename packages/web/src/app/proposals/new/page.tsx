@@ -327,7 +327,7 @@ export default function NewProposal() {
               onReplace={handleReplaceAction}
               onRemove={handleRemoveAction}
             />
-            <PreviewPanel visible={tab === "preview"} actions={MOCK_ACTIONS} />
+            <PreviewPanel visible={tab === "preview"} actions={actions} />
           </main>
         </div>
       </div>
