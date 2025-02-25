@@ -1,8 +1,12 @@
-import { useWriteContract } from "wagmi";
 import { useCallback } from "react";
-import { useConfig } from "./useConfig";
+import { useWriteContract } from "wagmi";
+
 import { abi as tokenAbi } from "@/config/abi/token";
-import { Address } from "viem";
+
+import { useConfig } from "./useConfig";
+
+
+import type { Address } from "viem";
 
 export const useDelegate = () => {
   const daoConfig = useConfig();

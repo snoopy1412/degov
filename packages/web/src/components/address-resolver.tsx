@@ -1,5 +1,7 @@
 import { useEnsName } from 'wagmi';
+
 import { formatShortAddress } from '@/utils/address';
+
 import type { Address } from 'viem';
 
 interface AddressResolverProps {

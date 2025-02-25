@@ -1,12 +1,18 @@
-import { Controller } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Editor } from "@/components/editor";
-import { useCallback, useEffect } from "react";
-import { cn } from "@/lib/utils";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ProposalContent, proposalSchema } from "./schema";
+import { useCallback, useEffect } from "react";
+import { Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
+
+import { Editor } from "@/components/editor";
 import { ErrorMessage } from "@/components/error-message";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+
+
+import { proposalSchema } from "./schema";
+
+import type { ProposalContent} from "./schema";
+
 
 interface ProposalPanelProps {
   visible: boolean;

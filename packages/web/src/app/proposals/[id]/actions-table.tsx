@@ -1,4 +1,6 @@
 import Image from "next/image";
+
+import { Empty } from "@/components/ui/empty";
 import {
   Table,
   TableBody,
@@ -7,10 +9,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Empty } from "@/components/ui/empty";
 import { PROPOSAL_ACTIONS, type ProposalActionType } from "@/config/proposals";
-import { formatShortAddress } from "@/utils/address";
 import { useConfig } from "@/hooks/useConfig";
+import { formatShortAddress } from "@/utils/address";
+
 import type { Address } from "viem";
 export type Result = {
   type: ProposalActionType;

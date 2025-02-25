@@ -1,11 +1,16 @@
-import { Input } from "@/components/ui/input";
-import { useCallback, useEffect } from "react";
-import { Calldata, CalldataItem, calldataSchema } from "./schema";
-import { useForm, useFieldArray } from "react-hook-form";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldError, FieldErrors } from "react-hook-form";
 import { Plus, Trash2 } from "lucide-react";
+import { useCallback, useEffect } from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+
 import { ErrorMessage } from "@/components/error-message";
+import { Input } from "@/components/ui/input";
+
+import { calldataSchema } from "./schema";
+
+import type { Calldata, CalldataItem} from "./schema";
+import type { FieldError, FieldErrors } from "react-hook-form";
 
 interface CallDataInputFormProps {
   calldata: CalldataItem[];

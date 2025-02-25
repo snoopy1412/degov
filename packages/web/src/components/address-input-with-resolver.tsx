@@ -1,8 +1,10 @@
 import Image from "next/image";
-import { Input } from "@/components/ui/input";
-import { AddressWithAvatar } from "@/components/address-with-avatar";
 import { isAddress } from "viem";
+
+import { AddressWithAvatar } from "@/components/address-with-avatar";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+
 import type { Address } from "viem";
 
 interface AddressInputWithResolverProps {

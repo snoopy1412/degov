@@ -1,12 +1,15 @@
 "use client";
-import * as React from "react";
-import { WagmiProvider, deserialize, serialize } from "wagmi";
+import { darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import * as React from "react";
+import { WagmiProvider, deserialize, serialize } from "wagmi";
+
 import { createConfig, queryClient } from "@/config/wagmi";
 import { useConfig } from "@/hooks/useConfig";
+
 import "@rainbow-me/rainbowkit/styles.css";
-import { Chain, darkTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import type { Chain } from "@rainbow-me/rainbowkit";
 
 const dark = darkTheme({
   borderRadius: "medium",

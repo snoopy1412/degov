@@ -1,8 +1,12 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
+
+import { DECIMAL } from '@/config/base';
 import { cn } from '@/lib/utils';
 import { formatBigIntWithDecimals } from '@/utils/number';
-import { DECIMAL } from '@/config/base';
+
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+
+import type { ReactNode } from 'react';
 
 interface FormattedNumberTooltipProps {
   value: bigint;

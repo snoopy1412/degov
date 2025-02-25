@@ -1,6 +1,7 @@
-import { isValidAbi } from "@/utils/abi";
 import { isAddress } from "viem";
 import { z } from "zod";
+
+import { isValidAbi } from "@/utils/abi";
 
 /**
  * Proposal content schema

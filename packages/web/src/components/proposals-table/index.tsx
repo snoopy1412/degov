@@ -1,3 +1,6 @@
+import Link from "next/link";
+
+import { Empty } from "@/components/ui/empty";
 import {
   Table,
   TableBody,
@@ -7,11 +10,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
+
 import { ProposalStatus } from "../proposal-status";
+
 import { VotePercentage } from "./vote-percentage";
 import { VoteTotal } from "./vote-total";
-import { Empty } from "@/components/ui/empty";
+
 
 // Move raw data to separate interface/type
 interface ProposalData {

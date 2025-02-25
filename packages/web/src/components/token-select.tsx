@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 import {
   Select,
   SelectContent,
@@ -7,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import type { Address } from "viem";
 
 export type TokenInfo = {

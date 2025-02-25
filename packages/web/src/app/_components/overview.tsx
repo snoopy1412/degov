@@ -1,4 +1,5 @@
 import { formatNumberForDisplay } from "@/utils/number";
+
 import { OverviewItem } from "./overview-item";
 import { ProposalsStatusDetail } from "./proposals-status-detail";
 

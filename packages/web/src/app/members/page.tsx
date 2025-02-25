@@ -1,9 +1,12 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { MembersTable } from "@/components/members-table";
+
 import { DelegateAction } from "@/components/delegate-action";
-import type { Address } from "viem";
+import { MembersTable } from "@/components/members-table";
 import type { Member } from "@/components/members-table";
+
+import type { Address } from "viem";
+
 
 const data: Member[] = [
   {

@@ -1,5 +1,6 @@
-import { DECIMAL } from "@/config/base";
 import { formatUnits } from "viem";
+
+import { DECIMAL } from "@/config/base";
 
 /**
  * Formats a number according to its magnitude, returning both abbreviated and full formats.

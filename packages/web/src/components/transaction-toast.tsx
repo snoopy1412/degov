@@ -1,11 +1,17 @@
-import { Config, useWaitForTransactionReceipt } from "wagmi";
-import { TransactionStatus } from "./transaction-status";
-import { toast } from "react-toastify";
 import { useEffect, useRef } from "react";
+import { toast } from "react-toastify";
+import { useWaitForTransactionReceipt } from "wagmi";
+
 import { useLatestCallback } from "@/hooks/useLatestCallback";
-import { WaitForTransactionReceiptData } from "wagmi/query";
-import { ChainId } from "@/types/chain";
-import { WaitForTransactionReceiptErrorType } from "viem";
+import type { ChainId } from "@/types/chain";
+
+import { TransactionStatus } from "./transaction-status";
+
+import type { WaitForTransactionReceiptErrorType } from "viem";
+import type { Config} from "wagmi";
+import type { WaitForTransactionReceiptData } from "wagmi/query";
+
+
 
 export type SuccessType = (
   data: WaitForTransactionReceiptData<Config, ChainId>

@@ -1,27 +1,29 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
+import { isAddress, type Address } from "viem";
 import { useAccount } from "wagmi";
+
 import { AddressAvatar } from "@/components/address-avatar";
 import { AddressResolver } from "@/components/address-resolver";
 import ClipboardIconButton from "@/components/clipboard-icon-button";
+import { DelegateAction } from "@/components/delegate-action";
+import { DelegateSelector } from "@/components/delegate-selector";
+import NotFound from "@/components/not-found";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { formatShortAddress } from "@/utils/address";
-import { ReceivedDelegations } from "./received-delegations";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useCallback, useMemo, useState } from "react";
-import { DelegateAction } from "@/components/delegate-action";
-import { DelegateSelector } from "@/components/delegate-selector";
-import { isAddress, type Address } from "viem";
-import NotFound from "@/components/not-found";
-import { useRouter } from "next/navigation";
-import { useAddressVotes } from "@/hooks/useAddressVotes";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAddressVotes } from "@/hooks/useAddressVotes";
+import { formatShortAddress } from "@/utils/address";
+
+import { ReceivedDelegations } from "./received-delegations";
 interface ProfileProps {
   address: Address;
 }

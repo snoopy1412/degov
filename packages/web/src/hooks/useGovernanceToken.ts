@@ -1,6 +1,9 @@
 import { useReadContracts } from "wagmi";
+
 import { abi as tokenAbi } from "@/config/abi/token";
+
 import { useConfig } from "./useConfig";
+
 import type { Address } from "viem";
 
 interface GovernanceTokenMetadata {

@@ -1,8 +1,11 @@
 "use client";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import { Button } from "../ui/button";
+
 import { useConfig } from "@/hooks/useConfig";
+
+import { Button } from "../ui/button";
+
 import { Connected } from "./connected";
 
 export const ConnectButton = () => {

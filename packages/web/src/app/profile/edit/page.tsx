@@ -1,7 +1,9 @@
 import { useAccount } from "wagmi";
-import { ProfileForm } from "./profile-form";
-import { ProfileAvatar } from "./profile-avatar";
+
 import NotFound from "@/components/not-found";
+
+import { ProfileAvatar } from "./profile-avatar";
+import { ProfileForm } from "./profile-form";
 
 export default function Edit() {
   const { address } = useAccount();

@@ -1,4 +1,6 @@
-import type { TokenDetails } from '@/types/config';
+import Image from "next/image";
+
+import type { TokenDetails } from "@/types/config";
 
 interface AssetProps {
   asset: TokenDetails;
@@ -12,12 +14,22 @@ export const Asset = ({ asset, explorer }: AssetProps) => {
       target="_blank"
       rel="noreferrer"
     >
-      <img src={asset.logo} alt={asset.symbol} className="h-[30px] w-[30px] rounded-full" />
-      <span className="text-[14px] capitalize text-foreground">{asset.symbol}</span>
-      <img
+      <Image
+        src={asset.logo}
+        alt={asset.symbol}
+        className="h-[30px] w-[30px] rounded-full"
+        width={30}
+        height={30}
+      />
+      <span className="text-[14px] capitalize text-foreground">
+        {asset.symbol}
+      </span>
+      <Image
         src="/assets/image/external-link.svg"
         alt="external-link"
         className="h-[16px] w-[16px]"
+        width={16}
+        height={16}
       />
     </a>
   );

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Description } from './description';
+
 import { Comments } from './comments';
+import { Description } from './description';
 
 export const Proposal = () => {
   const [activeTab, setActiveTab] = useState<'description' | 'comments'>('description');

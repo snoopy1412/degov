@@ -1,6 +1,9 @@
-import { FC, useState } from "react";
 import Image from "next/image";
+import { useState } from "react";
+
 import { cn } from "@/lib/utils";
+
+import type { FC} from "react";
 
 type VoteVariant = "for" | "against" | "abstain";
 

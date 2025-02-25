@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ConfigContext } from "@/hooks/useConfig";
+
 import Error from "@/components/error";
+import { ConfigContext } from "@/hooks/useConfig";
+
 import type { Config } from "../types/config";
 
 export function ConfigProvider({ children }: { children: React.ReactNode }) {

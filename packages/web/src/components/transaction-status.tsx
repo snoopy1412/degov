@@ -1,5 +1,6 @@
-import { useConfig } from "@/hooks/useConfig";
 import Image from "next/image";
+
+import { useConfig } from "@/hooks/useConfig";
 
 type TransactionStatusType = "pending" | "success" | "failed";
 

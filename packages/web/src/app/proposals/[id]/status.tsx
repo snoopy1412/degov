@@ -1,7 +1,8 @@
 import Image from "next/image";
+import React from "react";
+
 import { AddressWithAvatar } from "@/components/address-with-avatar";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
 
 interface ProposalStage {
   title: string;

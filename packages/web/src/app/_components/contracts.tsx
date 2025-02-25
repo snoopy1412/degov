@@ -1,7 +1,8 @@
 "use client";
+import Image from "next/image";
+
 import ClipboardIconButton from "@/components/clipboard-icon-button";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,

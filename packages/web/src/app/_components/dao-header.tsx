@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
+
 import { useConfig } from "@/hooks/useConfig";
-import { Parameters } from "./parameters";
+
 import { Contracts } from "./contracts";
+import { Parameters } from "./parameters";
 
 export const DaoHeader = () => {
   const config = useConfig();

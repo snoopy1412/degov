@@ -1,3 +1,6 @@
+import Link from "next/link";
+
+import { Empty } from "@/components/ui/empty";
 import {
   Table,
   TableBody,
@@ -7,10 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
-import { Empty } from "@/components/ui/empty";
-import { Button } from "../ui/button";
+
 import { AddressWithAvatar } from "../address-with-avatar";
+import { Button } from "../ui/button";
 
 export type Member = {
   rank: string;

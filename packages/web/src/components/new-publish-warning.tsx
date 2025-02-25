@@ -1,12 +1,14 @@
 import Image from "next/image";
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Separator } from "./ui/separator";
+
 import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 
 interface NewPublishWarningProps {
   proposalThreshold?: string;

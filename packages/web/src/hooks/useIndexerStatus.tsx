@@ -1,5 +1,6 @@
-import { INDEXER_CONFIG } from '@/config/indexer';
 import { create } from 'zustand';
+
+import { INDEXER_CONFIG } from '@/config/indexer';
 
 interface IndexerState {
   currentBlock: number;

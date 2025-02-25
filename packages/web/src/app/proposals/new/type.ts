@@ -1,4 +1,4 @@
-import { CustomContent, ProposalContent, TransferContent } from "./schema";
+import type { CustomContent, ProposalContent, TransferContent } from "./schema";
 
 export interface ProposalAction {
   id: string;

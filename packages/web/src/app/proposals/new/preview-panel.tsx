@@ -1,10 +1,15 @@
-import { AddressWithAvatar } from "@/components/address-with-avatar";
-import { useAccount } from "wagmi";
-import { ActionsPanel } from "./action-panel";
-import { cn } from "@/lib/utils";
 import { useAsync } from "react-use";
-import { ProposalContent } from "./schema";
+import { useAccount } from "wagmi";
+
+import { AddressWithAvatar } from "@/components/address-with-avatar";
+import { cn } from "@/lib/utils";
 import { markdownToHtml } from "@/utils/markdown";
+
+import { ActionsPanel } from "./action-panel";
+
+
+
+import type { ProposalContent } from "./schema";
 import type { Action } from "./type";
 
 interface PreviewPanelProps {

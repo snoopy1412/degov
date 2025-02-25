@@ -1,9 +1,13 @@
-import { Interface, InterfaceAbi } from "ethers";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { abi as governorAbi } from "@/config/abi/governor";
-import { useConfig } from "./useConfig";
+import { Interface } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { keccak256, stringToBytes } from "viem";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
+
+import { abi as governorAbi } from "@/config/abi/governor";
+
+import { useConfig } from "./useConfig";
+
+import type { InterfaceAbi } from "ethers";
 
 export interface ProposalActionParam {
   target: `0x${string}`;

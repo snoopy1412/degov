@@ -1,7 +1,8 @@
 "use client";
 import { useIndexerStatus } from "@/hooks/useIndexerStatus";
-import { INDEXER_CONFIG } from "../config/indexer";
 import { cn } from "@/lib/utils";
+
+import { INDEXER_CONFIG } from "../config/indexer";
 
 export function IndexerStatus() {
   const { status, syncPercentage, currentBlock, indexedBlock } =

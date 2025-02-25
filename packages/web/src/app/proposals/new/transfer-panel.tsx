@@ -1,21 +1,24 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { isEmpty, isObject } from "lodash-es";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useConfig } from "@/hooks/useConfig";
-import { TokenInfo, TokenSelect } from "@/components/token-select";
-import { AddressInputWithResolver } from "@/components/address-input-with-resolver";
-import { isEmpty, isObject } from "lodash-es";
-import { useTokenBalance } from "@/hooks/useTokenBalance";
-// import FormattedNumberTooltip from "@/components/formatted-number-tooltip";
-import { Skeleton } from "@/components/ui/skeleton";
-import { parseUnits, formatUnits, type Address } from "viem";
-import { transferSchema } from "./schema";
 import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { TransferContent } from "./schema";
+import { parseUnits, formatUnits, type Address } from "viem";
+
+import { AddressInputWithResolver } from "@/components/address-input-with-resolver";
 import { ErrorMessage } from "@/components/error-message";
+import type { TokenInfo } from "@/components/token-select";
+import { TokenSelect } from "@/components/token-select";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useConfig } from "@/hooks/useConfig";
+import { useTokenBalance } from "@/hooks/useTokenBalance";
+import { cn } from "@/lib/utils";
 import { formatBigIntForDisplay } from "@/utils/number";
+
+import { transferSchema } from "./schema";
+
+import type { TransferContent } from "./schema";
 
 interface TransferPanelProps {
   index: number;

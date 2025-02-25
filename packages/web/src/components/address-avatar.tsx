@@ -1,7 +1,9 @@
-import Image from "next/image";
-import { cn } from "@/lib/utils";
 import { blo } from "blo";
+import Image from "next/image";
 import { useState, useEffect } from "react";
+
+import { cn } from "@/lib/utils";
+
 import type { Address } from "viem";
 
 interface AddressAvatarProps {

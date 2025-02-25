@@ -1,5 +1,6 @@
-import { useBalance, useReadContract, useAccount } from 'wagmi';
 import { erc20Abi } from 'viem';
+import { useBalance, useReadContract, useAccount } from 'wagmi';
+
 import type { TokenInfo } from '@/components/token-select';
 
 export function useTokenBalance(token: TokenInfo | null) {

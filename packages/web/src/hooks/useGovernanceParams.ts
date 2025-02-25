@@ -1,6 +1,9 @@
 import { useReadContract, useReadContracts } from "wagmi";
+
 import { abi as governorAbi } from "@/config/abi/governor";
+
 import { useConfig } from "./useConfig";
+
 import type { Address } from "viem";
 
 interface GovernanceParams {

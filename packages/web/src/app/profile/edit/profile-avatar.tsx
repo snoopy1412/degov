@@ -1,5 +1,6 @@
 import { AddressAvatar } from '@/components/address-avatar';
 import { Button } from '@/components/ui/button';
+
 import type { Address } from 'viem';
 
 interface ProfileAvatarProps {

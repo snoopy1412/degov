@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 import { AddressWithAvatarFull } from "@/components/address-with-avatar-full";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +11,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { VoteStatusAction } from "@/components/vote-status";
+
 import type { Address } from "viem";
 
 interface VotingProps {

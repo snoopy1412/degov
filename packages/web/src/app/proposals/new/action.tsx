@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 import { PROPOSAL_ACTIONS, type ProposalActionType } from "@/config/proposals";
 import { cn } from "@/lib/utils";
 interface NewProposalActionProps {

@@ -1,3 +1,7 @@
+import Link from "next/link";
+
+import { AddressWithAvatar } from "@/components/address-with-avatar";
+import { Empty } from "@/components/ui/empty";
 import {
   Table,
   TableBody,
@@ -7,10 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
-import { Empty } from "@/components/ui/empty";
+
 import type { Address } from "viem";
-import { AddressWithAvatar } from "@/components/address-with-avatar";
+
 
 export type Result = {
   address: Address;

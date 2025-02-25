@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { AddressAvatar } from "@/components/address-avatar";
 import { AddressResolver } from "@/components/address-resolver";
 import {
@@ -7,7 +9,6 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { formatShortAddress } from "@/utils/address";
-import Link from "next/link";
 
 interface AddressWithAvatarFullProps {
   address: `0x${string}`;

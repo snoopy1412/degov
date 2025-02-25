@@ -1,7 +1,8 @@
 "use client";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import Image from "next/image";
 import { useAccount } from "wagmi";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+
 import { Button } from "@/components/ui/button";
 
 interface WithConnectProps {

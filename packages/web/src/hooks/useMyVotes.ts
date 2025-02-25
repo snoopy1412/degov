@@ -1,12 +1,15 @@
-import { Address, ReadContractErrorType } from "viem";
+import { isNil } from "lodash-es";
 import { useAccount, useReadContract } from "wagmi";
+
+import { abi as tokenAbi } from "@/config/abi/token";
+import { formatBigIntForDisplay } from "@/utils/number";
+
 import { useConfig } from "./useConfig";
 import { useGovernanceParams } from "./useGovernanceParams";
 import { useGovernanceToken } from "./useGovernanceToken";
-import { abi as tokenAbi } from "@/config/abi/token";
-import { isNil } from "lodash-es";
-import { QueryObserverResult } from "@tanstack/react-query";
-import { formatBigIntForDisplay } from "@/utils/number";
+
+import type { QueryObserverResult } from "@tanstack/react-query";
+import type { Address, ReadContractErrorType } from "viem";
 
 interface UseVotesReturn {
   votes?: bigint;

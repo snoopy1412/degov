@@ -1,7 +1,9 @@
 import { useState } from 'react';
-import { ResultTable } from './result-table';
+
 import { VoteType, VoteConfig } from '@/config/vote';
 import { cn } from '@/lib/utils';
+
+import { ResultTable } from './result-table';
 export const Result = () => {
   const [activeTab, setActiveTab] = useState(VoteType.For);
   console.log('Object.values(VoteType)', Object.values(VoteType), activeTab);

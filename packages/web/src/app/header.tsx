@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
-import { ConnectButton } from "@/components/connect-button";
 import { Search } from "lucide-react";
+import { useState } from "react";
+
+import { ConnectButton } from "@/components/connect-button";
 
 export const Header = () => {
   const [isFocused, setIsFocused] = useState(false);

@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   Fragment,
   useCallback,
@@ -8,41 +9,38 @@ import {
   useRef,
   useState,
 } from "react";
-import { Button } from "@/components/ui/button";
-import { useProposal } from "@/hooks/useProposal";
-import { NewProposalAction } from "./action";
-import { ProposalPanel } from "./proposal-panel";
-import { PreviewPanel } from "./preview-panel";
-import { ReplacePanel } from "./replace-panel";
-import { TransferPanel } from "./transfer-panel";
-import { CustomPanel } from "./custom-panel";
-import { WithConnect } from "@/components/with-connect";
+import { toast } from "react-toastify";
 import { useImmer } from "use-immer";
+
+import { NewPublishWarning } from "@/components/new-publish-warning";
+import type { SuccessType } from "@/components/transaction-toast";
+import { TransactionToast } from "@/components/transaction-toast";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { WithConnect } from "@/components/with-connect";
+import { useMyVotes } from "@/hooks/useMyVotes";
+import { useProposal } from "@/hooks/useProposal";
+
+import { NewProposalAction } from "./action";
+import { CustomPanel } from "./custom-panel";
 import {
   generateCustomAction,
   generateProposalAction,
   generateTransferAction,
   transformActionsToProposalParams,
 } from "./helper";
+import { PreviewPanel } from "./preview-panel";
+import { ProposalPanel } from "./proposal-panel";
+import { ReplacePanel } from "./replace-panel";
+import { proposalSchema, customActionSchema, transferSchema } from "./schema";
+import { TransferPanel } from "./transfer-panel";
+
+import type { ProposalContent, TransferContent, CustomContent } from "./schema";
 import type { Action } from "./type";
-import {
-  proposalSchema,
-  ProposalContent,
-  TransferContent,
-  CustomContent,
-  customActionSchema,
-  transferSchema,
-} from "./schema";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useMyVotes } from "@/hooks/useMyVotes";
-import { NewPublishWarning } from "@/components/new-publish-warning";
-import { toast } from "react-toastify";
-import { SuccessType, TransactionToast } from "@/components/transaction-toast";
-import { useRouter } from "next/navigation";
 
 const DEFAULT_ACTIONS: Action[] = [generateProposalAction()];
 

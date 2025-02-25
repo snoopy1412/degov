@@ -1,15 +1,18 @@
 import { v4 as uuidv4 } from "uuid";
-import { Address, parseUnits } from "viem";
+import { parseUnits } from "viem";
+
 import { abi as tokenAbi } from "@/config/abi/token";
+import type { ProposalActionParam } from "@/hooks/useProposal";
+import { markdownToHtml } from "@/utils/markdown";
+
 import type {
   Action,
   CustomAction,
   ProposalAction,
   TransferAction,
 } from "./type";
-import { markdownToHtml } from "@/utils/markdown";
 import type { InterfaceAbi } from "ethers";
-import type { ProposalActionParam } from "@/hooks/useProposal";
+import type { Address} from "viem";
 
 export const generateProposalAction = (): ProposalAction => {
   return {

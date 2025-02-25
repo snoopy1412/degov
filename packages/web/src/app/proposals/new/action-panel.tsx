@@ -1,7 +1,9 @@
+import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { isAddress, parseUnits } from "viem";
+
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,12 +12,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { PROPOSAL_ACTIONS } from "@/config/proposals";
 import { useConfig } from "@/hooks/useConfig";
+import { cn } from "@/lib/utils";
 import { formatShortAddress } from "@/utils/address";
-import { Action } from "./type";
-import { Address, isAddress, parseUnits } from "viem";
+
+import type { Action } from "./type";
+import type { Address} from "viem";
+
 
 export interface ActionPanelInfo {
   type: string;

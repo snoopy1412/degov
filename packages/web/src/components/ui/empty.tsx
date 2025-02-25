@@ -1,12 +1,31 @@
-import { cn } from '@/lib/utils';
-import type { ReactNode } from 'react';
+import Image from "next/image";
 
-export function Empty({ className, label }: { className?: string; label?: ReactNode }) {
+import { cn } from "@/lib/utils";
+
+import type { ReactNode } from "react";
+export function Empty({
+  className,
+  label,
+}: {
+  className?: string;
+  label?: ReactNode;
+}) {
   return (
-    <div className={cn('flex flex-col items-center justify-center gap-[20px]', className)}>
-      <img src="/assets/image/empty.svg" alt="empty" className="size-[60px]" />
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center gap-[20px]",
+        className
+      )}
+    >
+      <Image
+        src="/assets/image/empty.svg"
+        alt="empty"
+        className="size-[60px]"
+        width={60}
+        height={60}
+      />
       <div className="max-w-[320px] text-balance text-center text-[12px] font-normal text-foreground">
-        {label || 'No data'}
+        {label || "No data"}
       </div>
     </div>
   );

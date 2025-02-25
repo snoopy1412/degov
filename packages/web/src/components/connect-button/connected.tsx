@@ -1,16 +1,19 @@
+import { ChevronDown, Power } from 'lucide-react';
+import { useCallback } from 'react';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { AddressResolver } from '../address-resolver';
-import { AddressAvatar } from '../address-avatar';
-import ClipboardIconButton from '../clipboard-icon-button';
 import { useDisconnectWallet } from '@/hooks/useDisconnectWallet';
-import { useCallback } from 'react';
+
+import { AddressAvatar } from '../address-avatar';
+import { AddressResolver } from '../address-resolver';
+import ClipboardIconButton from '../clipboard-icon-button';
 import { Button } from '../ui/button';
-import { ChevronDown, Power } from 'lucide-react';
+
 
 interface ConnectedProps {
   address: `0x${string}`;

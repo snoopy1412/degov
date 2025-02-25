@@ -1,6 +1,11 @@
 "use client";
 import Image from "next/image";
+import { useParams } from "next/navigation";
+import { useState } from "react";
+
+import { AddressWithAvatar } from "@/components/address-with-avatar";
 import ClipboardIconButton from "@/components/clipboard-icon-button";
+import NotFound from "@/components/not-found";
 import { ProposalStatus } from "@/components/proposal-status";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,17 +14,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Result } from "./result";
-import { CurrentVotes } from "./current-votes";
-import { ActionsTable } from "./actions-table";
-import { Proposal } from "./proposal";
-import Status from "./status";
-import { useState } from "react";
-import { Voting } from "./voting";
-import { AddressWithAvatar } from "@/components/address-with-avatar";
-import { useParams } from "next/navigation";
 import { formatShortAddress } from "@/utils/address";
-import NotFound from "@/components/not-found";
+
+import { ActionsTable } from "./actions-table";
+import { CurrentVotes } from "./current-votes";
+import { Proposal } from "./proposal";
+import { Result } from "./result";
+import Status from "./status";
+import { Voting } from "./voting";
+
+
+
 
 export default function ProposalDetailPage() {
   const [voting, setVoting] = useState(false);

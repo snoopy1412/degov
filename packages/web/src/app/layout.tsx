@@ -1,12 +1,15 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
+
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { ConfigProvider } from "@/providers/config.provider";
 import { DAppProvider } from "@/providers/dapp.provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
+
 import { Aside } from "./aside";
 import { Header } from "./header";
-import { ToastContainer } from "react-toastify";
+
+import type { Metadata } from "next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

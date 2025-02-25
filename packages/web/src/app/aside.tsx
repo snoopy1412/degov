@@ -1,7 +1,9 @@
-import Link from "next/link";
 import Image from "next/image";
-import { socialConfig } from "@/config/social";
+import Link from "next/link";
+
 import { IndexerStatus } from "@/components/indexer-status";
+import { socialConfig } from "@/config/social";
+
 import { Nav } from "./nav";
 
 export const Aside = () => {

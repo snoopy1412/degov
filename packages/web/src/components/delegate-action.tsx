@@ -1,4 +1,8 @@
 import Image from "next/image";
+import { useCallback, useState } from "react";
+import { toast } from "react-toastify";
+import { useAccount, useReadContract } from "wagmi";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -6,18 +10,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Separator } from "./ui/separator";
-import { AddressWithAvatar } from "./address-with-avatar";
-import type { Address } from "viem";
-import { useAccount, useReadContract } from "wagmi";
-import { useConfig } from "@/hooks/useConfig";
 import { abi as tokenAbi } from "@/config/abi/token";
-import { formatBigIntForDisplay } from "@/utils/number";
-import { useGovernanceToken } from "@/hooks/useGovernanceToken";
+import { useConfig } from "@/hooks/useConfig";
 import { useDelegate } from "@/hooks/useDelegate";
-import { useCallback, useState } from "react";
+import { useGovernanceToken } from "@/hooks/useGovernanceToken";
+import { formatBigIntForDisplay } from "@/utils/number";
+
+import { AddressWithAvatar } from "./address-with-avatar";
 import { TransactionToast } from "./transaction-toast";
-import { toast } from "react-toastify";
+import { Separator } from "./ui/separator";
+
+import type { Address } from "viem";
+
 interface DelegateActionProps {
   open: boolean;
   onOpenChange: (value: boolean) => void;

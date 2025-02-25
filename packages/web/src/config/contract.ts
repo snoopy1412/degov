@@ -1,11 +1,12 @@
+import erc1155Abi from "@/assets/abi/erc1155.json";
 import erc20Abi from "@/assets/abi/erc20.json";
 import erc721Abi from "@/assets/abi/erc721.json";
-import erc1155Abi from "@/assets/abi/erc1155.json";
 import igovernorAbi from "@/assets/abi/igovernor.json";
 import ownable2stepAbi from "@/assets/abi/ownable2step.json";
 import pausableAbi from "@/assets/abi/pausable.json";
 import upgradeabilityAbi from "@/assets/abi/uupsupgradeable.json";
-import { Abi } from "viem";
+
+import type { Abi } from "viem";
 
 export const abiList = [
   {

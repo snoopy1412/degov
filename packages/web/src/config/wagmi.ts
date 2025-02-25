@@ -1,9 +1,6 @@
-import { cookieStorage, createStorage } from "wagmi";
-import { QueryClient } from "@tanstack/react-query";
 import {
   getDefaultWallets,
-  getDefaultConfig,
-  Chain,
+  getDefaultConfig
 } from "@rainbow-me/rainbowkit";
 import {
   talismanWallet,
@@ -13,8 +10,12 @@ import {
   safeWallet,
   subWallet,
 } from "@rainbow-me/rainbowkit/wallets";
-
+import { QueryClient } from "@tanstack/react-query";
+import { cookieStorage, createStorage } from "wagmi";
 import { mainnet } from "wagmi/chains";
+
+import type {
+  Chain} from "@rainbow-me/rainbowkit";
 
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 

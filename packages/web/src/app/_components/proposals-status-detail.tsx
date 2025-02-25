@@ -1,11 +1,12 @@
 "use client";
 import Image from "next/image";
+import { useState } from "react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
 
 export const ProposalsStatusDetail = () => {
   const [items] = useState<

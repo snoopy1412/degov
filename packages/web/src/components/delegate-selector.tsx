@@ -1,4 +1,7 @@
 import Image from "next/image";
+import { useCallback, useState } from "react";
+import { useAccount } from "wagmi";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -6,11 +9,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Separator } from "./ui/separator";
 import { useDelegate } from "@/hooks/useDelegate";
-import { useCallback, useState } from "react";
-import { useAccount } from "wagmi";
+
 import { TransactionToast } from "./transaction-toast";
+import { Separator } from "./ui/separator";
 
 interface DelegateSelectorProps {
   open: boolean;

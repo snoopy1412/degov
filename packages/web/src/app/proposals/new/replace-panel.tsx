@@ -1,7 +1,9 @@
 import Image from "next/image";
+
 import { Button } from "@/components/ui/button";
-import { NewProposalAction } from "./action";
 import { cn } from "@/lib/utils";
+
+import { NewProposalAction } from "./action";
 interface ReplacePanelProps {
   index: number;
   visible: boolean;

@@ -1,7 +1,7 @@
 "use client";
 import ClipboardIconButton from "@/components/clipboard-icon-button";
-import { useConfig } from "@/hooks/useConfig";
 import { TreasuryTable } from "@/components/treasury-table";
+import { useConfig } from "@/hooks/useConfig";
 
 export default function Treasury() {
   const daoConfig = useConfig();

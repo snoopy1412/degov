@@ -1,5 +1,6 @@
-import { ReactNode } from "react";
 import Image from "next/image";
+
+import type { ReactNode } from "react";
 interface OverviewItemProps {
   title: string;
   icon: string;

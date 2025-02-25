@@ -1,6 +1,8 @@
-import { cn } from "@/lib/utils";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
+
+import { cn } from "@/lib/utils";
+
 import type { AbiItem } from "viem";
 
 interface FileUploaderProps {

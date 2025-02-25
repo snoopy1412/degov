@@ -1,4 +1,6 @@
-import { ChangeEvent, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
+
+import type { ChangeEvent} from 'react';
 
 interface UseNumberInputProps {
   maxDecimals?: number;

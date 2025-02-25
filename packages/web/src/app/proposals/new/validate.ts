@@ -1,13 +1,17 @@
+import { z } from "zod";
+
 import {
   calldataItemSchema,
   customActionSchema,
-  CustomContent,
-  ProposalContent,
   proposalSchema,
-  TransferContent,
   transferSchema,
 } from "./schema";
-import { z } from "zod";
+
+import type {
+  CustomContent,
+  ProposalContent,
+  TransferContent} from "./schema";
+
 
 export const validateProposal = (data: ProposalContent) => {
   const result = proposalSchema.safeParse(data);
