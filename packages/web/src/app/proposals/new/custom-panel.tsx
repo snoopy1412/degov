@@ -89,6 +89,11 @@ export const CustomPanel = ({
                 item.stateMutability === "payable")
           );
           setValue("customAbiContent", abiJson ?? undefined);
+        } else {
+          setValue("customAbiContent", [], {
+            shouldValidate: true,
+            shouldDirty: true,
+          });
         }
       }
     },
@@ -122,10 +127,16 @@ export const CustomPanel = ({
   // Handle method selection
   const handleMethodChange = useCallback(
     (value: string) => {
-      setValue("contractMethod", value);
+      const [name, paramCountNum] = value.split("-") || [];
+
+      if (!name || !paramCountNum) return;
+
       const abiJson = watch("customAbiContent") as Abi;
       const method = abiJson?.find(
-        (item) => item.type === "function" && item.name === value
+        (item) =>
+          item.type === "function" &&
+          item.name === name &&
+          (item.inputs?.length || 0) === parseInt(paramCountNum)
       );
 
       if (method && method.type === "function") {
@@ -137,6 +148,7 @@ export const CustomPanel = ({
             value: input.type.includes("[]") ? [] : "",
             isArray: input.type.includes("[]"),
           }));
+
         setValue("calldata", calldata);
 
         if (method.stateMutability !== "payable") {
@@ -150,10 +162,19 @@ export const CustomPanel = ({
   // Check if method is payable
   const isPayable = useMemo(() => {
     const abiJson = watch("customAbiContent") as Abi;
+    const methodValue = watch("contractMethod");
+
+    const [name, paramCountNum] = methodValue.split("-") || [];
+
+    if (!name || !paramCountNum) return false;
+
     const method = abiJson?.find(
       (item) =>
-        item.type === "function" && item.name === watch("contractMethod")
+        item.type === "function" &&
+        item.name === name &&
+        (item.inputs?.length || 0) === parseInt(paramCountNum)
     );
+
     return method?.type === "function" && method.stateMutability === "payable";
   }, [watch]);
 
@@ -245,7 +266,7 @@ export const CustomPanel = ({
                     <SelectContent className="border-border/20 bg-card">
                       {abiList.map((item) => (
                         <SelectItem key={item.name} value={item.name}>
-                          {item.name}
+                          {item.label}
                         </SelectItem>
                       ))}
                       <SelectItem value="custom">Upload an ABI</SelectItem>
@@ -300,7 +321,14 @@ export const CustomPanel = ({
                           {watch("customAbiContent")?.map(
                             (item) =>
                               item?.type === "function" && (
-                                <SelectItem key={item.name} value={item.name}>
+                                <SelectItem
+                                  key={`${item.name}-${
+                                    item.inputs?.length ?? 0
+                                  }`}
+                                  value={`${item.name}-${
+                                    item.inputs?.length ?? 0
+                                  }`}
+                                >
                                   {item.name}
                                 </SelectItem>
                               )
@@ -332,6 +360,7 @@ export const CustomPanel = ({
                   control={control}
                   render={({ field }) => (
                     <CallDataInputForm
+                      key={JSON.stringify(field.value)}
                       calldata={field.value || []}
                       onChange={(newCalldata) => {
                         field.onChange([...newCalldata]);

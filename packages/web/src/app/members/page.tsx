@@ -15,7 +15,7 @@ const data: Member[] = [
   },
   {
     rank: "2",
-    member: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+    member: "0xabcF7060A68F62624F7569aDA9D78b5a5dB0782A",
     delegateStatement:
       "Yo Reddit! What’s a small thing that anyone can do at nearly anytime to improve their mood and make Yo Reddit! What’s a small thing that anyone can do at nearly anytime to improve their mood and make Yo Reddit! What’s a small thing that anyone can do at nearly anytime to improve their mood and make ",
     votingPower: "1.11B",

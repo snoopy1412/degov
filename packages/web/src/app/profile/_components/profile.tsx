@@ -29,6 +29,7 @@ export const Profile = ({ address }: ProfileProps) => {
   const { address: account } = useAccount();
   const [open, setOpen] = useState(false);
   const [delegateOpen, setDelegateOpen] = useState(false);
+
   const isOwnProfile = useMemo(() => {
     if (!account || !address) return false;
     return (
