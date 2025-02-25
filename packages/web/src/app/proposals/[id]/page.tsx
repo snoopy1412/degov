@@ -17,9 +17,16 @@ import Status from "./status";
 import { useState } from "react";
 import { Voting } from "./voting";
 import { AddressWithAvatar } from "@/components/address-with-avatar";
+import { useParams } from "next/navigation";
+import { formatShortAddress } from "@/utils/address";
+import NotFound from "@/components/not-found";
 
 export default function ProposalDetailPage() {
   const [voting, setVoting] = useState(false);
+  const { id } = useParams();
+  if (!id) {
+    return <NotFound />;
+  }
   return (
     <>
       <div className="flex w-full flex-col gap-[20px] p-[30px]">
@@ -101,8 +108,8 @@ export default function ProposalDetailPage() {
             </div>
             <div className="h-1 w-1 rounded-full bg-muted-foreground"></div>
             <div className="flex items-center gap-[5px]">
-              <span>ID 101924...5972</span>
-              <ClipboardIconButton text="101924...5972" size={14} />
+              <span>ID {formatShortAddress(id as string)}</span>
+              <ClipboardIconButton text={id as string} size={14} />
             </div>
             <div className="h-1 w-1 rounded-full bg-muted-foreground"></div>
             <span>Proposed on: Jan 6th, 2025</span>

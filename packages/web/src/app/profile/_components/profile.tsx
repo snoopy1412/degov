@@ -20,6 +20,8 @@ import { DelegateSelector } from "@/components/delegate-selector";
 import { isAddress, type Address } from "viem";
 import NotFound from "@/components/not-found";
 import { useRouter } from "next/navigation";
+import { useAddressVotes } from "@/hooks/useAddressVotes";
+import { Skeleton } from "@/components/ui/skeleton";
 interface ProfileProps {
   address: Address;
 }
@@ -82,6 +84,7 @@ export const Profile = ({ address }: ProfileProps) => {
       value: "l2beat",
     },
   ];
+  const { formattedVotes, isLoading } = useAddressVotes(address);
 
   if (!isAddress(address)) {
     return <NotFound />;
@@ -207,9 +210,13 @@ export const Profile = ({ address }: ProfileProps) => {
             <span className="text-[18px] font-semibold leading-none text-muted-foreground/80">
               Voting Power
             </span>
-            <span className="text-[56px] font-extrabold leading-none text-foreground">
-              5.43M
-            </span>
+            {isLoading ? (
+              <Skeleton className="h-[56px] w-[200px]" />
+            ) : (
+              <span className="text-[56px] font-extrabold leading-none text-foreground">
+                {formattedVotes}
+              </span>
+            )}
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ interface UseVotesReturn {
   refetch: () => Promise<QueryObserverResult<bigint, ReadContractErrorType>>;
 }
 
-export function useVotes(): UseVotesReturn {
+export function useMyVotes(): UseVotesReturn {
   const { address } = useAccount();
   const daoConfig = useConfig();
   const { data: tokenData, isLoading: isTokenLoading } = useGovernanceToken();

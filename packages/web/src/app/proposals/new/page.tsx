@@ -38,10 +38,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useVotes } from "@/hooks/useVotes";
+import { useMyVotes } from "@/hooks/useMyVotes";
 import { NewPublishWarning } from "@/components/new-publish-warning";
 import { toast } from "react-toastify";
 import { SuccessType, TransactionToast } from "@/components/transaction-toast";
+import { useRouter } from "next/navigation";
 
 const DEFAULT_ACTIONS: Action[] = [generateProposalAction()];
 
@@ -74,7 +75,7 @@ const PublishButton = ({
 
 export default function NewProposal() {
   const panelRefs = useRef<Map<string, HTMLFormElement>>(new Map());
-
+  const router = useRouter();
   const [actions, setActions] = useImmer<Action[]>(DEFAULT_ACTIONS);
   const [publishLoading, setPublishLoading] = useState(false);
   const [actionUuid, setActionUuid] = useState<string>(DEFAULT_ACTIONS[0].id);
@@ -82,13 +83,15 @@ export default function NewProposal() {
   const [hash, setHash] = useState<string | null>(null);
   const [tab, setTab] = useState<"edit" | "add" | "preview">("edit");
 
-  const { createProposal, isPending } = useProposal();
+  const { createProposal, isPending, proposalId } = useProposal();
+  console.log("proposalId", proposalId);
+
   const {
     formattedVotes,
     formattedProposalThreshold,
     hasEnoughVotes,
     isLoading,
-  } = useVotes();
+  } = useMyVotes();
 
   const handleProposalContentChange = useCallback(
     (content: ProposalContent) => {
@@ -219,9 +222,11 @@ export default function NewProposal() {
     }
   }, [actions, createProposal, hasEnoughVotes]);
 
-  const handlePublishSuccess: SuccessType = useCallback((receipt) => {
-    console.log("receipt", receipt);
-  }, []);
+  const handlePublishSuccess: SuccessType = useCallback(() => {
+    if (proposalId) {
+      router.push(`/proposals/${proposalId}`);
+    }
+  }, [proposalId, router]);
 
   useEffect(() => {
     return () => {
