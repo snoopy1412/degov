@@ -108,12 +108,7 @@ export function DelegateAction({
           </div>
         </DialogContent>
       </Dialog>
-      {hash && (
-        <TransactionToast
-          hash={hash as `0x${string}`}
-          onSuccess={() => setHash(null)}
-        />
-      )}
+      {hash && <TransactionToast hash={hash as `0x${string}`} />}
     </>
   );
 }
