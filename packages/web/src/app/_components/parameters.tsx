@@ -90,6 +90,21 @@ export const Parameters = () => {
               )}
             </span>
           </div>
+
+          <div className="flex items-center justify-between gap-[10px]">
+            <span className="text-[14px] font-normal text-foreground/40">
+              TimeLock delay
+            </span>
+            <span className="text-[14px] font-normal text-foreground">
+              {isLoading ? (
+                <Skeleton className="h-[14px] w-[30px]" />
+              ) : governanceParams?.timeLockDelay ? (
+                dayjsHumanize(Number(governanceParams?.timeLockDelay))
+              ) : (
+                "-"
+              )}
+            </span>
+          </div>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

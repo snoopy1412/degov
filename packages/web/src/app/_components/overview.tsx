@@ -21,13 +21,13 @@ export const Overview = () => {
           <p>{formatNumberForDisplay(1010)[0]}</p>
         </OverviewItem>
         <OverviewItem
-          title="Total vote"
+          title="Total voting Power"
           icon="/assets/image/total-vote-colorful.svg"
         >
           <p>{formatNumberForDisplay(100)[0]}</p>
         </OverviewItem>
         <OverviewItem
-          title="Delegated vote"
+          title="Total Supply"
           icon="/assets/image/delegated-vote-colorful.svg"
         >
           <p>{formatNumberForDisplay(100)[0]}</p>
