@@ -27,12 +27,12 @@
     }
   },
   "contracts": {
-    "governorContract": "0xF72361096f11d7E4e45046d7a83726b1A9107D5E",
+    "governorContract": "0x9bCF89B951b9880AC1Ec9Ce6b82B2764ca7A532F",
     "governorToken": {
-      "contract": "0x80E657f4899eb513EdaBf4677eafe0692f6dcA55",
+      "contract": "0xcC43d7e20D4dC29Ca65f3327C9257e1E354f9E08",
       "standard": "ERC721"
     },
-    "timeLockContract": "0x3d6d656c1bf92f7028Ce4C352563E1C363C58ED5"
+    "timeLockContract": "0x527560d6a509ddE7828D598BF31Fc67DA50c8093"
   },
   "timeLockAssets": {
     "kton": {

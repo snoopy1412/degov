@@ -86,7 +86,7 @@ export const Parameters = () => {
               ) : governanceParams?.votingPeriod ? (
                 dayjsHumanize(Number(governanceParams?.votingPeriod))
               ) : (
-                "-"
+                "None"
               )}
             </span>
           </div>
@@ -101,7 +101,7 @@ export const Parameters = () => {
               ) : governanceParams?.timeLockDelay ? (
                 dayjsHumanize(Number(governanceParams?.timeLockDelay))
               ) : (
-                "-"
+                "None"
               )}
             </span>
           </div>
