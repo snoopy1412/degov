@@ -89,11 +89,21 @@ export function TreasuryTable({
     if (!prices || isEmpty(prices) || isEmpty(data)) return 0;
 
     return data.reduce((total, asset) => {
-      const price = asset.priceId ? prices[asset.priceId.toLowerCase()] : 0;
+      const priceValue = asset.priceId
+        ? prices[asset.priceId.toLowerCase()]
+        : 0;
+      const price =
+        priceValue === undefined || priceValue === null ? 0 : priceValue;
+
       const balance = asset.balance || "0";
 
-      const value = new BigNumber(price).multipliedBy(balance).toNumber();
-      return total + value;
+      try {
+        const value = new BigNumber(price).multipliedBy(balance).toNumber();
+        return total + (isNaN(value) || !isFinite(value) ? 0 : value);
+      } catch (error) {
+        console.warn(`calculate asset value error: ${asset.priceId}`, error);
+        return total;
+      }
     }, 0);
   }, [prices, data]);
 
