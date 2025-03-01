@@ -118,7 +118,9 @@ export function CustomTable<T extends Record<string, unknown>>({
         style={{ maxHeight }}
       >
         <Table>
-          {caption && <TableCaption className="pb-0">{caption}</TableCaption>}
+          {caption && !isLoading && !!dataSource?.length && (
+            <TableCaption className="pb-0">{caption}</TableCaption>
+          )}
           <TableBody>
             {isLoading
               ? LoadingRows

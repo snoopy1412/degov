@@ -47,6 +47,8 @@ export function useProposalData() {
       }
       return [];
     },
+    retryDelay: 10_000,
+    retry: 3,
   });
 
   const voteContracts = useMemo(() => {
