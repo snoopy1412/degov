@@ -60,7 +60,7 @@ export function formatTimestampToFriendlyDate(
     return "";
   }
 
-  const date = dayjs.unix(timestampNum);
+  const date = dayjs.unix(timestampNum / 1000);
 
   if (!date.isValid()) {
     console.error(`Invalid date from timestamp: "${timestamp}"`);

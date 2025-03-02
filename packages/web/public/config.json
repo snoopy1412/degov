@@ -4,7 +4,7 @@
   "walletConnectProjectId": "2719448e2ce94fdd269a3c8587123bcc",
   "description": "DeGov is a open-sourced governance platform that allows users to create and participate in decentralized governance.",
   "indexer": {
-    "endpoint": "https://cors.kahub.in/60.214.102.126:4000/graphql"
+    "endpoint": "https://degov-indexer.vercel.app/graphql"
   },
   "links": {
     "website": "https://www.open-governor.com",
@@ -18,10 +18,7 @@
     "chain": "Darwinia",
     "logo": "https://darwinia.network/images/darwinia-logo-black-background-round.svg",
     "chainId": 46,
-    "rpc": [
-      "https://rpc.darwinia.network",
-      "https://darwinia-rpc.dwellir.com"
-    ],
+    "rpc": ["https://rpc.darwinia.network", "https://darwinia-rpc.dwellir.com"],
     "explorer": {
       "name": "Darwinia Explorer",
       "url": "https://explorer.darwinia.network/"
