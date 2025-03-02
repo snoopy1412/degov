@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useAccount } from "wagmi";
 
 import { ProposalsTable } from "@/components/proposals-table";
 import { Button } from "@/components/ui/button";
@@ -14,24 +16,38 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import type { CheckedState } from "@radix-ui/react-checkbox";
+
 export default function Proposals() {
   const router = useRouter();
+  const { isConnected } = useAccount();
+
+  const [isMyProposals, setIsMyProposals] = useState<CheckedState>(false);
+  const [type, setType] = useState<string>("all");
+  console.log("isMyProposals", isMyProposals);
+
   return (
     <div className="flex flex-col gap-[30px] p-[30px]">
       <div className="flex items-center justify-between gap-[20px]">
         <h3 className="text-[18px] font-extrabold">Onchain Proposals</h3>
 
         <div className="flex items-center gap-[20px]">
-          <div className="flex items-center space-x-2">
-            <Checkbox id="my-proposals" />
-            <label
-              htmlFor="my-proposals"
-              className="cursor-pointer text-[14px] font-normal peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              My Proposals
-            </label>
-          </div>
-          <Select>
+          {isConnected && (
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="my-proposals"
+                checked={isMyProposals}
+                onCheckedChange={setIsMyProposals}
+              />
+              <label
+                htmlFor="my-proposals"
+                className="cursor-pointer text-[14px] font-normal peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                My Proposals
+              </label>
+            </div>
+          )}
+          <Select value={type} onValueChange={setType}>
             <SelectTrigger className="w-[130px] rounded-[100px] border border-border px-[10px]">
               <SelectValue placeholder="Select Status" />
             </SelectTrigger>
