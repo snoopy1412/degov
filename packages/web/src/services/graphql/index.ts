@@ -26,6 +26,30 @@ export const proposalService = {
     );
     return response?.proposalCreatedById;
   },
+  getProposalCanceledById: async (endpoint: string, id: string) => {
+    const response = await request<Types.ProposalCanceledByIdResponse>(
+      endpoint,
+      Queries.GET_PROPOSAL_CANCELED_BY_ID,
+      { id }
+    );
+    return response?.proposalCanceledById;
+  },
+  getProposalExecutedById: async (endpoint: string, id: string) => {
+    const response = await request<Types.ProposalExecutedByIdResponse>(
+      endpoint,
+      Queries.GET_PROPOSAL_EXECUTED_BY_ID,
+      { id }
+    );
+    return response?.proposalExecutedById;
+  },
+  getProposalQueuedById: async (endpoint: string, id: string) => {
+    const response = await request<Types.ProposalQueuedByIdResponse>(
+      endpoint,
+      Queries.GET_PROPOSAL_QUEUED_BY_ID,
+      { id }
+    );
+    return response?.proposalQueuedById;
+  },
 };
 
 export { Types };

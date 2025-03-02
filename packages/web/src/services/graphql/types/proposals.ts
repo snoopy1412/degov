@@ -21,3 +21,40 @@ export type ProposalResponse = {
 export type ProposalByIdResponse = {
   proposalCreatedById: ProposalItem;
 };
+
+// cancel
+export type ProposalCanceledByIdItem = {
+  id: string;
+  blockNumber: string;
+  blockTimestamp: string;
+  proposalId: string;
+  transactionHash: string;
+};
+export type ProposalCanceledByIdResponse = {
+  proposalCanceledById: ProposalCanceledByIdItem;
+};
+
+// Executed
+export type ProposalExecutedByIdItem = {
+  id: string;
+  blockNumber: string;
+  blockTimestamp: string;
+  proposalId: string;
+  transactionHash: string;
+};
+export type ProposalExecutedByIdResponse = {
+  proposalExecutedById: ProposalExecutedByIdItem;
+};
+
+// Queued
+export type ProposalQueuedByIdItem = {
+  id: string;
+  blockNumber: string;
+  blockTimestamp: string;
+  etaSeconds: string;
+  proposalId: string;
+  transactionHash: string;
+};
+export type ProposalQueuedByIdResponse = {
+  proposalQueuedById: ProposalQueuedByIdItem;
+};

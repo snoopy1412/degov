@@ -141,7 +141,7 @@ function calculateMajoritySupport(votesData: {
   const total =
     votesData.forVotes + votesData.againstVotes + votesData.abstainVotes;
 
-  if (total === 0n) return "";
+  if (total === 0n) return "No";
 
   const forPercentage = (Number(votesData.forVotes) / Number(total)) * 100;
   const againstPercentage =

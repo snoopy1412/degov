@@ -18,7 +18,10 @@
     "chain": "Darwinia",
     "logo": "https://darwinia.network/images/darwinia-logo-black-background-round.svg",
     "chainId": 46,
-    "rpc": ["https://rpc.darwinia.network", "https://darwinia-rpc.dwellir.com"],
+    "rpc": [
+      "https://darwinia-rpc.dwellir.com",
+      "https://rpc.darwinia.network"
+    ],
     "explorer": {
       "name": "Darwinia Explorer",
       "url": "https://explorer.darwinia.network/"

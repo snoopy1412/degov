@@ -13,12 +13,12 @@ const Loading = () => {
 };
 export const Description = ({
   description,
-  isLoading,
+  isFetching,
 }: {
   description?: string;
-  isLoading: boolean;
+  isFetching: boolean;
 }) => {
-  return isLoading ? (
+  return isFetching ? (
     <Loading />
   ) : (
     <div className="prose">

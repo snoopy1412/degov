@@ -7,10 +7,10 @@ import { Comments } from "./comments";
 import { Description } from "./description";
 
 export const Proposal = ({
-  isLoading,
+  isFetching,
   data,
 }: {
-  isLoading: boolean;
+  isFetching: boolean;
   data?: ProposalItem;
 }) => {
   const [activeTab, setActiveTab] = useState<"description" | "comments">(
@@ -54,7 +54,7 @@ export const Proposal = ({
         {/* Tab Content */}
         <div className="min-h-[200px]">
           {activeTab === "description" && (
-            <Description description={description} isLoading={isLoading} />
+            <Description description={description} isFetching={isFetching} />
           )}
           {activeTab === "comments" && <Comments />}
         </div>
