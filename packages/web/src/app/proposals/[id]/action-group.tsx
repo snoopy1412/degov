@@ -20,6 +20,7 @@ import type {
 } from "@/services/graphql/types";
 import { ProposalState } from "@/types/proposal";
 
+import { CancelProposal } from "./cancel-proposal";
 import { Dropdown } from "./dropdown";
 import { Voting } from "./voting";
 interface ActionGroupProps {
@@ -124,7 +125,7 @@ export default function ActionGroup({
   const { executeProposal, isPending: isPendingExecute } = useExecuteProposal();
   const [executeHash, setExecuteHash] = useState<`0x${string}` | null>(null);
   const [cancelHash, setCancelHash] = useState<`0x${string}` | null>(null);
-
+  const [cancelProposalOpen, setCancelProposalOpen] = useState(false);
   const { data: hasVoted } = useReadContract({
     address: daoConfig?.contracts?.governorContract as `0x${string}`,
     abi: GovernorAbi,
@@ -167,7 +168,7 @@ export default function ActionGroup({
         )?.shortMessage ?? "Failed to cancel proposal"
       );
     } finally {
-      setVoting(false);
+      setCancelProposalOpen(false);
     }
   }, [
     cancelProposal,
@@ -202,6 +203,8 @@ export default function ActionGroup({
           (error as { shortMessage: string })?.shortMessage ??
             "Failed to cast vote"
         );
+      } finally {
+        setVoting(false);
       }
     },
     [castVote]
@@ -331,6 +334,12 @@ export default function ActionGroup({
         isPending={isPendingCastVote}
         onCastVote={handleCastVote}
         proposalId={data?.proposalId as string}
+      />
+      <CancelProposal
+        open={cancelProposalOpen}
+        onOpenChange={setCancelProposalOpen}
+        isLoading={isCancelling}
+        onCancelProposal={handleCancelProposal}
       />
 
       {cancelHash && (
