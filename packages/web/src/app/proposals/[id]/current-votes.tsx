@@ -3,6 +3,7 @@ import { useMemo } from "react";
 
 import { Separator } from "@/components/ui/separator";
 import { useFormatGovernanceTokenAmount } from "@/hooks/useFormatGovernanceTokenAmount";
+import { useGovernanceParams } from "@/hooks/useGovernanceParams";
 
 interface CurrentVotesProps {
   proposalVotesData: {
@@ -13,7 +14,7 @@ interface CurrentVotesProps {
 }
 export const CurrentVotes = ({ proposalVotesData }: CurrentVotesProps) => {
   const formatTokenAmount = useFormatGovernanceTokenAmount();
-
+  const { data: govParams } = useGovernanceParams();
   const percentage = useMemo(() => {
     const total =
       proposalVotesData.againstVotes +
@@ -53,7 +54,9 @@ export const CurrentVotes = ({ proposalVotesData }: CurrentVotesProps) => {
             <span className="text-[14px] font-normal">Quorum</span>
           </div>
 
-          <span>167.8M of 201.55M</span>
+          <span>
+            167.8M of {formatTokenAmount(govParams?.quorum ?? 0n).formatted}
+          </span>
         </div>
 
         <div className="flex flex-col gap-[10px]">

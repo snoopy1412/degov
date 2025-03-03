@@ -43,13 +43,8 @@ const Status: React.FC<StatusProps> = ({
   proposalExecutedById,
   proposalQueuedById,
 }) => {
-  console.log("status", status);
-
   const daoConfig = useConfig();
   const { data: govParams } = useGovernanceParams();
-  console.log("proposalCanceledById", proposalCanceledById);
-  console.log("proposalExecutedById", proposalExecutedById);
-  console.log("proposalQueuedById", proposalQueuedById);
 
   const votingPeriodStarted = useMemo(() => {
     if (isNil(data?.blockTimestamp) || isNil(govParams?.votingDelay)) return "";
