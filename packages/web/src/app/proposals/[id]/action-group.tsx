@@ -280,21 +280,21 @@ export default function ActionGroup({
   );
 
   const explorerUrl = useMemo(() => {
-    const defaultUrl = `${daoConfig?.network?.explorer?.url}/tx/${data?.transactionHash}`;
+    const defaultUrl = `${daoConfig?.network?.explorer?.[0]}/tx/${data?.transactionHash}`;
     if (status === ProposalState.Queued) {
-      return `${daoConfig?.network?.explorer?.url}/tx/${proposalQueuedById?.transactionHash}`;
+      return `${daoConfig?.network?.explorer?.[0]}/tx/${proposalQueuedById?.transactionHash}`;
     }
     if (status === ProposalState.Executed) {
-      return `${daoConfig?.network?.explorer?.url}/tx/${proposalExecutedById?.transactionHash}`;
+      return `${daoConfig?.network?.explorer?.[0]}/tx/${proposalExecutedById?.transactionHash}`;
     }
     if (status === ProposalState.Canceled) {
-      return `${daoConfig?.network?.explorer?.url}/tx/${proposalCanceledById?.transactionHash}`;
+      return `${daoConfig?.network?.explorer?.[0]}/tx/${proposalCanceledById?.transactionHash}`;
     }
     return defaultUrl;
   }, [
     data?.transactionHash,
     status,
-    daoConfig?.network?.explorer?.url,
+    daoConfig?.network?.explorer,
     proposalQueuedById?.transactionHash,
     proposalExecutedById?.transactionHash,
     proposalCanceledById?.transactionHash,

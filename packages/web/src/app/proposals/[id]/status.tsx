@@ -77,7 +77,7 @@ const Status: React.FC<StatusProps> = ({
           />
         ),
         address: data?.proposer as `0x${string}`,
-        viewOnExplorer: `${daoConfig?.network?.explorer?.url}/tx/${data?.transactionHash}`,
+        viewOnExplorer: `${daoConfig?.network?.explorer?.[0]}/tx/${data?.transactionHash}`,
       },
       {
         title: "Start voting period",
@@ -126,7 +126,7 @@ const Status: React.FC<StatusProps> = ({
                 height={28}
               />
             ),
-            viewOnExplorer: `${daoConfig?.network?.explorer?.url}/tx/${proposalQueuedById?.transactionHash}`,
+            viewOnExplorer: `${daoConfig?.network?.explorer?.[0]}/tx/${proposalQueuedById?.transactionHash}`,
           },
           {
             title: "Execute proposal",
@@ -141,7 +141,7 @@ const Status: React.FC<StatusProps> = ({
                 height={28}
               />
             ),
-            viewOnExplorer: `${daoConfig?.network?.explorer?.url}/tx/${proposalExecutedById?.transactionHash}`,
+            viewOnExplorer: `${daoConfig?.network?.explorer?.[0]}/tx/${proposalExecutedById?.transactionHash}`,
           },
         ]?.map((v) => {
           if (status === ProposalState.Pending) {
@@ -271,7 +271,7 @@ const Status: React.FC<StatusProps> = ({
     proposalCanceledById,
     proposalExecutedById,
     proposalQueuedById,
-    daoConfig?.network?.explorer?.url,
+    daoConfig?.network?.explorer,
     votingPeriodEnded,
     votingPeriodStarted,
     status,
