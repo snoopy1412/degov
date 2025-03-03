@@ -43,6 +43,8 @@ const Status: React.FC<StatusProps> = ({
   proposalExecutedById,
   proposalQueuedById,
 }) => {
+  console.log("status", status);
+
   const daoConfig = useConfig();
   const { data: govParams } = useGovernanceParams();
   console.log("proposalCanceledById", proposalCanceledById);
@@ -191,12 +193,16 @@ const Status: React.FC<StatusProps> = ({
             ...v,
             isActive: true,
           })),
+
           {
             title: "Proposal canceled",
+            timestamp: formatTimestampToDayTime(
+              proposalCanceledById?.blockTimestamp
+            ),
             icon: (
               <Image
-                src="/assets/image/proposal/close.svg"
-                alt="close"
+                src="/assets/image/proposal/done.svg"
+                alt="done"
                 width={28}
                 height={28}
               />
@@ -214,8 +220,8 @@ const Status: React.FC<StatusProps> = ({
             title: "Proposal defeated",
             icon: (
               <Image
-                src="/assets/image/proposal/close.svg"
-                alt="close"
+                src="/assets/image/proposal/done.svg"
+                alt="done"
                 width={28}
                 height={28}
               />
@@ -248,8 +254,8 @@ const Status: React.FC<StatusProps> = ({
             title: "Execute proposal",
             icon: (
               <Image
-                src="/assets/image/proposal/close.svg"
-                alt="close"
+                src="/assets/image/proposal/done.svg"
+                alt="done"
                 width={28}
                 height={28}
               />
@@ -262,6 +268,7 @@ const Status: React.FC<StatusProps> = ({
     }
   }, [
     data,
+    proposalCanceledById,
     proposalExecutedById,
     proposalQueuedById,
     daoConfig?.network?.explorer?.url,
