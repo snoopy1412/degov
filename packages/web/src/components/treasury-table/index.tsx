@@ -92,7 +92,6 @@ export function TreasuryTable({
     }))
   );
 
-  console.log("tokenInfo", tokenInfo);
   const totalValue = useMemo(() => {
     if (!prices || isEmpty(prices) || isEmpty(data)) return 0;
 

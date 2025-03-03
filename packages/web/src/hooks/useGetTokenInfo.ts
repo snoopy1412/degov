@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { erc20Abi, erc721Abi } from "viem";
 import { useReadContracts } from "wagmi";
 
-import type { Abi} from "viem";
+import type { Abi } from "viem";
 
 type TokenDetails = {
   contract: string;
@@ -10,8 +10,6 @@ type TokenDetails = {
 };
 
 export const useGetTokenInfo = (tokenList: TokenDetails[]) => {
-  console.log("tokenList", tokenList);
-
   const baseContract = useMemo(() => {
     return tokenList.map((v) => {
       return {
@@ -81,8 +79,6 @@ export const useGetTokenInfo = (tokenList: TokenDetails[]) => {
                   (c) => c.standard === "ERC20" && c.address === contractAddress
                 )
             ];
-
-          console.log("decimalsData", decimalsData);
 
           if (decimalsData !== undefined) {
             decimalsValue =

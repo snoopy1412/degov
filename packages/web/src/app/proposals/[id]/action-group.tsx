@@ -11,6 +11,7 @@ import useCancelProposal from "@/hooks/useCancelProposal";
 import useCastVote from "@/hooks/useCastVote";
 import { useConfig } from "@/hooks/useConfig";
 import useExecuteProposal from "@/hooks/useExecute";
+import { useGovernanceParams } from "@/hooks/useGovernanceParams";
 import useQueueProposal from "@/hooks/useQueue";
 import type {
   ProposalCanceledByIdItem,
@@ -37,6 +38,7 @@ interface ActionProps {
   isLoading: boolean;
   isConnected: boolean;
   hasVoted?: boolean;
+  canExecute: boolean;
   onClick: (action: "vote" | "queue" | "execute") => void;
 }
 const Action = ({
@@ -45,6 +47,7 @@ const Action = ({
   onClick,
   isConnected,
   hasVoted,
+  canExecute,
 }: ActionProps) => {
   if (status === ProposalState.Pending) {
     return <p>Voting starts soon</p>;
@@ -84,6 +87,7 @@ const Action = ({
       <Button
         className="h-[37px] rounded-[100px] focus-visible:ring-0"
         isLoading={isLoading}
+        disabled={!canExecute}
         onClick={() => onClick("execute")}
       >
         Execute
@@ -118,6 +122,7 @@ export default function ActionGroup({
   const { isConnected, address } = useAccount();
   const daoConfig = useConfig();
   const [voting, setVoting] = useState(false);
+  const { data: govParams } = useGovernanceParams();
   const { castVote, isPending: isPendingCastVote } = useCastVote();
   const [castVoteHash, setCastVoteHash] = useState<`0x${string}` | null>(null);
   const { queueProposal, isPending: isPendingQueue } = useQueueProposal();
@@ -279,6 +284,24 @@ export default function ActionGroup({
     [handleQueueProposal, handleExecuteProposal]
   );
 
+  const canExecute = useMemo(() => {
+    if (status === ProposalState.Queued) {
+      const queuedBlockTimestamp = proposalQueuedById?.blockTimestamp
+        ? BigInt(proposalQueuedById?.blockTimestamp)
+        : undefined;
+      const timeLockDelay = govParams?.timeLockDelay
+        ? BigInt(govParams?.timeLockDelay * 1000n)
+        : undefined;
+
+      if (!queuedBlockTimestamp || !timeLockDelay) return false;
+
+      return (
+        BigInt(new Date().getTime()) > queuedBlockTimestamp + timeLockDelay
+      );
+    }
+    return false;
+  }, [status, proposalQueuedById, govParams?.timeLockDelay]);
+
   const explorerUrl = useMemo(() => {
     const defaultUrl = `${daoConfig?.network?.explorer?.[0]}/tx/${data?.transactionHash}`;
     if (status === ProposalState.Queued) {
@@ -308,6 +331,7 @@ export default function ActionGroup({
         <Action
           status={status}
           hasVoted={hasVoted}
+          canExecute={canExecute}
           isLoading={
             isPendingCastVote ||
             !!castVoteHash ||
