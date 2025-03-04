@@ -52,6 +52,24 @@ export const proposalService = {
   },
 };
 
+export const delegateService = {
+  getAllDelegates: async (
+    endpoint: string,
+    options: {
+      limit?: number;
+      offset?: number;
+      orderBy?: string;
+    } = {}
+  ) => {
+    const response = await request<Types.DelegateResponse>(
+      endpoint,
+      Queries.GET_DELEGATES,
+      options
+    );
+    return response?.delegates ?? [];
+  },
+};
+
 export { Types };
 
 export { Queries };
