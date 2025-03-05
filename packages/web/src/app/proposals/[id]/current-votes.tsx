@@ -36,6 +36,11 @@ export const CurrentVotes = ({ proposalVotesData }: CurrentVotesProps) => {
     return { forPercentage, againstPercentage, abstainPercentage };
   }, [proposalVotesData]);
 
+  const quorum = useMemo(() => {
+    const total = proposalVotesData.forVotes + proposalVotesData.abstainVotes;
+    return total;
+  }, [proposalVotesData]);
+
   return (
     <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]">
       <h3 className="text-[18px] font-semibold">Current Votes</h3>
@@ -45,7 +50,11 @@ export const CurrentVotes = ({ proposalVotesData }: CurrentVotesProps) => {
         <div className="flex items-center justify-between gap-[10px]">
           <div className="flex items-center gap-[5px]">
             <Image
-              src="/assets/image/proposal/error.svg"
+              src={
+                quorum > proposalVotesData?.againstVotes
+                  ? "/assets/image/proposal/check.svg"
+                  : "/assets/image/proposal/error.svg"
+              }
               alt="error"
               width={20}
               height={20}
@@ -55,7 +64,8 @@ export const CurrentVotes = ({ proposalVotesData }: CurrentVotesProps) => {
           </div>
 
           <span>
-            167.8M of {formatTokenAmount(govParams?.quorum ?? 0n).formatted}
+            {formatTokenAmount(quorum).formatted} of{" "}
+            {formatTokenAmount(govParams?.quorum ?? 0n).formatted}
           </span>
         </div>
 
@@ -141,23 +151,5 @@ function calculateMajoritySupport(votesData: {
   forVotes: bigint;
   abstainVotes: bigint;
 }): string {
-  const total =
-    votesData.forVotes + votesData.againstVotes + votesData.abstainVotes;
-
-  if (total === 0n) return "No";
-
-  const forPercentage = (Number(votesData.forVotes) / Number(total)) * 100;
-  const againstPercentage =
-    (Number(votesData.againstVotes) / Number(total)) * 100;
-
-  const isSimpleMajority = votesData.forVotes > votesData.againstVotes;
-
-  const isAbsoluteMajority = forPercentage > 50;
-
-  if (isAbsoluteMajority) return "Yes";
-  if (againstPercentage > 50) return "No";
-
-  if (isSimpleMajority) return "Yes";
-
-  return "No";
+  return votesData.forVotes > votesData.againstVotes ? "Yes" : "No";
 }
