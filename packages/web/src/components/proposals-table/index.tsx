@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo } from "react";
 
-
 import type { ProposalItem } from "@/services/graphql/types";
 import { extractTitleAndDescription } from "@/utils";
 import { formatTimestampToFriendlyDate } from "@/utils/date";
@@ -160,7 +159,7 @@ export function ProposalsTable({
           ) : (
             <VoteTotal
               totalVotes={totalVotes(record.id)}
-              totalAddresses={100}
+              totalAddresses={record.voters?.length ?? 0}
             />
           );
         },
