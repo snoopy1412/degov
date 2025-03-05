@@ -9,6 +9,14 @@ export const proposalService = {
       limit?: number;
       offset?: number;
       orderBy?: string;
+      where?: {
+        proposalId_eq?: string;
+        proposer_eq?: string;
+        voters_every?: {
+          voter_eq?: string;
+          support_eq?: number;
+        };
+      };
     } = {}
   ) => {
     const response = await request<Types.ProposalResponse>(
@@ -16,16 +24,9 @@ export const proposalService = {
       Queries.GET_ALL_PROPOSALS,
       options
     );
-    return response?.proposalCreateds ?? [];
+    return response?.proposals ?? [];
   },
-  getProposalById: async (endpoint: string, id: string) => {
-    const response = await request<Types.ProposalByIdResponse>(
-      endpoint,
-      Queries.GET_PROPOSAL_BY_ID,
-      { id }
-    );
-    return response?.proposalCreatedById;
-  },
+
   getProposalCanceledById: async (endpoint: string, id: string) => {
     const response = await request<Types.ProposalCanceledByIdResponse>(
       endpoint,

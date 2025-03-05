@@ -8,26 +8,41 @@ import { proposalService } from "@/services/graphql";
 import type { ProposalItem } from "@/services/graphql/types";
 import type { ProposalState as ProposalStatus } from "@/types/proposal";
 
+import type { Address } from "viem";
 export type ProposalVotes = {
   againstVotes: bigint;
   forVotes: bigint;
   abstainVotes: bigint;
 };
 
-export function useProposalData() {
+export function useProposalData(address?: Address, support?: "1" | "2" | "3") {
   const daoConfig = useDaoConfig();
   const [currentPage, setCurrentPage] = useState(1);
   const [allProposals, setAllProposals] = useState<ProposalItem[]>([]);
 
   const queryKey = useMemo(
-    () => ["proposals", daoConfig?.indexer?.endpoint, currentPage],
-    [daoConfig?.indexer?.endpoint, currentPage]
+    () => [
+      "proposals",
+      daoConfig?.indexer?.endpoint,
+      currentPage,
+      address,
+      support,
+    ],
+    [daoConfig?.indexer?.endpoint, currentPage, address, support]
   );
 
   const { refetch, ...proposalsQuery } = useQuery({
     queryKey,
     queryFn: async () => {
-      //   proposalCreateds(orderBy: blockNumber_DESC)
+      const whereCondition = address
+        ? {
+            proposer_eq: address?.toLowerCase(),
+            voters_every: {
+              voter_eq: address?.toLowerCase(),
+              support_eq: support ? parseInt(support) : undefined,
+            },
+          }
+        : undefined;
 
       const result = await proposalService.getAllProposals(
         daoConfig?.indexer?.endpoint as string,
@@ -35,6 +50,7 @@ export function useProposalData() {
           limit: 10,
           offset: (currentPage - 1) * 10,
           orderBy: "blockTimestamp_DESC_NULLS_LAST",
+          where: whereCondition,
         }
       );
 

@@ -1,3 +1,19 @@
+import type { VoteType } from "@/config/vote";
+
+import type { Address } from "viem";
+
+export type ProposalVoterItem = {
+  blockNumber: string;
+  blockTimestamp: string;
+  id: string;
+  params?: string;
+  reason: string;
+  support: VoteType;
+  transactionHash: string;
+  type: string;
+  voter: Address;
+  weight: string;
+};
 export type ProposalItem = {
   blockNumber: string;
   blockTimestamp: string;
@@ -12,10 +28,11 @@ export type ProposalItem = {
   values: string[];
   voteEnd: string;
   voteStart: string;
+  voters: ProposalVoterItem[];
 };
 
 export type ProposalResponse = {
-  proposalCreateds: ProposalItem[];
+  proposals: ProposalItem[];
 };
 
 export type ProposalByIdResponse = {

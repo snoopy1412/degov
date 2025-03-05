@@ -20,10 +20,10 @@ import type { CheckedState } from "@radix-ui/react-checkbox";
 
 export default function Proposals() {
   const router = useRouter();
-  const { isConnected } = useAccount();
+  const [support, setSupport] = useState<"all" | "1" | "2" | "3">("all");
+  const { isConnected, address } = useAccount();
 
   const [isMyProposals, setIsMyProposals] = useState<CheckedState>(false);
-  const [type, setType] = useState<string>("all");
 
   return (
     <div className="flex flex-col gap-[30px] p-[30px]">
@@ -46,7 +46,13 @@ export default function Proposals() {
                   My Proposals
                 </label>
               </div>
-              <Select value={type} onValueChange={setType}>
+              <Select
+                value={support}
+                onValueChange={(value) =>
+                  setSupport(value as "all" | "1" | "2" | "3")
+                }
+                disabled={!isMyProposals}
+              >
                 <SelectTrigger className="w-[130px] rounded-[100px] border border-border px-[10px]">
                   <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
@@ -77,7 +83,11 @@ export default function Proposals() {
           </Button>
         </div>
       </div>
-      <ProposalsTable type="all" />
+      <ProposalsTable
+        type="all"
+        address={isMyProposals ? address : undefined}
+        support={support === "all" ? undefined : support}
+      />
     </div>
   );
 }

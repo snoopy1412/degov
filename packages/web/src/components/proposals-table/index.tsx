@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo } from "react";
 
+
 import type { ProposalItem } from "@/services/graphql/types";
 import { extractTitleAndDescription } from "@/utils";
 import { formatTimestampToFriendlyDate } from "@/utils/date";
@@ -14,6 +15,7 @@ import { VotePercentage } from "./vote-percentage";
 import { VoteTotal } from "./vote-total";
 
 import type { ColumnType } from "../custom-table";
+import type { Address } from "viem";
 
 const Caption = ({
   type,
@@ -52,14 +54,22 @@ const Caption = ({
   );
 };
 
-export function ProposalsTable({ type }: { type: "active" | "all" }) {
+export function ProposalsTable({
+  type,
+  address,
+  support,
+}: {
+  type: "active" | "all";
+  address?: Address;
+  support?: "1" | "2" | "3";
+}) {
   const {
     state,
     proposalVotesState,
     proposalStatusState,
     loadMoreData,
     loadInitialData,
-  } = useProposalData();
+  } = useProposalData(address, support);
 
   const totalVotes = useCallback(
     (proposalId: string) => {

@@ -29,15 +29,18 @@ export default function ProposalDetailPage() {
   const daoConfig = useConfig();
   const { id } = useParams();
 
-  const { data, isFetching } = useQuery({
+  const { data: allData, isFetching } = useQuery({
     queryKey: ["proposal", id],
     queryFn: () =>
-      proposalService.getProposalById(
-        daoConfig?.indexer.endpoint as string,
-        id as string
-      ),
+      proposalService.getAllProposals(daoConfig?.indexer.endpoint as string, {
+        where: {
+          proposalId_eq: id as string,
+        },
+      }),
     enabled: !!id && !!daoConfig?.indexer.endpoint,
   });
+
+  const data = allData?.[0];
 
   const proposalStatus = useReadContract({
     address: daoConfig?.contracts?.governorContract as `0x${string}`,
@@ -192,7 +195,7 @@ export default function ProposalDetailPage() {
 
         <div className="grid grid-cols-[1fr_360px] gap-[20px]">
           <div className="space-y-[20px]">
-            <Result />
+            <Result data={data} isFetching={isFetching} />
             <ActionsTable />
             <Proposal data={data} isFetching={isFetching} />
           </div>
