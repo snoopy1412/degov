@@ -1,11 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState, useCallback, useEffect, useMemo } from "react";
 
+
 import { useConfig as useDaoConfig } from "@/hooks/useConfig";
 import { delegateService } from "@/services/graphql";
 import type { DelegateItem } from "@/services/graphql/types";
 
-export function useDelegationData() {
+import type { Address } from "viem";
+
+export function useDelegationData(address: Address) {
   const daoConfig = useDaoConfig();
   const [currentPage, setCurrentPage] = useState(1);
   const [allDelegates, setAllDelegates] = useState<DelegateItem[]>([]);
@@ -24,6 +27,9 @@ export function useDelegationData() {
           limit: 10,
           offset: (currentPage - 1) * 10,
           orderBy: "blockTimestamp_DESC_NULLS_LAST",
+          where: address
+            ? { toDelegate_eq: address?.toLowerCase() }
+            : undefined,
         }
       );
 

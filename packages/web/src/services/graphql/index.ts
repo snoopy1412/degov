@@ -59,6 +59,9 @@ export const delegateService = {
       limit?: number;
       offset?: number;
       orderBy?: string;
+      where?: {
+        toDelegate_eq?: string;
+      };
     } = {}
   ) => {
     const response = await request<Types.DelegateResponse>(
