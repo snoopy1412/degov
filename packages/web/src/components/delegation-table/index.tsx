@@ -19,7 +19,7 @@ export function DelegationTable({ address }: DelegationTableProps) {
   console.log(address);
 
   const formatTokenAmount = useFormatGovernanceTokenAmount();
-  const { state, loadMoreData, loadInitialData } = useDelegationData();
+  const { state, loadMoreData, loadInitialData } = useDelegationData(address);
 
   useEffect(() => {
     loadInitialData();
@@ -49,10 +49,16 @@ export function DelegationTable({ address }: DelegationTableProps) {
         title: "Votes",
         key: "votes",
         width: "33.3%",
-        render: (record) =>
-          formatTokenAmount(
-            record?.toNewVotes ? BigInt(record?.toNewVotes) : 0n
-          ).formatted,
+        render: (record) => {
+          const toNewVotes = record?.toNewVotes
+            ? BigInt(record?.toNewVotes)
+            : 0n;
+          const toPreviousVotes = record?.toPreviousVotes
+            ? BigInt(record?.toPreviousVotes)
+            : 0n;
+          const votes = toNewVotes - toPreviousVotes;
+          return formatTokenAmount(votes).formatted;
+        },
       },
     ],
     [formatTokenAmount]
