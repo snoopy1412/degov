@@ -193,7 +193,7 @@ export default function ProposalDetailPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-[1fr_360px] gap-[20px]">
+        <div className="grid grid-cols-[minmax(0,1fr)_360px] gap-[20px]">
           <div className="space-y-[20px]">
             <Result data={data} isFetching={isFetching} />
             <ActionsTable />

@@ -23,6 +23,11 @@ export const Description = ({
   ) : (
     <div className="prose">
       <div
+        style={{
+          whiteSpace: "wrap",
+          wordWrap: "break-word",
+        }}
+        className="text-balance"
         dangerouslySetInnerHTML={{
           __html: description ?? "",
         }}
