@@ -1,28 +1,31 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import { isNumber } from "lodash-es";
+import { useMemo } from "react";
 import { useReadContract } from "wagmi";
 
 import { abi as tokenAbi } from "@/config/abi/token";
 import { useDaoConfig } from "@/hooks/useDaoConfig";
-import { useGovernanceToken } from "@/hooks/useGovernanceToken";
-import { proposalService } from "@/services/graphql";
-import { formatBigIntForDisplay, formatNumberForDisplay } from "@/utils/number";
+import { useFormatGovernanceTokenAmount } from "@/hooks/useFormatGovernanceTokenAmount";
+import { useMembersVotingPower } from "@/hooks/useMembersVotingPower";
+import { memberService, proposalService } from "@/services/graphql";
+import { formatNumberForDisplay } from "@/utils/number";
 
 import { OverviewItem } from "./overview-item";
 
 export const Overview = () => {
   const daoConfig = useDaoConfig();
+  const formatTokenAmount = useFormatGovernanceTokenAmount();
   const { data: totalSupply, isLoading: isTotalSupplyLoading } =
     useReadContract({
-      address: daoConfig?.contracts?.governorToken?.contract as `0x${string}`,
+      address: daoConfig?.contracts?.governorToken?.address as `0x${string}`,
       abi: tokenAbi,
       functionName: "totalSupply",
-      chainId: daoConfig?.network?.chainId,
+      chainId: daoConfig?.chain?.id,
       query: {
         enabled:
-          !!daoConfig?.contracts?.governorToken?.contract &&
-          !!daoConfig?.network?.chainId,
+          !!daoConfig?.contracts?.governorToken?.address &&
+          !!daoConfig?.chain?.id,
       },
     });
 
@@ -33,8 +36,19 @@ export const Overview = () => {
     enabled: !!daoConfig?.indexer?.endpoint,
   });
 
-  const { data: governanceToken, isLoading: isGovernanceTokenLoading } =
-    useGovernanceToken();
+  const { data: members, isLoading: isMembersLoading } = useQuery({
+    queryKey: ["members"],
+    queryFn: () => memberService.getAllMembers(),
+  });
+  const { votingPowerMap, isLoading: isVotingPowerLoading } =
+    useMembersVotingPower(members?.data ?? []);
+
+  const totalVotingPower = useMemo(() => {
+    return Object.values(votingPowerMap).reduce(
+      (acc, curr) => acc + curr.raw,
+      0n
+    );
+  }, [votingPowerMap]);
 
   return (
     <div className="flex flex-col gap-[20px]">
@@ -55,26 +69,26 @@ export const Overview = () => {
             </p>
           </div>
         </OverviewItem>
-        <OverviewItem title="Members" icon="/assets/image/members-colorful.svg">
-          <p>{formatNumberForDisplay(1010)[0]}</p>
+        <OverviewItem
+          title="Members"
+          icon="/assets/image/members-colorful.svg"
+          isLoading={isMembersLoading}
+        >
+          <p>{formatNumberForDisplay(members?.data?.length ?? 0)[0]}</p>
         </OverviewItem>
         <OverviewItem
           title="Total voting Power"
           icon="/assets/image/total-vote-colorful.svg"
+          isLoading={isVotingPowerLoading || isMembersLoading}
         >
-          <p>{formatNumberForDisplay(100)[0]}</p>
+          <p>{formatTokenAmount(totalVotingPower ?? 0n)?.formatted}</p>
         </OverviewItem>
         <OverviewItem
           title="Total Supply"
-          isLoading={isTotalSupplyLoading || isGovernanceTokenLoading}
+          isLoading={isTotalSupplyLoading}
           icon="/assets/image/delegated-vote-colorful.svg"
         >
-          <p>
-            {formatBigIntForDisplay(
-              totalSupply ?? BigInt(0),
-              governanceToken?.decimals ?? 18
-            )}
-          </p>
+          <p>{formatTokenAmount(totalSupply ?? 0n)?.formatted}</p>
         </OverviewItem>
       </div>
     </div>

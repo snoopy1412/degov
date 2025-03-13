@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -6,12 +7,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useFormatGovernanceTokenAmount } from "@/hooks/useFormatGovernanceTokenAmount";
 import { useGovernanceParams } from "@/hooks/useGovernanceParams";
 import { dayjsHumanize } from "@/utils/date";
-import { formatBigIntForDisplay } from "@/utils/number";
 
 export const Parameters = () => {
   const { data: governanceParams, isLoading } = useGovernanceParams();
+  const formatTokenAmount = useFormatGovernanceTokenAmount();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -39,7 +42,8 @@ export const Parameters = () => {
               {isLoading ? (
                 <Skeleton className="h-[14px] w-[30px]" />
               ) : governanceParams?.proposalThreshold ? (
-                formatBigIntForDisplay(governanceParams?.proposalThreshold, 0)
+                formatTokenAmount(governanceParams?.proposalThreshold)
+                  ?.formatted
               ) : (
                 "-"
               )}
@@ -54,7 +58,7 @@ export const Parameters = () => {
               {isLoading ? (
                 <Skeleton className="h-[14px] w-[30px]" />
               ) : governanceParams?.quorum ? (
-                formatBigIntForDisplay(governanceParams?.quorum, 0)
+                formatTokenAmount(governanceParams?.quorum)?.formatted
               ) : (
                 "0"
               )}

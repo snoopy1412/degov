@@ -43,13 +43,11 @@ export default function ProposalDetailPage() {
     abi: GovernorAbi,
     functionName: "state",
     args: [id ? BigInt(id as string) : 0n],
-    chainId: daoConfig?.network?.chainId,
+    chainId: daoConfig?.chain?.id,
     query: {
       refetchInterval: DEFAULT_REFETCH_INTERVAL,
       enabled:
-        !!id &&
-        !!daoConfig?.contracts?.governor &&
-        !!daoConfig?.network?.chainId,
+        !!id && !!daoConfig?.contracts?.governor && !!daoConfig?.chain?.id,
     },
   });
 
@@ -59,7 +57,7 @@ export default function ProposalDetailPage() {
 
   const {
     data: allData,
-    isFetching,
+    isPending,
     refetch: refetchProposal,
   } = useQuery({
     queryKey: ["proposal", id],
@@ -85,6 +83,7 @@ export default function ProposalDetailPage() {
         ...data,
         description: parsedDescription.mainText,
         signatureContent: parsedDescription.signatureContent,
+        originalDescription: data?.description,
       };
     }
     return undefined;
@@ -95,13 +94,13 @@ export default function ProposalDetailPage() {
     abi: GovernorAbi,
     functionName: "proposalVotes",
     args: [data?.proposalId ? BigInt(data?.proposalId) : 0n],
-    chainId: daoConfig?.network?.chainId,
+    chainId: daoConfig?.chain?.id,
     query: {
       refetchInterval: isActive ? DEFAULT_REFETCH_INTERVAL : false,
       enabled:
         !!data?.proposalId &&
         !!daoConfig?.contracts?.governor &&
-        !!daoConfig?.network?.chainId,
+        !!daoConfig?.chain?.id,
     },
   });
 
@@ -149,9 +148,7 @@ export default function ProposalDetailPage() {
     { data: proposalQueuedById },
   ] = proposalQueries;
 
-  const isAllQueriesFetching = proposalQueries.some(
-    (query) => query.isFetching
-  );
+  const isAllQueriesFetching = proposalQueries.some((query) => query.isPending);
 
   const proposalVotesData = useMemo(() => {
     return {
@@ -172,96 +169,94 @@ export default function ProposalDetailPage() {
     return <NotFound />;
   }
   return (
-    <>
-      <div className="flex w-full flex-col gap-[20px] p-[30px]">
-        <div className="flex items-center gap-1 text-[18px] font-extrabold">
-          <Link
-            className="text-muted-foreground hover:underline"
-            href="/proposals"
-          >
-            Proposals
-          </Link>
-          <span className="text-muted-foreground">/</span>
-          <span>Proposal</span>
-        </div>
+    <div className="flex w-full flex-col gap-[20px] ">
+      <div className="flex items-center gap-1 text-[18px] font-extrabold">
+        <Link
+          className="text-muted-foreground hover:underline"
+          href="/proposals"
+        >
+          Proposals
+        </Link>
+        <span className="text-muted-foreground">/</span>
+        <span>Proposal</span>
+      </div>
 
-        <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]">
-          <div className="flex items-center justify-between gap-[20px]">
-            {isFetching ? (
-              <Skeleton className="h-[37px] w-[100px]" />
-            ) : (
-              <ProposalStatus status={proposalStatus?.data as ProposalState} />
-            )}
-
-            <ActionGroup
-              data={data}
-              status={proposalStatus?.data as ProposalState}
-              proposalCanceledById={proposalCanceledById}
-              proposalExecutedById={proposalExecutedById}
-              proposalQueuedById={proposalQueuedById}
-              isAllQueriesFetching={isAllQueriesFetching}
-              onRefetch={refetchPageData}
-            />
-          </div>
-
-          <h2 className="text-[36px] font-extrabold">
-            {isFetching ? (
-              <Skeleton className="h-[36px] w-[200px]" />
-            ) : (
-              extractTitleAndDescription(data?.description)?.title
-            )}
-          </h2>
-
-          {isFetching ? (
-            <Skeleton className="h-[24px] w-[80%] my-1" /> // 使用单一骨架屏
+      <div className="flex flex-col gap-[20px] rounded-[14px] bg-card p-[20px]">
+        <div className="flex items-center justify-between gap-[20px]">
+          {isPending ? (
+            <Skeleton className="h-[37px] w-[100px]" />
           ) : (
-            <div className="flex items-center gap-[20px]">
-              <div className="flex items-center gap-[5px]">
-                <span>Proposed by</span>
-                {!!data?.proposer && (
-                  <AddressWithAvatar
-                    address={data?.proposer as `0x${string}`}
-                    avatarSize={24}
-                    className="gap-[5px]"
-                  />
-                )}
-              </div>
-              <div className="h-1 w-1 rounded-full bg-muted-foreground"></div>
-              <div className="flex items-center gap-[5px]">
-                <span>ID {formatShortAddress(data?.proposalId as string)}</span>
-                <ClipboardIconButton text={id as string} size={14} />
-              </div>
-              <div className="h-1 w-1 rounded-full bg-muted-foreground"></div>
-              <span>
-                Proposed on:{" "}
-                {formatTimestampToFriendlyDate(data?.blockTimestamp)}
-              </span>
-            </div>
+            <ProposalStatus status={proposalStatus?.data as ProposalState} />
           )}
+
+          <ActionGroup
+            data={data}
+            status={proposalStatus?.data as ProposalState}
+            proposalCanceledById={proposalCanceledById}
+            proposalExecutedById={proposalExecutedById}
+            proposalQueuedById={proposalQueuedById}
+            isAllQueriesFetching={isAllQueriesFetching}
+            onRefetch={refetchPageData}
+          />
         </div>
 
-        <div className="grid grid-cols-[minmax(0,1fr)_360px] gap-[20px]">
-          <div className="space-y-[20px]">
-            <Result data={data} isFetching={isFetching} />
-            <ActionsTable data={data} isFetching={isFetching} />
-            <Proposal data={data} isFetching={isFetching} />
+        <h2 className="text-[36px] font-extrabold">
+          {isPending ? (
+            <Skeleton className="h-[36px] w-[200px]" />
+          ) : (
+            extractTitleAndDescription(data?.description)?.title
+          )}
+        </h2>
+
+        {isPending ? (
+          <Skeleton className="h-[24px] w-[80%] my-1" /> // 使用单一骨架屏
+        ) : (
+          <div className="flex items-center gap-[20px]">
+            <div className="flex items-center gap-[5px]">
+              <span>Proposed by</span>
+              {!!data?.proposer && (
+                <AddressWithAvatar
+                  address={data?.proposer as `0x${string}`}
+                  avatarSize={24}
+                  className="gap-[5px]"
+                />
+              )}
+            </div>
+            <div className="h-1 w-1 rounded-full bg-muted-foreground"></div>
+            <div className="flex items-center gap-[5px]">
+              <span>ID {formatShortAddress(data?.proposalId as string)}</span>
+              <ClipboardIconButton text={id as string} size={14} />
+            </div>
+            <div className="h-1 w-1 rounded-full bg-muted-foreground"></div>
+            <span>
+              Proposed on: {formatTimestampToFriendlyDate(data?.blockTimestamp)}
+            </span>
           </div>
-          <div className="space-y-[20px]">
-            <CurrentVotes
-              proposalVotesData={proposalVotesData}
-              isLoading={proposalVotes?.isFetching}
-            />
-            <Status
-              data={data}
-              status={proposalStatus?.data as ProposalState}
-              proposalCanceledById={proposalCanceledById}
-              proposalExecutedById={proposalExecutedById}
-              proposalQueuedById={proposalQueuedById}
-              isLoading={isAllQueriesFetching || isFetching}
-            />
-          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-[minmax(0,1fr)_360px] gap-[20px]">
+        <div className="space-y-[20px]">
+          <Result data={data} isFetching={isPending} />
+          <ActionsTable data={data} isFetching={isPending} />
+          <Proposal data={data} isFetching={isPending} />
+        </div>
+        <div className="space-y-[20px]">
+          <CurrentVotes
+            proposalVotesData={proposalVotesData}
+            isLoading={proposalVotes?.isPending}
+            blockTimestamp={data?.blockTimestamp}
+          />
+          <Status
+            data={data}
+            status={proposalStatus?.data as ProposalState}
+            proposalCanceledById={proposalCanceledById}
+            proposalExecutedById={proposalExecutedById}
+            proposalQueuedById={proposalQueuedById}
+            isLoading={isAllQueriesFetching || isPending}
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 }

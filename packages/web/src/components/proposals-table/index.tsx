@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import type { ProposalItem } from "@/services/graphql/types";
 import { extractTitleAndDescription } from "@/utils";
@@ -18,14 +18,11 @@ import type { Address } from "viem";
 
 const Caption = ({
   type,
-  data,
-  currentPage,
   loadMoreData,
   isLoading,
 }: {
   type: "active" | "all";
   data: ProposalItem[];
-  currentPage: number;
   loadMoreData: () => void;
   isLoading: boolean;
 }) => {
@@ -40,15 +37,15 @@ const Caption = ({
     </div>
   ) : (
     <div className="flex justify-center items-center">
-      {data.length >= 10 * currentPage && (
+      {
         <button
           onClick={loadMoreData}
           className="text-foreground transition-colors hover:text-foreground/80 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isLoading}
         >
-          {isLoading ? "Loading..." : "Load More"}
+          {isLoading ? "Loading..." : "View more"}
         </button>
-      )}
+      }
     </div>
   );
 };
@@ -62,13 +59,8 @@ export function ProposalsTable({
   address?: Address;
   support?: "1" | "2" | "3";
 }) {
-  const {
-    state,
-    proposalVotesState,
-    proposalStatusState,
-    loadMoreData,
-    loadInitialData,
-  } = useProposalData(address, support);
+  const { state, proposalVotesState, proposalStatusState, loadMoreData } =
+    useProposalData(address, support);
 
   const totalVotes = useCallback(
     (proposalId: string) => {
@@ -167,30 +159,24 @@ export function ProposalsTable({
     ],
     [proposalVotesState, proposalStatusState, totalVotes]
   );
-  useEffect(() => {
-    loadInitialData();
-  }, [loadInitialData]);
 
   return (
     <div className="rounded-[14px] bg-card p-[20px]">
       <CustomTable
         dataSource={state.data}
         columns={columns as ColumnType<ProposalItem>[]}
-        isLoading={state.isFetching}
+        isLoading={state.isPending}
         emptyText="No proposals"
         rowKey="id"
         caption={
-          <Caption
-            type={type}
-            data={state.data}
-            currentPage={state.currentPage}
-            loadMoreData={loadMoreData}
-            isLoading={
-              state.isFetching ||
-              proposalVotesState.isFetching ||
-              proposalStatusState.isFetching
-            }
-          />
+          state.hasNextPage && (
+            <Caption
+              type={type}
+              data={state.data}
+              loadMoreData={loadMoreData}
+              isLoading={state.isFetchingNextPage}
+            />
+          )
         }
       />
     </div>

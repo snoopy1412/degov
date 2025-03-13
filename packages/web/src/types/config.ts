@@ -1,10 +1,11 @@
+import type { Chain as ViemChain } from "viem";
 interface Links {
   website?: string;
   twitter?: string;
   discord?: string;
   telegram?: string;
   github?: string;
-  email?: string;
+  email?: string | null;
 }
 
 interface NativeToken {
@@ -13,21 +14,22 @@ interface NativeToken {
   priceId: string;
 }
 
-interface NetworkInfo {
-  logo: string;
-  chainId: number;
-  rpc: string[];
-  explorer: string[];
+interface Chain {
+  name: string;
+  rpcs: string[];
+  explorers: string[];
   nativeToken: NativeToken;
-  name?: string;
+  id: number;
+  logo: string;
+  contracts?: ViemChain["contracts"];
 }
 
-interface Networks {
-  [chainName: string]: NetworkInfo;
+interface Wallet {
+  walletConnectProjectId: string;
 }
 
 interface GovernorToken {
-  contract: string;
+  address: string;
   standard: string;
 }
 
@@ -38,11 +40,10 @@ interface Contracts {
 }
 
 interface TokenDetails {
-  logo: string;
-  chain: string;
   contract: string;
   standard: string;
   priceId?: string;
+  logo: string | null;
 }
 
 interface TimelockAssets {
@@ -51,17 +52,16 @@ interface TimelockAssets {
 
 interface Indexer {
   endpoint: string;
+  startBlock: number;
 }
 
 interface Config {
   name: string;
   logo: string;
-  deployedChain: string;
-  walletConnectProjectId: string;
   description: string;
   links: Links;
-  networks: Networks;
-  network: NetworkInfo;
+  wallet: Wallet;
+  chain: Chain;
   contracts: Contracts;
   timeLockAssets: TimelockAssets;
   indexer: Indexer;
@@ -71,8 +71,8 @@ export type {
   Config,
   Links,
   NativeToken,
-  NetworkInfo,
-  Networks,
+  Chain,
+  Wallet,
   GovernorToken,
   Contracts,
   TokenDetails,

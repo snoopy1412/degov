@@ -27,7 +27,7 @@ import { Dropdown } from "./dropdown";
 import { Voting } from "./voting";
 
 interface ActionGroupProps {
-  data?: ProposalItem;
+  data?: ProposalItem & { originalDescription: string };
   status?: ProposalState;
   proposalCanceledById?: ProposalCanceledByIdItem;
   proposalExecutedById?: ProposalExecutedByIdItem;
@@ -64,13 +64,13 @@ export default function ActionGroup({
     abi: GovernorAbi,
     functionName: "hasVoted",
     args: [id ? BigInt(id) : 0n, address as `0x${string}`],
-    chainId: daoConfig?.network?.chainId,
+    chainId: daoConfig?.chain?.id,
     query: {
       enabled:
         !!id &&
         !!daoConfig?.contracts?.governor &&
         !!address &&
-        !!daoConfig?.network?.chainId,
+        !!daoConfig?.chain?.id,
     },
   });
 
@@ -86,7 +86,7 @@ export default function ActionGroup({
         targets: data?.targets as `0x${string}`[],
         values: data?.values?.map((value) => BigInt(value)) as bigint[],
         calldatas: data?.calldatas as `0x${string}`[],
-        description: data?.description as string,
+        description: data?.originalDescription as string,
       });
       if (hash) {
         setCancelHash(hash as `0x${string}`);
@@ -106,7 +106,7 @@ export default function ActionGroup({
   }, [
     cancelProposal,
     data?.calldatas,
-    data?.description,
+    data?.originalDescription,
     data?.targets,
     data?.values,
   ]);
@@ -159,7 +159,7 @@ export default function ActionGroup({
         targets: data?.targets as `0x${string}`[],
         values: data?.values?.map((value) => BigInt(value)) as bigint[],
         calldatas: data?.calldatas as `0x${string}`[],
-        description: data?.description as string,
+        description: data?.originalDescription as string,
       });
       if (hash) {
         setQueueHash(hash as `0x${string}`);
@@ -174,7 +174,7 @@ export default function ActionGroup({
   }, [
     queueProposal,
     data?.calldatas,
-    data?.description,
+    data?.originalDescription,
     data?.targets,
     data?.values,
   ]);
@@ -190,7 +190,7 @@ export default function ActionGroup({
         targets: data?.targets as `0x${string}`[],
         values: data?.values?.map((value) => BigInt(value)) as bigint[],
         calldatas: data?.calldatas as `0x${string}`[],
-        description: data?.description as string,
+        description: data?.originalDescription as string,
       });
       if (hash) {
         setExecuteHash(hash as `0x${string}`);
@@ -205,7 +205,7 @@ export default function ActionGroup({
   }, [
     executeProposal,
     data?.calldatas,
-    data?.description,
+    data?.originalDescription,
     data?.targets,
     data?.values,
   ]);
@@ -252,7 +252,7 @@ export default function ActionGroup({
     [handleQueueProposal, handleExecuteProposal, validateBeforeExecution]
   );
   const explorerUrl = useMemo(() => {
-    let defaultUrl = `${daoConfig?.network?.explorer?.[0]}/tx/${data?.transactionHash}`;
+    let defaultUrl = `${daoConfig?.chain?.explorers?.[0]}/tx/${data?.transactionHash}`;
 
     if (status === ProposalState.Defeated) {
       defaultUrl = "";
@@ -262,19 +262,19 @@ export default function ActionGroup({
     }
 
     if (status === ProposalState.Queued) {
-      defaultUrl = `${daoConfig?.network?.explorer?.[0]}/tx/${proposalQueuedById?.transactionHash}`;
+      defaultUrl = `${daoConfig?.chain?.explorers?.[0]}/tx/${proposalQueuedById?.transactionHash}`;
     }
     if (status === ProposalState.Executed) {
-      defaultUrl = `${daoConfig?.network?.explorer?.[0]}/tx/${proposalExecutedById?.transactionHash}`;
+      defaultUrl = `${daoConfig?.chain?.explorers?.[0]}/tx/${proposalExecutedById?.transactionHash}`;
     }
     if (status === ProposalState.Canceled) {
-      defaultUrl = `${daoConfig?.network?.explorer?.[0]}/tx/${proposalCanceledById?.transactionHash}`;
+      defaultUrl = `${daoConfig?.chain?.explorers?.[0]}/tx/${proposalCanceledById?.transactionHash}`;
     }
     return defaultUrl;
   }, [
     data?.transactionHash,
     status,
-    daoConfig?.network?.explorer,
+    daoConfig?.chain?.explorers,
     proposalQueuedById?.transactionHash,
     proposalExecutedById?.transactionHash,
     proposalCanceledById?.transactionHash,
