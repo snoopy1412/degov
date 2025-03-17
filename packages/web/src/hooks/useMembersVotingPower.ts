@@ -15,9 +15,11 @@ export function useMembersVotingPower(members: Member[] | undefined) {
   const memberAddresses = useMemo(() => {
     if (!members) return [];
     return members
-      .filter((member) => member.address && member.address.startsWith("0x"))
+      ?.filter((member) => member.address && member.address.startsWith("0x"))
       .map((member) => member.address as Address);
   }, [members]);
+
+  console.log("memberAddresses", memberAddresses);
 
   const votesContracts = useMemo(() => {
     return {
@@ -44,6 +46,8 @@ export function useMembersVotingPower(members: Member[] | undefined) {
         Boolean(daoConfig?.chain?.id),
     },
   });
+
+  console.log("votesData", votesData);
 
   const votingPowerMap = useMemo(() => {
     const result: Record<string, { formatted: string; raw: bigint }> = {};

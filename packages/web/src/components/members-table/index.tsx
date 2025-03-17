@@ -1,38 +1,35 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
-import { useMembersVotingPower } from "@/hooks/useMembersVotingPower";
-import { memberService } from "@/services/graphql";
-import type { Member } from "@/services/graphql/types";
+import { useFormatGovernanceTokenAmount } from "@/hooks/useFormatGovernanceTokenAmount";
+import type { ContributorItem } from "@/services/graphql/types";
 
 import { AddressWithAvatar } from "../address-with-avatar";
 import { CustomTable } from "../custom-table";
 import { Button } from "../ui/button";
 import { Skeleton } from "../ui/skeleton";
 
+import { useMembersData } from "./hooks/useMembersData";
+
 import type { ColumnType } from "../custom-table";
 
 interface MembersTableProps {
-  onDelegate?: (value: Member) => void;
-  itemsPerPage?: number;
+  onDelegate?: (value: ContributorItem) => void;
+  pageSize?: number;
 }
 
-export function MembersTable({
-  onDelegate,
-  itemsPerPage = 10,
-}: MembersTableProps) {
-  const [loadedPages, setLoadedPages] = useState(1);
+export function MembersTable({ onDelegate, pageSize = 10 }: MembersTableProps) {
+  const formatTokenAmount = useFormatGovernanceTokenAmount();
 
-  const { data: members, isPending: isMembersLoading } = useQuery({
-    queryKey: ["members"],
-    queryFn: () => memberService.getAllMembers(),
-    placeholderData: keepPreviousData,
-  });
+  const {
+    state: { data: members, hasNextPage, isPending, isFetchingNextPage },
+    profilePullState: {
+      data: profilePullData,
+      isLoading: isProfilePullLoading,
+    },
+    loadMoreData,
+  } = useMembersData(pageSize);
 
-  const { votingPowerMap, isLoading: isVotingPowerLoading } =
-    useMembersVotingPower(members?.data ?? []);
-
-  const columns = useMemo<ColumnType<Member>[]>(
+  const columns = useMemo<ColumnType<ContributorItem>[]>(
     () => [
       {
         title: "Rank",
@@ -51,7 +48,7 @@ export function MembersTable({
         width: "260px",
         className: "text-left",
         render: (record) => (
-          <AddressWithAvatar address={record.address as `0x${string}`} />
+          <AddressWithAvatar address={record?.id as `0x${string}`} />
         ),
       },
       {
@@ -60,8 +57,11 @@ export function MembersTable({
         width: "200px",
         className: "text-left",
         render: (record) => (
-          <span className="line-clamp-1" title={record.delegate_statement}>
-            {record.delegate_statement}
+          <span
+            className="line-clamp-1 break-words"
+            title={profilePullData?.[record.id]?.delegate_statement || "-"}
+          >
+            {profilePullData?.[record.id]?.delegate_statement || "-"}
           </span>
         ),
       },
@@ -71,14 +71,20 @@ export function MembersTable({
         width: "200px",
         className: "text-right",
         render: (record) =>
-          isVotingPowerLoading ? (
+          isProfilePullLoading ? (
             <Skeleton className="h-[30px] w-[100px]" />
           ) : (
             <span
               className="line-clamp-1"
-              title={votingPowerMap[record.address.toLowerCase()]?.formatted}
+              title={
+                formatTokenAmount(record?.power ? BigInt(record?.power) : 0n)
+                  ?.formatted
+              }
             >
-              {votingPowerMap[record.address.toLowerCase()]?.formatted}
+              {
+                formatTokenAmount(record?.power ? BigInt(record?.power) : 0n)
+                  ?.formatted
+              }
             </span>
           ),
       },
@@ -100,55 +106,25 @@ export function MembersTable({
         ),
       },
     ],
-    [onDelegate, votingPowerMap, isVotingPowerLoading]
+    [onDelegate, profilePullData, isProfilePullLoading, formatTokenAmount]
   );
-
-  const sortedMembers = useMemo(() => {
-    if (!members?.data || members.data.length === 0) return [];
-
-    return [...members.data].sort((a, b) => {
-      const aVotingPower = votingPowerMap[a.address.toLowerCase()]?.raw || 0n;
-      const bVotingPower = votingPowerMap[b.address.toLowerCase()]?.raw || 0n;
-
-      if (bVotingPower > aVotingPower) return 1;
-      if (bVotingPower < aVotingPower) return -1;
-      return 0;
-    });
-  }, [members, votingPowerMap]);
-
-  const totalPages = useMemo(() => {
-    return Math.ceil((sortedMembers.length || 0) / itemsPerPage);
-  }, [sortedMembers, itemsPerPage]);
-
-  const displayedData = useMemo(() => {
-    const itemsToShow = loadedPages * itemsPerPage;
-    return sortedMembers.slice(0, itemsToShow);
-  }, [sortedMembers, loadedPages, itemsPerPage]);
-
-  const shouldShowViewMore = loadedPages < totalPages;
-
-  const handleViewMore = () => {
-    if (loadedPages < totalPages) {
-      setLoadedPages(loadedPages + 1);
-    }
-  };
 
   return (
     <div className="rounded-[14px] bg-card p-[20px]">
       <CustomTable
         tableClassName="table-fixed"
         columns={columns}
-        dataSource={displayedData}
+        dataSource={members}
         rowKey="id"
-        isLoading={isMembersLoading || isVotingPowerLoading}
+        isLoading={isPending}
         emptyText="No Members"
         caption={
-          shouldShowViewMore ? (
+          hasNextPage ? (
             <div
               className="text-foreground transition-colors hover:text-foreground/80 cursor-pointer"
-              onClick={handleViewMore}
+              onClick={loadMoreData}
             >
-              View more
+              {isFetchingNextPage ? "Loading more..." : "View more"}
             </div>
           ) : null
         }
