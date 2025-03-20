@@ -7,7 +7,6 @@ import type { Member } from "@/services/graphql/types";
 import { AddressWithAvatar } from "../address-with-avatar";
 import { CustomTable } from "../custom-table";
 import { Button } from "../ui/button";
-import { Skeleton } from "../ui/skeleton";
 
 import { useMembersData } from "./hooks/useMembersData";
 
@@ -26,15 +25,22 @@ export function MembersTable({
 
   const {
     state: { data: members, hasNextPage, isPending, isFetchingNextPage },
-    profilePullState: {
-      data: profilePullData,
-      isLoading: isProfilePullLoading,
-    },
     loadMoreData,
   } = useMembersData(pageSize);
 
   const columns = useMemo<ColumnType<Member>[]>(
     () => [
+      {
+        title: "Rank",
+        key: "rank",
+        width: "100px",
+        className: "text-left",
+        render: (record) => (
+          <span className="line-clamp-1" title={record?.rn?.toString()}>
+            {record?.rn}
+          </span>
+        ),
+      },
       {
         title: "Member",
         key: "member",
@@ -47,7 +53,7 @@ export function MembersTable({
       {
         title: "Delegate Statement",
         key: "delegateStatement",
-        width: "200px",
+        width: "260px",
         className: "text-left",
         render: (record) => (
           <span
@@ -64,16 +70,13 @@ export function MembersTable({
         width: "200px",
         className: "text-right",
         render: (record) => {
-          const power = profilePullData?.[record?.address]?.power;
-
-          return isProfilePullLoading ? (
-            <Skeleton className="h-[30px] w-[100px]" />
-          ) : (
+          const power = record?.power ? BigInt(record?.power) : 0n;
+          return (
             <span
               className="line-clamp-1"
-              title={formatTokenAmount(power ? BigInt(power) : 0n)?.formatted}
+              title={formatTokenAmount(power)?.formatted}
             >
-              {formatTokenAmount(power ? BigInt(power) : 0n)?.formatted}
+              {formatTokenAmount(power)?.formatted}
             </span>
           );
         },
@@ -96,7 +99,7 @@ export function MembersTable({
         ),
       },
     ],
-    [onDelegate, profilePullData, isProfilePullLoading, formatTokenAmount]
+    [onDelegate, formatTokenAmount]
   );
 
   return (

@@ -36,7 +36,7 @@ export interface DUser {
   id: string;
   address: string;
   name?: string;
-  avatar?: string;
+  power?: string;
   email?: string;
   twitter?: string;
   github?: string;
@@ -47,5 +47,12 @@ export interface DUser {
   additional?: string;
   last_login_time: string;
   ctime?: string;
+  utime?: string;
+}
+
+export interface DAvatar {
+  id: string;
+  avatar: string;
+  ctime: string;
   utime?: string;
 }

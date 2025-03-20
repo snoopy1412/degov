@@ -12,6 +12,8 @@ import {
 } from "../model";
 import { MetricsId, DegovConfigIndexLogContract } from "../config";
 
+const zeroAddress = "0x0000000000000000000000000000000000000000";
+
 export class TokenHandler {
   constructor(
     private readonly ctx: DataHandlerContext<any, any>,
@@ -95,41 +97,58 @@ export class TokenHandler {
       });
     if (!delegateRolling) return;
 
-    let delegate;
-    let checkExists = false;
+    /*
+    // delegate change b to c
+     {
+       method: "DelegateChanged",
+       delegator: "0xf25f97f6f7657a210daeb1cd6042b769fae95488",
+       fromDelegate: "0x3e8436e87abb49efe1a958ee73fbb7a12b419aab",
+       toDelegate: "0x92e9Fb99E99d79Bc47333E451e7c6490dbf24b22",
+     }
+    */
+    const isDelegateChangeToAnother =
+      delegateRolling.delegator !== delegateRolling.fromDelegate &&
+      delegateRolling.delegator !== delegateRolling.toDelegate;
+    let fromDelegate, toDelegate;
     if (options.delegate === delegateRolling.fromDelegate) {
       delegateRolling.fromNewVotes = options.newVotes;
       delegateRolling.fromPreviousVotes = options.previousVotes;
-
-      delegate = new Delegate({
-        fromDelegate: delegateRolling.fromDelegate,
-        toDelegate: delegateRolling.fromDelegate,
-        blockNumber: options.blockNumber,
-        blockTimestamp: options.blockTimestamp,
-        transactionHash: options.transactionHash,
-        power: options.newVotes - options.previousVotes,
-      });
-      checkExists = true;
+      // retuning power to self
+      if (
+        (delegateRolling.delegator === delegateRolling.toDelegate &&
+          delegateRolling.fromDelegate !== zeroAddress) ||
+        isDelegateChangeToAnother
+      ) {
+        fromDelegate = delegateRolling.delegator;
+        toDelegate = delegateRolling.fromDelegate;
+      } else {
+        // delegate to other
+        fromDelegate = delegateRolling.fromDelegate;
+        toDelegate = delegateRolling.delegator;
+      }
     }
     if (options.delegate === delegateRolling.toDelegate) {
       delegateRolling.toNewVotes = options.newVotes;
       delegateRolling.toPreviousVotes = options.previousVotes;
 
-      delegate = new Delegate({
-        fromDelegate: delegateRolling.fromDelegate,
-        toDelegate: delegateRolling.toDelegate,
-        blockNumber: options.blockNumber,
-        blockTimestamp: options.blockTimestamp,
-        transactionHash: options.transactionHash,
-        power: options.newVotes - options.previousVotes,
-      });
-    }
-    if (!delegate) {
-      return;
+      fromDelegate = delegateRolling.delegator;
+      toDelegate =
+        delegateRolling.delegator === delegateRolling.toDelegate
+          ? delegateRolling.delegator
+          : delegateRolling.toDelegate;
     }
 
+    const delegate = new Delegate({
+      fromDelegate,
+      toDelegate,
+      blockNumber: delegateRolling.blockNumber,
+      blockTimestamp: delegateRolling.blockTimestamp,
+      transactionHash: delegateRolling.transactionHash,
+      power: options.newVotes - options.previousVotes,
+    });
+
     await this.ctx.store.save(delegateRolling);
-    await this.storeDelegate(delegate, { checkExists });
+    await this.storeDelegate(delegate);
   }
 
   private async storeTokenTransfer(eventLog: Log) {
@@ -151,57 +170,93 @@ export class TokenHandler {
     });
     await this.ctx.store.insert(entity);
 
-    const fromDelegate = new Delegate({
-      fromDelegate: event.from,
-      toDelegate: event.from,
-      blockNumber: BigInt(eventLog.block.height),
-      blockTimestamp: BigInt(eventLog.block.timestamp),
-      transactionHash: eventLog.transactionHash,
-      power: isErc721 ? -1n : -event.value,
+    // store delegate
+    const storedFromDelegates: Delegate[] = await this.ctx.store.find(
+      Delegate,
+      {
+        where: {
+          fromDelegate: event.from,
+        },
+      }
+    );
+    let storedFromDelegate: Delegate | undefined = storedFromDelegates.find(
+      (item) => item.fromDelegate !== item.toDelegate
+    );
+    if (!storedFromDelegate) {
+      storedFromDelegate = storedFromDelegates.find(
+        (item) => item.fromDelegate === item.toDelegate
+      );
+    }
+
+    const storedToDelegates: Delegate[] = await this.ctx.store.find(Delegate, {
+      where: {
+        fromDelegate: event.to,
+      },
     });
-    const toDelegate = new Delegate({
-      fromDelegate: event.to,
-      toDelegate: event.to,
-      blockNumber: BigInt(eventLog.block.height),
-      blockTimestamp: BigInt(eventLog.block.timestamp),
-      transactionHash: eventLog.transactionHash,
-      power: isErc721 ? 1n : event.value,
-    });
-    await this.storeDelegate(fromDelegate, { checkExists: true });
-    await this.storeDelegate(toDelegate, { checkExists: true });
+    let storedToDelegate: Delegate | undefined = storedToDelegates.find(
+      (item) => item.fromDelegate !== item.toDelegate
+    );
+    if (!storedToDelegate) {
+      storedToDelegate = storedToDelegates.find(
+        (item) => item.fromDelegate === item.toDelegate
+      );
+    }
+
+    if (storedFromDelegate) {
+      const fromDelegate = new Delegate({
+        fromDelegate: storedFromDelegate.fromDelegate,
+        toDelegate: storedFromDelegate.toDelegate,
+        blockNumber: BigInt(eventLog.block.height),
+        blockTimestamp: BigInt(eventLog.block.timestamp),
+        transactionHash: eventLog.transactionHash,
+        power: -(isErc721 ? 1n : event.value),
+      });
+      await this.storeDelegate(fromDelegate);
+    }
+    if (storedToDelegate) {
+      const toDelegate = new Delegate({
+        fromDelegate: storedToDelegate.fromDelegate,
+        toDelegate: storedToDelegate.toDelegate,
+        blockNumber: BigInt(eventLog.block.height),
+        blockTimestamp: BigInt(eventLog.block.timestamp),
+        transactionHash: eventLog.transactionHash,
+        power: isErc721 ? 1n : event.value,
+      });
+      await this.storeDelegate(toDelegate);
+    }
   }
 
-  private async storeDelegate(
-    currentDelegate: Delegate,
-    options?: { checkExists?: boolean }
-  ) {
-    // store delegate
+  private async storeDelegate(currentDelegate: Delegate, options?: {}) {
     currentDelegate.fromDelegate = currentDelegate.fromDelegate.toLowerCase();
     currentDelegate.toDelegate = currentDelegate.toDelegate.toLowerCase();
     currentDelegate.id = `${currentDelegate.fromDelegate}_${currentDelegate.toDelegate}`;
 
-    const storedDelegate: Delegate | undefined = await this.ctx.store.findOne(
-      Delegate,
-      {
+    let storedDelegateFromWithTo: Delegate | undefined =
+      await this.ctx.store.findOne(Delegate, {
         where: {
           id: currentDelegate.id,
         },
-      }
-    );
+      });
 
-    // store delegate
-    if (!storedDelegate) {
-      if (options?.checkExists ?? false) {
-        return;
-      }
-
+    if (!storedDelegateFromWithTo) {
       await this.ctx.store.insert(currentDelegate);
     } else {
-      storedDelegate.power = storedDelegate.power + currentDelegate.power;
-      storedDelegate.blockNumber = currentDelegate.blockNumber;
-      storedDelegate.blockTimestamp = currentDelegate.blockTimestamp;
-      storedDelegate.transactionHash = currentDelegate.transactionHash;
-      await this.ctx.store.save(storedDelegate);
+      // update delegate
+      storedDelegateFromWithTo.power += currentDelegate.power;
+      storedDelegateFromWithTo.blockNumber = currentDelegate.blockNumber;
+      storedDelegateFromWithTo.blockTimestamp = currentDelegate.blockTimestamp;
+      storedDelegateFromWithTo.transactionHash =
+        currentDelegate.transactionHash;
+      // should keep delegate self record
+      if (
+        storedDelegateFromWithTo.power === 0n &&
+        storedDelegateFromWithTo.fromDelegate !==
+          storedDelegateFromWithTo.toDelegate
+      ) {
+        await this.ctx.store.remove(Delegate, storedDelegateFromWithTo.id);
+      } else {
+        await this.ctx.store.save(storedDelegateFromWithTo);
+      }
     }
 
     // store contributor
@@ -234,22 +289,78 @@ export class TokenHandler {
   }
 
   private async storeContributor(contributor: Contributor) {
-    const storedContributor: Contributor | undefined =
+    let storedContributor: Contributor | undefined =
       await this.ctx.store.findOne(Contributor, {
         where: {
           id: contributor.id,
         },
       });
-    if (!storedContributor) {
+
+    let storeMemberMetrics = false;
+    // update stored contributor
+    if (storedContributor) {
+      storedContributor.blockNumber = contributor.blockNumber;
+      storedContributor.blockTimestamp = contributor.blockTimestamp;
+      storedContributor.transactionHash = contributor.transactionHash;
+
+      storedContributor.power = storedContributor.power + contributor.power;
+
+      await this.ctx.store.save(storedContributor);
+    } else {
+      storeMemberMetrics = true;
+      // save new contributor
       await this.ctx.store.insert(contributor);
+      storedContributor = contributor;
+    }
+
+    // sync user power
+    const syncEndpoint = process.env.DEGOV_SYNC_ENDPOINT;
+    const syncAuthToken = process.env.DEGOV_SYNC_AUTH_TOKEN;
+    if (syncEndpoint && syncAuthToken) {
+      try {
+        const controller = new AbortController();
+        const signal = controller.signal;
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        await fetch(syncEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-degov-sync-token": syncAuthToken,
+          },
+          body: JSON.stringify([
+            {
+              method: "sync.user.power",
+              body: {
+                address: storedContributor.id,
+                power: storedContributor.power.toString(),
+              },
+            },
+          ]),
+          signal,
+        });
+        clearTimeout(timeoutId);
+      } catch (error) {
+        this.ctx.log.error(`'failed to sync user power: ${error}`);
+      }
+    }
+
+    if (!storeMemberMetrics) {
       return;
     }
-    storedContributor.blockNumber = contributor.blockNumber;
-    storedContributor.blockTimestamp = contributor.blockTimestamp;
-    storedContributor.transactionHash = contributor.transactionHash;
-
-    storedContributor.power = storedContributor.power + contributor.power;
-
-    await this.ctx.store.save(storedContributor);
+    // increase metrics for memberCount
+    const storedDataMetric: DataMetric | undefined =
+      await this.ctx.store.findOne(DataMetric, {
+        where: {
+          id: MetricsId.global,
+        },
+      });
+    const dm = storedDataMetric
+      ? storedDataMetric
+      : new DataMetric({
+          id: MetricsId.global,
+        });
+    dm.memberCount = (dm.memberCount ?? 0) + 1;
+    await this.ctx.store.save(dm);
   }
 }

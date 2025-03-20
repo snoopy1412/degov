@@ -182,14 +182,14 @@ export const profileService = {
 
 export const memberService = {
   getMembers: async (
-    checkpoint?: string,
+    checkpoint?: number,
     limit?: number
   ): Promise<Types.MemberResponse> => {
     try {
       const url = new URL("/api/degov/members", window.location.origin);
 
       if (checkpoint) {
-        url.searchParams.set("checkpoint", checkpoint);
+        url.searchParams.set("checkpoint", checkpoint.toString());
       }
 
       if (limit) {
