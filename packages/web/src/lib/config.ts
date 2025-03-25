@@ -40,7 +40,16 @@ export const getDaoConfigServer = (): Config => {
       return defaultConfig as Config;
     }
 
+    if (!yamlText2) {
+      console.log("[Config2] Using default config");
+      return defaultConfig as Config;
+    }
+
     const config = yaml.load(yamlText) as Config;
+    const config2 = yaml.load(yamlText2) as Config;
+
+    console.log("config", config);
+    console.log("config2", config2);
 
     if (
       config &&
