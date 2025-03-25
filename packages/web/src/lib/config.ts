@@ -19,6 +19,9 @@ export const getDaoConfigServer = (): Config => {
       path.join(process.cwd(), "..", "..", "degov.yml"),
     ];
 
+    console.log("configPaths", configPaths);
+    console.log("process.cwd()", process.cwd());
+
     let yamlText: string | undefined;
 
     for (const configPath of configPaths) {
