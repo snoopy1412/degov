@@ -6,36 +6,24 @@ import yaml from "js-yaml";
 import type { Config } from "@/types/config";
 
 const defaultConfig = {
-  name: "DeGov1",
+  name: "DeGov2333",
 };
 
 export const getDaoConfigServer = (): Config => {
   try {
-    const configPaths = [
-      path.join(process.cwd(), "degov.yml"),
-      path.join(process.cwd(), "public", "degov.yml"),
-      path.join(process.cwd(), "..", "degov.yml"),
-      path.join(process.cwd(), "..", "..", "degov.yml"),
-      path.join(process.cwd(), "..", "..", "public", "degov.yml"),
-      "/var/task/degov.yml",
-      path.join(process.env.VERCEL_ROOT_DIR || "", "degov.yml"),
-      path.join(process.env.VERCEL_PROJECT_PATH || "", "degov.yml"),
-      path.join(process.cwd(), "..", "..", "..", "degov.yml"),
-    ];
+    const configPath = path.join(process.cwd(), "public", "degov.yml");
 
-    console.log("configPaths", configPaths);
+    console.log("configPath", configPath);
     console.log("process.cwd()", process.cwd());
 
     let yamlText: string | undefined;
 
-    for (const configPath of configPaths) {
-      try {
-        yamlText = fs.readFileSync(configPath, "utf8");
-        console.log(`[Config] Loaded from ${configPath}`);
-        break;
-      } catch {
-        continue;
-      }
+    try {
+      yamlText = fs.readFileSync(configPath, "utf8");
+      console.log(`[Config] Loaded from ${configPath}`);
+    } catch {
+      console.log("[Config] Using default config");
+      return defaultConfig as Config;
     }
 
     if (!yamlText) {
