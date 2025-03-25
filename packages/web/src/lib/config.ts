@@ -17,6 +17,10 @@ export const getDaoConfigServer = (): Config => {
       path.join(process.cwd(), "..", "degov.yml"),
       path.join(process.cwd(), "..", "..", "degov.yml"),
       path.join(process.cwd(), "..", "..", "public", "degov.yml"),
+      "/var/task/degov.yml",
+      path.join(process.env.VERCEL_ROOT_DIR || "", "degov.yml"),
+      path.join(process.env.VERCEL_PROJECT_PATH || "", "degov.yml"),
+      path.join(process.cwd(), "..", "..", "..", "degov.yml"),
     ];
 
     console.log("configPaths", configPaths);
